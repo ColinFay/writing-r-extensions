@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Writing R extensions</title>
+  <meta name="description" content="Writing R Extensions covers how to create your own packages, write R help files, and the foreign language interfaces.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Writing R extensions" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Writing R Extensions covers how to create your own packages, write R help files, and the foreign language interfaces." />
+  <meta name="github-repo" content="ColinFay/writing-r-extensions" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Writing R extensions" />
+  
+  <meta name="twitter:description" content="Writing R Extensions covers how to create your own packages, write R help files, and the foreign language interfaces." />
+  
+
+<meta name="author" content="R Development Core Team">
+
+
+<meta name="date" content="2017-10-09">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="index.html">
+<link rel="next" href="creating-r-packages.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-1');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Writing R Extensions</a></li>
+<li class="chapter" data-level="" data-path="acknowledgements.html"><a href="acknowledgements.html"><i class="fa fa-check"></i>Acknowledgements</a></li>
+<li class="chapter" data-level="1" data-path="creating-r-packages.html"><a href="creating-r-packages.html"><i class="fa fa-check"></i><b>1</b> Creating R packages</a></li>
+<li class="chapter" data-level="2" data-path="writing-r-documentation-files.html"><a href="writing-r-documentation-files.html"><i class="fa fa-check"></i><b>2</b> Writing R documentation files</a></li>
+<li class="chapter" data-level="3" data-path="tidying-and-profiling-r-code.html"><a href="tidying-and-profiling-r-code.html"><i class="fa fa-check"></i><b>3</b> Tidying and profiling R code</a></li>
+<li class="chapter" data-level="4" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>4</b> Debugging</a></li>
+<li class="chapter" data-level="5" data-path="system-and-foreign-language-interfaces.html"><a href="system-and-foreign-language-interfaces.html"><i class="fa fa-check"></i><b>5</b> System and foreign language interfaces</a></li>
+<li class="chapter" data-level="6" data-path="the-r-api-entry-points-for-c-code.html"><a href="the-r-api-entry-points-for-c-code.html"><i class="fa fa-check"></i><b>6</b> The R API: entry points for C code</a></li>
+<li class="chapter" data-level="7" data-path="generic-functions-and-methods.html"><a href="generic-functions-and-methods.html"><i class="fa fa-check"></i><b>7</b> Generic functions and methods</a></li>
+<li class="chapter" data-level="8" data-path="linking-guis-and-other-front-ends-to-r.html"><a href="linking-guis-and-other-front-ends-to-r.html"><i class="fa fa-check"></i><b>8</b> Linking GUIs and other front-ends to R</a></li>
+<li class="chapter" data-level="9" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>9</b> Function and variable index</a></li>
+<li class="chapter" data-level="10" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>10</b> Concept index</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Writing R extensions</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="acknowledgements" class="section level1 unnumbered">
+<h1>Acknowledgements</h1>
+<p>
+The contributions to early versions of this manual by Saikat DebRoy (who wrote the first draft of a guide to using <code class="calibre2">.Call</code> and <code class="calibre2">.External</code>) and Adrian Trapletti (who provided information on the C++ interface) are gratefully acknowledged.
+</p>
+<hr />
+<p>
+<a href="" id="Creating-R-packages"></a> <a href="" id="Creating-R-packages-1"></a>
+</p>
+<div id="calibre_pb_4" class="calibre6">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="creating-r-packages.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

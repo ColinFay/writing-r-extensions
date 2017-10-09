@@ -1,0 +1,3205 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Writing R extensions</title>
+  <meta name="description" content="Writing R Extensions covers how to create your own packages, write R help files, and the foreign language interfaces.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Writing R extensions" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Writing R Extensions covers how to create your own packages, write R help files, and the foreign language interfaces." />
+  <meta name="github-repo" content="ColinFay/writing-r-extensions" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Writing R extensions" />
+  
+  <meta name="twitter:description" content="Writing R Extensions covers how to create your own packages, write R help files, and the foreign language interfaces." />
+  
+
+<meta name="author" content="R Development Core Team">
+
+
+<meta name="date" content="2017-10-09">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="linking-guis-and-other-front-ends-to-r.html">
+<link rel="next" href="concept-index.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-1');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Writing R Extensions</a></li>
+<li class="chapter" data-level="" data-path="acknowledgements.html"><a href="acknowledgements.html"><i class="fa fa-check"></i>Acknowledgements</a></li>
+<li class="chapter" data-level="1" data-path="creating-r-packages.html"><a href="creating-r-packages.html"><i class="fa fa-check"></i><b>1</b> Creating R packages</a></li>
+<li class="chapter" data-level="2" data-path="writing-r-documentation-files.html"><a href="writing-r-documentation-files.html"><i class="fa fa-check"></i><b>2</b> Writing R documentation files</a></li>
+<li class="chapter" data-level="3" data-path="tidying-and-profiling-r-code.html"><a href="tidying-and-profiling-r-code.html"><i class="fa fa-check"></i><b>3</b> Tidying and profiling R code</a></li>
+<li class="chapter" data-level="4" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>4</b> Debugging</a></li>
+<li class="chapter" data-level="5" data-path="system-and-foreign-language-interfaces.html"><a href="system-and-foreign-language-interfaces.html"><i class="fa fa-check"></i><b>5</b> System and foreign language interfaces</a></li>
+<li class="chapter" data-level="6" data-path="the-r-api-entry-points-for-c-code.html"><a href="the-r-api-entry-points-for-c-code.html"><i class="fa fa-check"></i><b>6</b> The R API: entry points for C code</a></li>
+<li class="chapter" data-level="7" data-path="generic-functions-and-methods.html"><a href="generic-functions-and-methods.html"><i class="fa fa-check"></i><b>7</b> Generic functions and methods</a></li>
+<li class="chapter" data-level="8" data-path="linking-guis-and-other-front-ends-to-r.html"><a href="linking-guis-and-other-front-ends-to-r.html"><i class="fa fa-check"></i><b>8</b> Linking GUIs and other front-ends to R</a></li>
+<li class="chapter" data-level="9" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>9</b> Function and variable index</a></li>
+<li class="chapter" data-level="10" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>10</b> Concept index</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Writing R extensions</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="function-and-variable-index" class="section level1">
+<h1><span class="header-section-number">Chapter 9</span> Function and variable index</h1>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="function-and-variable-index.html#Function-and-variable-index_vr_symbol-1" class="summary-letter"><strong>.</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_symbol-2" class="summary-letter"><strong>\</strong></a>  <br /> <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-A" class="summary-letter"><strong>A</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-C" class="summary-letter"><strong>C</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-D" class="summary-letter"><strong>D</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-E" class="summary-letter"><strong>E</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-G" class="summary-letter"><strong>G</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-I" class="summary-letter"><strong>I</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-L" class="summary-letter"><strong>L</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-M" class="summary-letter"><strong>M</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-N" class="summary-letter"><strong>N</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-O" class="summary-letter"><strong>O</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-Q" class="summary-letter"><strong>Q</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-R" class="summary-letter"><strong>R</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-S" class="summary-letter"><strong>S</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-T" class="summary-letter"><strong>T</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-U" class="summary-letter"><strong>U</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-V" class="summary-letter"><strong>V</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+Index Entry
+</p>
+<p>
+ 
+</p>
+<p>
+Section
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-1">.</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-_002eC"><code class="calibre2">.C</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Interface-functions-_002eC-and-_002eFortran">Interface functions .C and .Fortran</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-_002eCall"><code class="calibre2">.Call</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Handling-R-objects-in-C">Handling R objects in C</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-_002eCall-1"><code class="calibre2">.Call</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Calling-_002eCall">Calling .Call</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-_002eExternal"><code class="calibre2">.External</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Handling-R-objects-in-C">Handling R objects in C</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-_002eExternal-1"><code class="calibre2">.External</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Calling-_002eExternal">Calling .External</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-_002eFortran"><code class="calibre2">.Fortran</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Interface-functions-_002eC-and-_002eFortran">Interface functions .C and .Fortran</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-_002eLast_002elib"><code class="calibre2">.Last.lib</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Load-hooks">Load hooks</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-_002eonAttach"><code class="calibre2">.onAttach</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Load-hooks">Load hooks</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-_002eonDetach"><code class="calibre2">.onDetach</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Load-hooks">Load hooks</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-_002eonLoad"><code class="calibre2">.onLoad</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Load-hooks">Load hooks</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-_002eonUnload"><code class="calibre2">.onUnload</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Load-hooks">Load hooks</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-_002eRandom_002eseed"><code class="calibre2">.Random.seed</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Random-numbers">Random numbers</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_symbol-2">\</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cacronym"><code class="calibre2">\acronym</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005calias"><code class="calibre2">\alias</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005carguments"><code class="calibre2">\arguments</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cauthor"><code class="calibre2">\author</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cbold"><code class="calibre2">\bold</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005ccite"><code class="calibre2">\cite</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005ccode"><code class="calibre2">\code</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005ccommand"><code class="calibre2">\command</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cconcept"><code class="calibre2">\concept</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Indices">Indices</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005ccr"><code class="calibre2">\cr</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Sectioning">Sectioning</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cCRANpkg_007bpkg_007d"><code class="calibre2">\CRANpkg{pkg}</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#User_002ddefined-macros">User-defined macros</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cdeqn"><code class="calibre2">\deqn</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Mathematics">Mathematics</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cdescribe"><code class="calibre2">\describe</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Lists-and-tables">Lists and tables</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cdescription"><code class="calibre2">\description</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cdetails"><code class="calibre2">\details</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cdfn"><code class="calibre2">\dfn</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cdoi_007bnumbers_007d"><code class="calibre2">\doi{numbers}</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#User_002ddefined-macros">User-defined macros</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cdontrun"><code class="calibre2">\dontrun</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cdontshow"><code class="calibre2">\dontshow</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cdots"><code class="calibre2">\dots</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Insertions">Insertions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cdQuote"><code class="calibre2">\dQuote</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cemail"><code class="calibre2">\email</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cemph"><code class="calibre2">\emph</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cenc"><code class="calibre2">\enc</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Insertions">Insertions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cenumerate"><code class="calibre2">\enumerate</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Lists-and-tables">Lists and tables</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cenv"><code class="calibre2">\env</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005ceqn"><code class="calibre2">\eqn</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Mathematics">Mathematics</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cexamples"><code class="calibre2">\examples</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cfigure"><code class="calibre2">\figure</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Figures">Figures</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cfile"><code class="calibre2">\file</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cformat"><code class="calibre2">\format</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-data-sets">Documenting data sets</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005chref"><code class="calibre2">\href</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cif"><code class="calibre2">\if</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Conditional-text">Conditional text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cifelse"><code class="calibre2">\ifelse</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Conditional-text">Conditional text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005citemize"><code class="calibre2">\itemize</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Lists-and-tables">Lists and tables</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005ckbd"><code class="calibre2">\kbd</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005ckeyword"><code class="calibre2">\keyword</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cldots"><code class="calibre2">\ldots</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Insertions">Insertions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005clink"><code class="calibre2">\link</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Cross_002dreferences">Cross-references</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cmethod"><code class="calibre2">\method</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cname"><code class="calibre2">\name</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cnewcommand"><code class="calibre2">\newcommand</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#User_002ddefined-macros">User-defined macros</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cnote"><code class="calibre2">\note</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005coption"><code class="calibre2">\option</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cout"><code class="calibre2">\out</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Conditional-text">Conditional text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cpackageAuthor"><code class="calibre2">\packageAuthor</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#User_002ddefined-macros">User-defined macros</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cpackageDescription"><code class="calibre2">\packageDescription</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#User_002ddefined-macros">User-defined macros</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cpackageDESCRIPTION"><code class="calibre2">\packageDESCRIPTION</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#User_002ddefined-macros">User-defined macros</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cpackageIndices"><code class="calibre2">\packageIndices</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#User_002ddefined-macros">User-defined macros</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cpackageMaintainer"><code class="calibre2">\packageMaintainer</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#User_002ddefined-macros">User-defined macros</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cpackageTitle"><code class="calibre2">\packageTitle</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#User_002ddefined-macros">User-defined macros</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cpkg"><code class="calibre2">\pkg</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cpreformatted"><code class="calibre2">\preformatted</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cR"><code class="calibre2">\R</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Insertions">Insertions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cRdOpts"><code class="calibre2">\RdOpts</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Dynamic-pages">Dynamic pages</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005creferences"><code class="calibre2">\references</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005crenewcommand"><code class="calibre2">\renewcommand</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#User_002ddefined-macros">User-defined macros</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cS3method"><code class="calibre2">\S3method</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005csamp"><code class="calibre2">\samp</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005csection"><code class="calibre2">\section</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Sectioning">Sectioning</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cseealso"><code class="calibre2">\seealso</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cSexpr"><code class="calibre2">\Sexpr</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Dynamic-pages">Dynamic pages</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005csource"><code class="calibre2">\source</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-data-sets">Documenting data sets</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005csQuote"><code class="calibre2">\sQuote</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005csspace"><code class="calibre2">\sspace</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#User_002ddefined-macros">User-defined macros</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cstrong"><code class="calibre2">\strong</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005ctabular"><code class="calibre2">\tabular</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Lists-and-tables">Lists and tables</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005ctitle"><code class="calibre2">\title</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005curl"><code class="calibre2">\url</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cusage"><code class="calibre2">\usage</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cvalue"><code class="calibre2">\value</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cvar"><code class="calibre2">\var</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005cverb"><code class="calibre2">\verb</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-A">A</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-allocVector"><code class="calibre2">allocVector</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Allocating-storage">Allocating storage</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-AUTHORS"><code class="calibre2">AUTHORS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Package-subdirectories">Package subdirectories</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-B">B</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-bessel_005fi"><code class="calibre2">bessel_i</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-bessel_005fi-1"><code class="calibre2">bessel_i</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-bessel_005fj"><code class="calibre2">bessel_j</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-bessel_005fj-1"><code class="calibre2">bessel_j</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-bessel_005fk"><code class="calibre2">bessel_k</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-bessel_005fk-1"><code class="calibre2">bessel_k</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-bessel_005fy"><code class="calibre2">bessel_y</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-bessel_005fy-1"><code class="calibre2">bessel_y</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-beta"><code class="calibre2">beta</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-beta-1"><code class="calibre2">beta</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-BLAS_005fLIBS"><code class="calibre2">BLAS_LIBS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Using-Makevars">Using Makevars</a>
+</p>
+<p>
+<a href="debugging.html#index-browser"><code class="calibre2">browser</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="debugging.html#Browsing">Browsing</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-C">C</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Calloc"><code class="calibre2">Calloc</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#User_002dcontrolled-memory">User-controlled memory</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-CAR"><code class="calibre2">CAR</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Calling-_002eExternal">Calling .External</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-CDR"><code class="calibre2">CDR</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Calling-_002eExternal">Calling .External</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-cgmin"><code class="calibre2">cgmin</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Optimization">Optimization</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-choose"><code class="calibre2">choose</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-choose-1"><code class="calibre2">choose</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-CITATION"><code class="calibre2">CITATION</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Package-subdirectories">Package subdirectories</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-CITATION-1"><code class="calibre2">CITATION</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Preparing-translations">Preparing translations</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-COPYRIGHTS"><code class="calibre2">COPYRIGHTS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#The-DESCRIPTION-file">The DESCRIPTION file</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-COPYRIGHTS-1"><code class="calibre2">COPYRIGHTS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Package-subdirectories">Package subdirectories</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-cospi"><code class="calibre2">cospi</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-cPsort"><code class="calibre2">cPsort</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-D">D</a>
+</p>
+<p>
+<a href="debugging.html#index-debug"><code class="calibre2">debug</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="debugging.html#Debugging-R-code">Debugging R code</a>
+</p>
+<p>
+<a href="debugging.html#index-debugger"><code class="calibre2">debugger</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="debugging.html#Debugging-R-code">Debugging R code</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-defineVar"><code class="calibre2">defineVar</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Finding-and-setting-variables">Finding and setting variables</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-digamma"><code class="calibre2">digamma</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-digamma-1"><code class="calibre2">digamma</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="debugging.html#index-dump_002eframes"><code class="calibre2">dump.frames</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="debugging.html#Debugging-R-code">Debugging R code</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-duplicate"><code class="calibre2">duplicate</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Named-objects-and-copying">Named objects and copying</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-dyn_002eload"><code class="calibre2">dyn.load</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#dyn_002eload-and-dyn_002eunload">dyn.load and dyn.unload</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-dyn_002eunload"><code class="calibre2">dyn.unload</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#dyn_002eload-and-dyn_002eunload">dyn.load and dyn.unload</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-E">E</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-expm1"><code class="calibre2">expm1</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-export"><code class="calibre2">export</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Specifying-imports-and-exports">Specifying imports and exports</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-exportClasses"><code class="calibre2">exportClasses</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Namespaces-with-S4-classes-and-methods">Namespaces with S4 classes and methods</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-exportClassPattern"><code class="calibre2">exportClassPattern</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Namespaces-with-S4-classes-and-methods">Namespaces with S4 classes and methods</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-exportMethods"><code class="calibre2">exportMethods</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Namespaces-with-S4-classes-and-methods">Namespaces with S4 classes and methods</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-exportPattern"><code class="calibre2">exportPattern</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Specifying-imports-and-exports">Specifying imports and exports</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-exportPattern-1"><code class="calibre2">exportPattern</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Namespaces-with-S4-classes-and-methods">Namespaces with S4 classes and methods</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-exp_005frand"><code class="calibre2">exp_rand</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Random-numbers">Random numbers</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-F">F</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-FALSE"><code class="calibre2">FALSE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-constants">Mathematical constants</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-findInterval"><code class="calibre2">findInterval</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-findInterval2_0028double_002a"><code class="calibre2">findInterval2(double*</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-findVar"><code class="calibre2">findVar</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Finding-and-setting-variables">Finding and setting variables</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-FLIBS"><code class="calibre2">FLIBS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Using-Makevars">Using Makevars</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-fmax2"><code class="calibre2">fmax2</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-fmin2"><code class="calibre2">fmin2</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-fprec"><code class="calibre2">fprec</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Free"><code class="calibre2">Free</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#User_002dcontrolled-memory">User-controlled memory</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-fround"><code class="calibre2">fround</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-fsign"><code class="calibre2">fsign</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-ftrunc"><code class="calibre2">ftrunc</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-G">G</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-gammafn"><code class="calibre2">gammafn</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-gammafn-1"><code class="calibre2">gammafn</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="debugging.html#index-gctorture"><code class="calibre2">gctorture</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="debugging.html#Using-gctorture">Using gctorture</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-getAttrib"><code class="calibre2">getAttrib</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Attributes">Attributes</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-getCharCE"><code class="calibre2">getCharCE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Character-encoding-issues">Character encoding issues</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-GetRNGstate"><code class="calibre2">GetRNGstate</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Random-numbers">Random numbers</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-I">I</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-imax2"><code class="calibre2">imax2</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-imin2"><code class="calibre2">imin2</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-import"><code class="calibre2">import</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Specifying-imports-and-exports">Specifying imports and exports</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-importClassesFrom"><code class="calibre2">importClassesFrom</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Namespaces-with-S4-classes-and-methods">Namespaces with S4 classes and methods</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-importFrom"><code class="calibre2">importFrom</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Specifying-imports-and-exports">Specifying imports and exports</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-importMethodsFrom"><code class="calibre2">importMethodsFrom</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Namespaces-with-S4-classes-and-methods">Namespaces with S4 classes and methods</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-install"><code class="calibre2">install</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Attributes">Attributes</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-iPsort"><code class="calibre2">iPsort</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-ISNA"><code class="calibre2">ISNA</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Missing-and-special-values">Missing and special values</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-ISNA-1"><code class="calibre2">ISNA</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Missing-and-IEEE-values">Missing and IEEE values</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-ISNAN"><code class="calibre2">ISNAN</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Missing-and-special-values">Missing and special values</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-ISNAN-1"><code class="calibre2">ISNAN</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Missing-and-IEEE-values">Missing and IEEE values</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-L">L</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-LAPACK_005fLIBS"><code class="calibre2">LAPACK_LIBS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Using-Makevars">Using Makevars</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-lbeta"><code class="calibre2">lbeta</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-lbeta-1"><code class="calibre2">lbeta</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-lbfgsb"><code class="calibre2">lbfgsb</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Optimization">Optimization</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-lchoose"><code class="calibre2">lchoose</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-lchoose-1"><code class="calibre2">lchoose</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-lgamma1p"><code class="calibre2">lgamma1p</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-lgammafn"><code class="calibre2">lgammafn</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-lgammafn-1"><code class="calibre2">lgammafn</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-library_002edynam"><code class="calibre2">library.dynam</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Package-subdirectories">Package subdirectories</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-library_002edynam-1"><code class="calibre2">library.dynam</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#dyn_002eload-and-dyn_002eunload">dyn.load and dyn.unload</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-log1p"><code class="calibre2">log1p</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-log1pexp"><code class="calibre2">log1pexp</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-log1pmx"><code class="calibre2">log1pmx</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-logspace_005fadd"><code class="calibre2">logspace_add</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-logspace_005fsub"><code class="calibre2">logspace_sub</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-logspace_005fsum"><code class="calibre2">logspace_sum</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-M">M</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-mkChar"><code class="calibre2">mkChar</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Handling-character-data">Handling character data</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-mkCharCE"><code class="calibre2">mkCharCE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Character-encoding-issues">Character encoding issues</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-mkCharLen"><code class="calibre2">mkCharLen</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Handling-character-data">Handling character data</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-mkCharLenCE"><code class="calibre2">mkCharLenCE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Character-encoding-issues">Character encoding issues</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-M_005fE"><code class="calibre2">M_E</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-constants">Mathematical constants</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-M_005fPI"><code class="calibre2">M_PI</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-constants">Mathematical constants</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-N">N</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-NA_005fREAL"><code class="calibre2">NA_REAL</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Missing-and-IEEE-values">Missing and IEEE values</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-NEWS_002eRd"><code class="calibre2">NEWS.Rd</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Package-subdirectories">Package subdirectories</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-nmmin"><code class="calibre2">nmmin</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Optimization">Optimization</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-norm_005frand"><code class="calibre2">norm_rand</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Random-numbers">Random numbers</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-O">O</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-OBJECTS"><code class="calibre2">OBJECTS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Using-Makevars">Using Makevars</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-OBJECTS-1"><code class="calibre2">OBJECTS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Creating-shared-objects">Creating shared objects</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-P">P</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-pentagamma"><code class="calibre2">pentagamma</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-pentagamma-1"><code class="calibre2">pentagamma</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-PKG_005fCFLAGS"><code class="calibre2">PKG_CFLAGS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Creating-shared-objects">Creating shared objects</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-PKG_005fCPPFLAGS"><code class="calibre2">PKG_CPPFLAGS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Creating-shared-objects">Creating shared objects</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-PKG_005fCXXFLAGS"><code class="calibre2">PKG_CXXFLAGS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Creating-shared-objects">Creating shared objects</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-PKG_005fFCFLAGS"><code class="calibre2">PKG_FCFLAGS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Creating-shared-objects">Creating shared objects</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-PKG_005fFFLAGS"><code class="calibre2">PKG_FFLAGS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Creating-shared-objects">Creating shared objects</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-PKG_005fLIBS"><code class="calibre2">PKG_LIBS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Creating-shared-objects">Creating shared objects</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-PKG_005fOBJCFLAGS"><code class="calibre2">PKG_OBJCFLAGS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Creating-shared-objects">Creating shared objects</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-PKG_005fOBJCXXFLAGS"><code class="calibre2">PKG_OBJCXXFLAGS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Creating-shared-objects">Creating shared objects</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-prompt"><code class="calibre2">prompt</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Rd-format">Rd format</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-PROTECT"><code class="calibre2">PROTECT</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Garbage-Collection">Garbage Collection</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-PROTECT_005fWITH_005fINDEX"><code class="calibre2">PROTECT_WITH_INDEX</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Garbage-Collection">Garbage Collection</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-psigamma"><code class="calibre2">psigamma</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-psigamma-1"><code class="calibre2">psigamma</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-PutRNGstate"><code class="calibre2">PutRNGstate</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Random-numbers">Random numbers</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-Q">Q</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-qsort3"><code class="calibre2">qsort3</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-qsort4"><code class="calibre2">qsort4</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-R">R</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-R-CMD-build"><code class="calibre2">R CMD build</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Building-package-tarballs">Building package tarballs</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-R-CMD-check"><code class="calibre2">R CMD check</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Checking-packages">Checking packages</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-R-CMD-config"><code class="calibre2">R CMD config</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Configure-and-cleanup">Configure and cleanup</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-R-CMD-Rd2pdf"><code class="calibre2">R CMD Rd2pdf</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Processing-documentation-files">Processing documentation files</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-R-CMD-Rdconv"><code class="calibre2">R CMD Rdconv</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Processing-documentation-files">Processing documentation files</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-R-CMD-SHLIB"><code class="calibre2">R CMD SHLIB</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Creating-shared-objects">Creating shared objects</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-R-CMD-Stangle"><code class="calibre2">R CMD Stangle</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Processing-documentation-files">Processing documentation files</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-R-CMD-Sweave"><code class="calibre2">R CMD Sweave</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Processing-documentation-files">Processing documentation files</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Rdqagi"><code class="calibre2">Rdqagi</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Integration">Integration</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Rdqags"><code class="calibre2">Rdqags</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Integration">Integration</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Realloc"><code class="calibre2">Realloc</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#User_002dcontrolled-memory">User-controlled memory</a>
+</p>
+<p>
+<a href="debugging.html#index-recover"><code class="calibre2">recover</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="debugging.html#Debugging-R-code">Debugging R code</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-reEnc"><code class="calibre2">reEnc</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Character-encoding-issues">Character encoding issues</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-REprintf"><code class="calibre2">REprintf</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Printing">Printing</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-REPROTECT"><code class="calibre2">REPROTECT</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Garbage-Collection">Garbage Collection</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-REvprintf"><code class="calibre2">REvprintf</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Printing">Printing</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-revsort"><code class="calibre2">revsort</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Riconv"><code class="calibre2">Riconv</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Re_002dencoding">Re-encoding</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Riconv_005fclose"><code class="calibre2">Riconv_close</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Re_002dencoding">Re-encoding</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Riconv_005fopen"><code class="calibre2">Riconv_open</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Re_002dencoding">Re-encoding</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Rprintf"><code class="calibre2">Rprintf</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Printing">Printing</a>
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#index-Rprof"><code class="calibre2">Rprof</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#Profiling-R-code-for-speed">Profiling R code for speed</a>
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#index-Rprof-1"><code class="calibre2">Rprof</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#Memory-statistics-from-Rprof">Memory statistics from Rprof</a>
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#index-Rprofmem"><code class="calibre2">Rprofmem</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#Tracking-memory-allocations">Tracking memory allocations</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-rPsort"><code class="calibre2">rPsort</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-rsort_005fwith_005findex"><code class="calibre2">rsort_with_index</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Rvprintf"><code class="calibre2">Rvprintf</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Printing">Printing</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005faddhistory"><code class="calibre2">R_addhistory</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005falloc"><code class="calibre2">R_alloc</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Transient-storage-allocation">Transient storage allocation</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005fallocLD"><code class="calibre2">R_allocLD</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Transient-storage-allocation">Transient storage allocation</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005fBusy"><code class="calibre2">R_Busy</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005fChooseFile"><code class="calibre2">R_ChooseFile</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005fCleanUp"><code class="calibre2">R_CleanUp</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005fClearErrConsole"><code class="calibre2">R_ClearErrConsole</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005fcsort"><code class="calibre2">R_csort</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005fdataentry"><code class="calibre2">R_dataentry</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005fdataviewer"><code class="calibre2">R_dataviewer</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005fEditFile"><code class="calibre2">R_EditFile</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005fEditFiles"><code class="calibre2">R_EditFiles</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005fExpandFileName"><code class="calibre2">R_ExpandFileName</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005fFINITE"><code class="calibre2">R_FINITE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Missing-and-IEEE-values">Missing and IEEE values</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005fFlushConsole"><code class="calibre2">R_FlushConsole</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-R_005fforceSymbols"><code class="calibre2">R_forceSymbols</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Registering-native-routines">Registering native routines</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-R_005fGetCCallable"><code class="calibre2">R_GetCCallable</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Linking-to-native-routines-in-other-packages">Linking to native routines in other packages</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-R_005fGetCurrentSrcref"><code class="calibre2">R_GetCurrentSrcref</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Accessing-source-references">Accessing source references</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-R_005fGetSrcFilename"><code class="calibre2">R_GetSrcFilename</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Accessing-source-references">Accessing source references</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005fINLINE"><code class="calibre2">R_INLINE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Inlining-C-functions">Inlining C functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005fIsNaN"><code class="calibre2">R_IsNaN</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Missing-and-IEEE-values">Missing and IEEE values</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005fisort"><code class="calibre2">R_isort</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-R_005fLIBRARY_005fDIR"><code class="calibre2">R_LIBRARY_DIR</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Configure-and-cleanup">Configure and cleanup</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005floadhistory"><code class="calibre2">R_loadhistory</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005fmax_005fcol"><code class="calibre2">R_max_col</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005fNegInf"><code class="calibre2">R_NegInf</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Missing-and-IEEE-values">Missing and IEEE values</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005forderVector"><code class="calibre2">R_orderVector</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005forderVector1"><code class="calibre2">R_orderVector1</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-R_005fPACKAGE_005fDIR"><code class="calibre2">R_PACKAGE_DIR</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Configure-and-cleanup">Configure and cleanup</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-R_005fPACKAGE_005fNAME"><code class="calibre2">R_PACKAGE_NAME</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Configure-and-cleanup">Configure and cleanup</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-R_005fParseVector"><code class="calibre2">R_ParseVector</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Parsing-R-code-from-C">Parsing R code from C</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005fPosInf"><code class="calibre2">R_PosInf</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Missing-and-IEEE-values">Missing and IEEE values</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005fpow"><code class="calibre2">R_pow</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005fpow_005fdi"><code class="calibre2">R_pow_di</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-R_005fPreserveObject"><code class="calibre2">R_PreserveObject</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Garbage-Collection">Garbage Collection</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005fqsort"><code class="calibre2">R_qsort</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005fqsort_005fI"><code class="calibre2">R_qsort_I</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005fqsort_005fint"><code class="calibre2">R_qsort_int</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005fqsort_005fint_005fI"><code class="calibre2">R_qsort_int_I</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005fReadConsole"><code class="calibre2">R_ReadConsole</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-R_005fRegisterCCallable"><code class="calibre2">R_RegisterCCallable</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Linking-to-native-routines-in-other-packages">Linking to native routines in other packages</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-R_005fregisterRoutines"><code class="calibre2">R_registerRoutines</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Registering-native-routines">Registering native routines</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-R_005fReleaseObject"><code class="calibre2">R_ReleaseObject</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Garbage-Collection">Garbage Collection</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005fResetConsole"><code class="calibre2">R_ResetConsole</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005frsort"><code class="calibre2">R_rsort</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005fsavehistory"><code class="calibre2">R_savehistory</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005fselectlist"><code class="calibre2">R_selectlist</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005fShowFiles"><code class="calibre2">R_ShowFiles</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005fShowMessage"><code class="calibre2">R_ShowMessage</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-R_005fSrcref"><code class="calibre2">R_Srcref</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Accessing-source-references">Accessing source references</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005fSuicide"><code class="calibre2">R_Suicide</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005ftmpnam"><code class="calibre2">R_tmpnam</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005ftmpnam2"><code class="calibre2">R_tmpnam2</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-R_005fuseDynamicSymbols"><code class="calibre2">R_useDynamicSymbols</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Registering-native-routines">Registering native routines</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-R_005fVersion"><code class="calibre2">R_Version</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Platform-and-version-information">Platform and version information</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005fWriteConsole"><code class="calibre2">R_WriteConsole</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#index-R_005fWriteConsoleEx"><code class="calibre2">R_WriteConsoleEx</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="linking-guis-and-other-front-ends-to-r.html#Setting-R-callbacks">Setting R callbacks</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-S">S</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-S3method"><code class="calibre2">S3method</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Registering-S3-methods">Registering S3 methods</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-SAFE_005fFFLAGS"><code class="calibre2">SAFE_FFLAGS</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Using-Makevars">Using Makevars</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-samin"><code class="calibre2">samin</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Optimization">Optimization</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-seed_005fin"><code class="calibre2">seed_in</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Random-numbers">Random numbers</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-seed_005fout"><code class="calibre2">seed_out</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Random-numbers">Random numbers</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-setAttrib"><code class="calibre2">setAttrib</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Attributes">Attributes</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-setVar"><code class="calibre2">setVar</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Finding-and-setting-variables">Finding and setting variables</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-sign"><code class="calibre2">sign</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-sinpi"><code class="calibre2">sinpi</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#index-summaryRprof"><code class="calibre2">summaryRprof</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#Memory-statistics-from-Rprof">Memory statistics from Rprof</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-system"><code class="calibre2">system</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-system_002etime"><code class="calibre2">system.time</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-system2"><code class="calibre2">system2</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-S_005falloc"><code class="calibre2">S_alloc</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Transient-storage-allocation">Transient storage allocation</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-S_005frealloc"><code class="calibre2">S_realloc</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Transient-storage-allocation">Transient storage allocation</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-T">T</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-tanpi"><code class="calibre2">tanpi</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-Utilities">Numerical Utilities</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-tetragamma"><code class="calibre2">tetragamma</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-tetragamma-1"><code class="calibre2">tetragamma</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="debugging.html#index-trace"><code class="calibre2">trace</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="debugging.html#Debugging-R-code">Debugging R code</a>
+</p>
+<p>
+<a href="debugging.html#index-traceback"><code class="calibre2">traceback</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="debugging.html#Debugging-R-code">Debugging R code</a>
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#index-tracemem"><code class="calibre2">tracemem</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#Tracing-copies-of-an-object">Tracing copies of an object</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-translateChar"><code class="calibre2">translateChar</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Character-encoding-issues">Character encoding issues</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-translateCharUTF8"><code class="calibre2">translateCharUTF8</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Character-encoding-issues">Character encoding issues</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-trigamma"><code class="calibre2">trigamma</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-trigamma-1"><code class="calibre2">trigamma</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-TRUE"><code class="calibre2">TRUE</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-constants">Mathematical constants</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-U">U</a>
+</p>
+<p>
+<a href="debugging.html#index-undebug"><code class="calibre2">undebug</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="debugging.html#Debugging-R-code">Debugging R code</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-unif_005frand"><code class="calibre2">unif_rand</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Random-numbers">Random numbers</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-UNPROTECT"><code class="calibre2">UNPROTECT</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Garbage-Collection">Garbage Collection</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-UNPROTECT_005fPTR"><code class="calibre2">UNPROTECT_PTR</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Garbage-Collection">Garbage Collection</a>
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#index-untracemem"><code class="calibre2">untracemem</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#Tracing-copies-of-an-object">Tracing copies of an object</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-useDynLib"><code class="calibre2">useDynLib</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#useDynLib">useDynLib</a>
+</p>
+<hr />
+<p>
+<a href="" id="Function-and-variable-index_vr_letter-V">V</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-vmaxget"><code class="calibre2">vmaxget</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Transient-storage-allocation">Transient storage allocation</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-vmaxset"><code class="calibre2">vmaxset</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Transient-storage-allocation">Transient storage allocation</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-vmmin"><code class="calibre2">vmmin</code></a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Optimization">Optimization</a>
+</p>
+<hr />
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="function-and-variable-index.html#Function-and-variable-index_vr_symbol-1" class="summary-letter"><strong>.</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_symbol-2" class="summary-letter"><strong>\</strong></a>  <br /> <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-A" class="summary-letter"><strong>A</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-C" class="summary-letter"><strong>C</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-D" class="summary-letter"><strong>D</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-E" class="summary-letter"><strong>E</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-G" class="summary-letter"><strong>G</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-I" class="summary-letter"><strong>I</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-L" class="summary-letter"><strong>L</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-M" class="summary-letter"><strong>M</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-N" class="summary-letter"><strong>N</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-O" class="summary-letter"><strong>O</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-Q" class="summary-letter"><strong>Q</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-R" class="summary-letter"><strong>R</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-S" class="summary-letter"><strong>S</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-T" class="summary-letter"><strong>T</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-U" class="summary-letter"><strong>U</strong></a>   <a href="function-and-variable-index.html#Function-and-variable-index_vr_letter-V" class="summary-letter"><strong>V</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>
+<a href="" id="Concept-index"></a> <a href="" id="Concept-index-1"></a>
+</p>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="linking-guis-and-other-front-ends-to-r.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="concept-index.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

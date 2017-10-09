@@ -1,0 +1,5 @@
+book_filename: "writing-r-extensions"
+language:
+  ui:
+    chapter_name: "Chapter "
+output_dir: "docs"

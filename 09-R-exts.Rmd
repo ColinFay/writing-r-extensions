@@ -1,0 +1,1686 @@
+#  System and foreign language interfaces
+<hr />
+<p><a href="" id="Operating-system-access"></a> <a href="" id="Operating-system-access-1"></a></p>
+<h3 id="operating-system-access" class="section">5.1 Operating system access</h3>
+<p><a href="" id="index-Operating-system-access"></a></p>
+<p>Access to operating system functions is <em>via</em> the R functions <code class="calibre2">system</code> and <code class="calibre2">system2</code>. <a href="" id="index-system"></a> <a href="" id="index-system2"></a> The details will differ by platform (see the on-line help), and about all that can safely be assumed is that the first argument will be a string <code class="calibre2">command</code> that will be passed for execution (not necessarily by a shell) and the second argument to <code class="calibre2">system</code> will be <code class="calibre2">internal</code> which if true will collect the output of the command into an R character vector.</p>
+<p>On POSIX-compliant OSes these commands pass a command-line to a shell: Windows is not POSIX-compliant and there is a separate function <code class="calibre2">shell</code> to do so.</p>
+<p>The function <code class="calibre2">system.time</code> <a href="" id="index-system_002etime"></a> is available for timing. Timing on child processes is only available on Unix-alikes, and may not be reliable there.</p>
+<hr />
+<p><a href="" id="Interface-functions-_002eC-and-_002eFortran"></a> <a href="" id="Interface-functions-_002eC-and-_002eFortran-1"></a></p>
+<h3 id="interface-functions-.c-and-.fortran" class="section">5.2 Interface functions <code class="calibre18">.C</code> and <code class="calibre18">.Fortran</code></h3>
+<p><a href="" id="index-Interfaces-to-compiled-code"></a> <a href="" id="index-_002eC"></a> <a href="" id="index-_002eFortran"></a></p>
+<p>These two functions provide an interface to compiled code that has been linked into R, either at build time or <em>via</em> <code class="calibre2">dyn.load</code> (see <a href="#dyn_002eload-and-dyn_002eunload">dyn.load and dyn.unload</a>). They are primarily intended for compiled C and FORTRAN 77 code respectively, but the <code class="calibre2">.C</code> function can be used with other languages which can generate C interfaces, for example C++ (see <a href="#Interfacing-C_002b_002b-code">Interfacing C++ code</a>).</p>
+<p>The first argument to each function is a character string specifying the symbol name as known<a href="concept-index.html#FOOT117" id="DOCF117"><sup>117</sup></a> to C or FORTRAN, that is the function or subroutine name. (That the symbol is loaded can be tested by, for example, <code class="calibre2">is.loaded(&quot;cg&quot;)</code>. Use the name you pass to <code class="calibre2">.C</code> or <code class="calibre2">.Fortran</code> rather than the translated symbol name.)</p>
+<p>There can be up to 65 further arguments giving R objects to be passed to compiled code. Normally these are copied before being passed in, and copied again to an R list object when the compiled code returns. If the arguments are given names, these are used as names for the components in the returned list object (but not passed to the compiled code).</p>
+<p>The following table gives the mapping between the modes of R atomic vectors and the types of arguments to a C function or FORTRAN subroutine.</p>
+<blockquote>
+<table>
+<thead>
+<tr class="header">
+<th align="left">R storage mode</th>
+<th align="left">C type</th>
+<th align="left">FORTRAN type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code class="calibre2">logical</code></td>
+<td align="left"><code class="calibre2">int *</code></td>
+<td align="left"><code class="calibre2">INTEGER</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code class="calibre2">integer</code></td>
+<td align="left"><code class="calibre2">int *</code></td>
+<td align="left"><code class="calibre2">INTEGER</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code class="calibre2">double</code></td>
+<td align="left"><code class="calibre2">double *</code></td>
+<td align="left"><code class="calibre2">DOUBLE PRECISION</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code class="calibre2">complex</code></td>
+<td align="left"><code class="calibre2">Rcomplex *</code></td>
+<td align="left"><code class="calibre2">DOUBLE COMPLEX</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code class="calibre2">character</code></td>
+<td align="left"><code class="calibre2">char **</code></td>
+<td align="left"><code class="calibre2">CHARACTER*255</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code class="calibre2">raw</code></td>
+<td align="left"><code class="calibre2">unsigned char *</code></td>
+<td align="left">none</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>Do please note the first two. On the 64-bit Unix/Linux/macOS platforms, <code class="calibre2">long</code> is 64-bit whereas <code class="calibre2">int</code> and <code class="calibre2">INTEGER</code> are 32-bit. Code ported from S-PLUS (which uses <code class="calibre2">long *</code> for <code class="calibre2">logical</code> and <code class="calibre2">integer</code>) will not work on all 64-bit platforms (although it may appear to work on some, including Windows). Note also that if your compiled code is a mixture of C functions and FORTRAN subprograms the argument types must match as given in the table above.</p>
+<p>C type <code class="calibre2">Rcomplex</code> is a structure with <code class="calibre2">double</code> members <code class="calibre2">r</code> and <code class="calibre2">i</code> defined in the header file R_ext/Complex.h included by R.h. (On most platforms this is stored in a way compatible with the C99 <code class="calibre2">double complex</code> type: however, it may not be possible to pass <code class="calibre2">Rcomplex</code> to a C99 function expecting a <code class="calibre2">double complex</code> argument. Nor need it be compatible with a C++ <code class="calibre2">complex</code> type. Moreover, the compatibility can depends on the optimization level set for the compiler.)</p>
+<p>Only a single character string can be passed to or from FORTRAN, and the success of this is compiler-dependent. Other R objects can be passed to <code class="calibre2">.C</code>, but it is much better to use one of the other interfaces.</p>
+<p>It is possible to pass numeric vectors of storage mode <code class="calibre2">double</code> to C as <code class="calibre2">float *</code> or to FORTRAN as <code class="calibre2">REAL</code> by setting the attribute <code class="calibre2">Csingle</code>, most conveniently by using the R functions <code class="calibre2">as.single</code>, <code class="calibre2">single</code> or <code class="calibre2">mode</code>. This is intended only to be used to aid interfacing existing C or FORTRAN code.</p>
+<p>Logical values are sent as <code class="calibre2">0</code> (<code class="calibre2">FALSE</code>), <code class="calibre2">1</code> (<code class="calibre2">TRUE</code>) or <code class="calibre2">INT_MIN = -2147483648</code> (<code class="calibre2">NA</code>, but only if <code class="calibre2">NAOK</code> is true), and the compiled code should return one of these three values. (Non-zero values other than <code class="calibre2">INT_MIN</code> are mapped to <code class="calibre2">TRUE</code>.)</p>
+<p>Unless formal argument <code class="calibre2">NAOK</code> is true, all the other arguments are checked for missing values <code class="calibre2">NA</code> and for the IEEE special values <code class="calibre2">NaN</code>, <code class="calibre2">Inf</code> and <code class="calibre2">-Inf</code>, and the presence of any of these generates an error. If it is true, these values are passed unchecked.</p>
+<p>Argument <code class="calibre2">PACKAGE</code> confines the search for the symbol name to a specific shared object (or use <code class="calibre2">&quot;base&quot;</code> for code compiled into R). Its use is highly desirable, as there is no way to avoid two package writers using the same symbol name, and such name clashes are normally sufficient to cause R to crash. (If it is not present and the call is from the body of a function defined in a package namespace, the shared object loaded by the first (if any) <code class="calibre2">useDynLib</code> directive will be used.</p>
+<p>Note that the compiled code should not return anything except through its arguments: C functions should be of type <code class="calibre2">void</code> and FORTRAN subprograms should be subroutines.</p>
+<p>To fix ideas, let us consider a very simple example which convolves two finite sequences. (This is hard to do fast in interpreted R code, but easy in C code.) We could do this using <code class="calibre2">.C</code> by</p>
+<div class="example">
+<pre class="example1"><code>void convolve(double *a, int *na, double *b, int *nb, double *ab)
+{
+    int nab = *na + *nb - 1;
+
+    for(int i = 0; i &lt; nab; i++)
+        ab[i] = 0.0;
+    for(int i = 0; i &lt; *na; i++)
+        for(int j = 0; j &lt; *nb; j++)
+            ab[i + j] += a[i] * b[j];
+}</code></pre>
+</div>
+<p>called from R by</p>
+<div class="example">
+<pre class="example1"><code>conv &lt;- function(a, b)
+    .C(&quot;convolve&quot;,
+       as.double(a),
+       as.integer(length(a)),
+       as.double(b),
+       as.integer(length(b)),
+       ab = double(length(a) + length(b) - 1))$ab</code></pre>
+</div>
+<p>Note that we take care to coerce all the arguments to the correct R storage mode before calling <code class="calibre2">.C</code>; mistakes in matching the types can lead to wrong results or hard-to-catch errors.</p>
+<p>Special care is needed in handling <code class="calibre2">character</code> vector arguments in C (or C++). On entry the contents of the elements are duplicated and assigned to the elements of a <code class="calibre2">char **</code> array, and on exit the elements of the C array are copied to create new elements of a character vector. This means that the contents of the character strings of the <code class="calibre2">char **</code> array can be changed, including to <code class="calibre2">&#92;0</code> to shorten the string, but the strings cannot be lengthened. It is possible<a href="concept-index.html#FOOT118" id="DOCF118"><sup>118</sup></a> to allocate a new string <em>via</em> <code class="calibre2">R_alloc</code> and replace an entry in the <code class="calibre2">char **</code> array by the new string. However, when character vectors are used other than in a read-only way, the <code class="calibre2">.Call</code> interface is much to be preferred.</p>
+<p>Passing character strings to FORTRAN code needs even more care, and should be avoided where possible. Only the first element of the character vector is passed in, as a fixed-length (255) character array. Up to 255 characters are passed back to a length-one character vector. How well this works (or even if it works at all) depends on the C and FORTRAN compilers on each platform (including on their options). Often what is being passed to FORTRAN is one of a small set of possible values (a factor in R terms) which could alternatively be passed as an integer code: similarly FORTRAN code that wants to generate diagnostic messages can pass an integer code to a C or R wrapper which will convert it to a character string.</p>
+<p>It is possible to pass some R objects other than atomic vectors via <code class="calibre2">.C</code>, but this is only supported for historical compatibility: use the <code class="calibre2">.Call</code> or <code class="calibre2">.External</code> interfaces for such objects. Any C/C++ code that includes Rinternals.h should be called via <code class="calibre2">.Call</code> or <code class="calibre2">.External</code>.</p>
+<hr />
+<p><a href="" id="dyn_002eload-and-dyn_002eunload"></a> <a href="" id="dyn_002eload-and-dyn_002eunload-1"></a></p>
+<h3 id="dyn.load-and-dyn.unload" class="section">5.3 <code class="calibre18">dyn.load</code> and <code class="calibre18">dyn.unload</code></h3>
+<p><a href="" id="index-Dynamic-loading"></a> <a href="" id="index-dyn_002eload"></a> <a href="" id="index-dyn_002eunload"></a></p>
+<p>Compiled code to be used with R is loaded as a shared object (Unix-alikes including macOS, see <a href="#Creating-shared-objects">Creating shared objects</a> for more information) or DLL (Windows).</p>
+<p>The shared object/DLL is loaded by <code class="calibre2">dyn.load</code> and unloaded by <code class="calibre2">dyn.unload</code>. Unloading is not normally necessary, but it is needed to allow the DLL to be re-built on some platforms, including Windows.</p>
+<p>The first argument to both functions is a character string giving the path to the object. Programmers should not assume a specific file extension for the object/DLL (such as .so) but use a construction like</p>
+<div class="example">
+<pre class="example1"><code>file.path(path1, path2, paste0(&quot;mylib&quot;, .Platform$dynlib.ext))</code></pre>
+</div>
+<p>for platform independence. On Unix-alike systems the path supplied to <code class="calibre2">dyn.load</code> can be an absolute path, one relative to the current directory or, if it starts with ‘~’, relative to the user’s home directory.</p>
+<p>Loading is most often done automatically based on the <code class="calibre2">useDynLib()</code> declaration in the NAMESPACE file, but may be done explicitly <em>via</em> a call to <code class="calibre2">library.dynam</code>. <a href="" id="index-library_002edynam-1"></a> This has the form</p>
+<div class="example">
+<pre class="example1"><code>library.dynam(&quot;libname&quot;, package, lib.loc)</code></pre>
+</div>
+<p>where <code class="calibre2">libname</code> is the object/DLL name <em>with the extension omitted</em>. Note that the first argument, <code class="calibre2">chname</code>, should <strong>not</strong> be <code class="calibre2">package</code> since this will not work if the package is installed under another name.</p>
+<p>Under some Unix-alike systems there is a choice of how the symbols are resolved when the object is loaded, governed by the arguments <code class="calibre2">local</code> and <code class="calibre2">now</code>. Only use these if really necessary: in particular using <code class="calibre2">now=FALSE</code> and then calling an unresolved symbol will terminate R unceremoniously.</p>
+<p>R provides a way of executing some code automatically when a object/DLL is either loaded or unloaded. This can be used, for example, to register native routines with R’s dynamic symbol mechanism, initialize some data in the native code, or initialize a third party library. On loading a DLL, R will look for a routine within that DLL named <code class="calibre2">R_init_lib</code> where lib is the name of the DLL file with the extension removed. For example, in the command</p>
+<div class="example">
+<pre class="example1"><code>library.dynam(&quot;mylib&quot;, package, lib.loc)</code></pre>
+</div>
+<p>R looks for the symbol named <code class="calibre2">R_init_mylib</code>. Similarly, when unloading the object, R looks for a routine named <code class="calibre2">R_unload_lib</code>, e.g., <code class="calibre2">R_unload_mylib</code>. In either case, if the routine is present, R will invoke it and pass it a single argument describing the DLL. This is a value of type <code class="calibre2">DllInfo</code> which is defined in the Rdynload.h file in the R_ext directory.</p>
+<p>Note that there are some implicit restrictions on this mechanism as the basename of the DLL needs to be both a valid file name and valid as part of a C entry point (e.g. it cannot contain ‘.’): for portable code it is best to confine DLL names to be ASCII alphanumeric plus underscore. If entry point <code class="calibre2">R_init_lib</code> is not found it is also looked for with ‘.’ replaced by ‘_’.</p>
+<p>The following example shows templates for the initialization and unload routines for the <code class="calibre2">mylib</code> DLL.</p>
+<blockquote>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left"><div class="example">
+<pre class="example1"><code>#include &lt;R_ext/Rdynload.h&gt;
+
+void
+R_init_mylib(DllInfo *info)
+{
+  /* Register routines,
+     allocate resources. */
+}
+
+void
+R_unload_mylib(DllInfo *info)
+{
+  /* Release resources. */
+}</code></pre>
+</div></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>If a shared object/DLL is loaded more than once the most recent version is used.<a href="concept-index.html#FOOT119" id="DOCF119"><sup>119</sup></a> More generally, if the same symbol name appears in several shared objects, the most recently loaded occurrence is used. The <code class="calibre2">PACKAGE</code> argument and registration (see the next section) provide good ways to avoid any ambiguity in which occurrence is meant.</p>
+<p>On Unix-alikes the paths used to resolve dynamically linked dependent libraries are fixed (for security reasons) when the process is launched, so <code class="calibre2">dyn.load</code> will only look for such libraries in the locations set by the R shell script (<em>via</em> etc/ldpaths) and in the OS-specific defaults.</p>
+<p>Windows allows more control (and less security) over where dependent DLLs are looked for. On all versions this includes the <code class="calibre2">PATH</code> environment variable, but with lowest priority: note that it does not include the directory from which the DLL was loaded. It is possible to add a single path with quite high priority <em>via</em> the <code class="calibre2">DLLpath</code> argument to <code class="calibre2">dyn.load</code>. This is (by default) used by <code class="calibre2">library.dynam</code> to include the package’s libs/i386 or libs/x64 directory in the DLL search path.</p>
+<hr />
+<p><a href="" id="Registering-native-routines"></a> <a href="" id="Registering-native-routines-1"></a></p>
+<h3 id="registering-native-routines" class="section">5.4 Registering native routines</h3>
+<p><a href="" id="index-Registering-native-routines"></a></p>
+<p>By ‘native’ routine, we mean an entry point in compiled code.</p>
+<p>In calls to <code class="calibre2">.C</code>, <code class="calibre2">.Call</code>, <code class="calibre2">.Fortran</code> and <code class="calibre2">.External</code>, R must locate the specified native routine by looking in the appropriate shared object/DLL. By default, R uses the operating-system-specific dynamic loader to lookup the symbol in all<a href="concept-index.html#FOOT120" id="DOCF120"><sup>120</sup></a> loaded DLLs and the R executable or libraries it is linked to. Alternatively, the author of the DLL can explicitly register routines with R and use a single, platform-independent mechanism for finding the routines in the DLL. One can use this registration mechanism to provide additional information about a routine, including the number and type of the arguments, and also make it available to R programmers under a different name.</p>
+<p>Registering routines has two main advantages: it provides a faster<a href="concept-index.html#FOOT121" id="DOCF121"><sup>121</sup></a> way to find the address of the entry point <em>via</em> tables stored in the DLL at compilation time, and it provides a run-time check that the entry point is called with the right number of arguments and, optionally, the right argument types.</p>
+<p><a href="" id="index-R_005fregisterRoutines"></a></p>
+<p>To register routines with R, one calls the C routine <code class="calibre2">R_registerRoutines</code>. This is typically done when the DLL is first loaded within the initialization routine <code class="calibre2">R_init_dll name</code> described in <a href="#dyn_002eload-and-dyn_002eunload">dyn.load and dyn.unload</a>. <code class="calibre2">R_registerRoutines</code> takes 5 arguments. The first is the <code class="calibre2">DllInfo</code> object passed by R to the initialization routine. This is where R stores the information about the methods. The remaining 4 arguments are arrays describing the routines for each of the 4 different interfaces: <code class="calibre2">.C</code>, <code class="calibre2">.Call</code>, <code class="calibre2">.Fortran</code> and <code class="calibre2">.External</code>. Each argument is a <code class="calibre2">NULL</code>-terminated array of the element types given in the following table:</p>
+<blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left"><code class="calibre2">.C</code></td>
+<td align="left"><code class="calibre2">R_CMethodDef</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code class="calibre2">.Call</code></td>
+<td align="left"><code class="calibre2">R_CallMethodDef</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code class="calibre2">.Fortran</code></td>
+<td align="left"><code class="calibre2">R_FortranMethodDef</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code class="calibre2">.External</code></td>
+<td align="left"><code class="calibre2">R_ExternalMethodDef</code></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>Currently, the <code class="calibre2">R_ExternalMethodDef</code> type is the same as <code class="calibre2">R_CallMethodDef</code> type and contains fields for the name of the routine by which it can be accessed in R, a pointer to the actual native symbol (i.e., the routine itself), and the number of arguments the routine expects to be passed from R. For example, if we had a routine named <code class="calibre2">myCall</code> defined as</p>
+<div class="example">
+<pre class="example1"><code>SEXP myCall(SEXP a, SEXP b, SEXP c);</code></pre>
+</div>
+<p>we would describe this as</p>
+<div class="example">
+<pre class="example1"><code>static const R_CallMethodDef callMethods[]  = {
+  {&quot;myCall&quot;, (DL_FUNC) &amp;myCall, 3},
+  {NULL, NULL, 0}
+};</code></pre>
+</div>
+<p>along with any other routines for the <code class="calibre2">.Call</code> interface. For routines with a variable number of arguments invoked <em>via</em> the <code class="calibre2">.External</code> interface, one specifies <code class="calibre2">-1</code> for the number of arguments which tells R not to check the actual number passed.</p>
+<p>Routines for use with the <code class="calibre2">.C</code> and <code class="calibre2">.Fortran</code> interfaces are described with similar data structures, but which have two additional fields for describing the type and “style” of each argument. Each of these can be omitted. However, if specified, each should be an array with the same number of elements as the number of parameters for the routine. The types array should contain the <code class="calibre2">SEXP</code> types describing the expected type of the argument. (Technically, the elements of the types array are of type <code class="calibre2">R_NativePrimitiveArgType</code> which is just an unsigned integer.) The R types and corresponding type identifiers are provided in the following table:</p>
+<blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left"><code class="calibre2">numeric</code></td>
+<td align="left"><code class="calibre2">REALSXP</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code class="calibre2">integer</code></td>
+<td align="left"><code class="calibre2">INTSXP</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code class="calibre2">logical</code></td>
+<td align="left"><code class="calibre2">LGLSXP</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code class="calibre2">single</code></td>
+<td align="left"><code class="calibre2">SINGLESXP</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code class="calibre2">character</code></td>
+<td align="left"><code class="calibre2">STRSXP</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code class="calibre2">list</code></td>
+<td align="left"><code class="calibre2">VECSXP</code></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>Consider a C routine, <code class="calibre2">myC</code>, declared as</p>
+<div class="example">
+<pre class="example1"><code>void myC(double *x, int *n, char **names, int *status);</code></pre>
+</div>
+<p>We would register it as</p>
+<div class="example">
+<pre class="example1"><code>static R_NativePrimitiveArgType myC_t[] = {
+    REALSXP, INTSXP, STRSXP, LGLSXP
+};
+
+static const R_CMethodDef cMethods[] = {
+   {&quot;myC&quot;, (DL_FUNC) &amp;myC, 4, myC_t},
+   {NULL, NULL, 0, NULL}
+};</code></pre>
+</div>
+<p>Note that <code class="calibre2">.Fortran</code> entry points are mapped to lowercase, so registration should use lowercase only.</p>
+<p>Having created the arrays describing each routine, the last step is to actually register them with R. We do this by calling <code class="calibre2">R_registerRoutines</code>. For example, if we have the descriptions above for the routines accessed by the <code class="calibre2">.C</code> and <code class="calibre2">.Call</code> we would use the following code:</p>
+<div class="example">
+<pre class="example1"><code>void
+R_init_myLib(DllInfo *info)
+{
+   R_registerRoutines(info, cMethods, callMethods, NULL, NULL);
+}</code></pre>
+</div>
+<p>This routine will be invoked when R loads the shared object/DLL named <code class="calibre2">myLib</code>. The last two arguments in the call to <code class="calibre2">R_registerRoutines</code> are for the routines accessed by <code class="calibre2">.Fortran</code> and <code class="calibre2">.External</code> interfaces. In our example, these are given as <code class="calibre2">NULL</code> since we have no routines of these types.</p>
+<p>When R unloads a shared object/DLL, its registrations are removed. There is no other facility for unregistering a symbol.</p>
+<p>Examples of registering routines can be found in the different packages in the R source tree (e.g., <strong>stats</strong> and <strong>graphics</strong>). Also, there is a brief, high-level introduction in <em>R News</em> (volume 1/3, September 2001, pages 20–23, <a href="https://www.r-project.org/doc/Rnews/Rnews_2001-3.pdf" class="uri">https://www.r-project.org/doc/Rnews/Rnews_2001-3.pdf</a>).</p>
+<p>Once routines are registered, they can be referred to as R objects if they this is arranged in the <code class="calibre2">useDynLib</code> call in the package’s NAMESPACE file (see <a href="writing-package-vignettes.html#useDynLib">useDynLib</a>). So for example the <strong>stats</strong> package has</p>
+<div class="example">
+<pre class="example1"><code># Refer to all C/Fortran routines by their name prefixed by C_
+useDynLib(stats, .registration = TRUE, .fixes = &quot;C_&quot;)</code></pre>
+</div>
+<p>in its NAMESPACE file, and then <code class="calibre2">ansari.test</code>’s default methods can contain</p>
+<div class="example">
+<pre class="example1"><code>        pansari &lt;- function(q, m, n)
+            .C(C_pansari, as.integer(length(q)), p = as.double(q),
+                as.integer(m), as.integer(n))$p</code></pre>
+</div>
+<p>This avoids the overhead of looking up an entry point each time it is used, and ensures that the entry point in the package is the one used (without a <code class="calibre2">PACKAGE = &quot;pkg&quot;</code> argument).</p>
+<p><code class="calibre2">R_init_</code> routines are often of the form</p>
+<div class="example">
+<pre class="example1"><code>void attribute_visible R_init_mypkg(DllInfo *dll)
+{
+    R_registerRoutines(dll, CEntries, CallEntries, FortEntries,
+                       ExternalEntries);
+    R_useDynamicSymbols(dll, FALSE);
+    R_forceSymbols(dll, TRUE);
+...
+}</code></pre>
+</div>
+<p><a href="" id="index-R_005fuseDynamicSymbols"></a> <a href="" id="index-R_005fforceSymbols"></a> The <code class="calibre2">R_useDynamicSymbols</code> call says the DLL is not to be searched for entry points specified by character strings so <code class="calibre2">.C</code> etc calls will only find registered symbols: the <code class="calibre2">R_forceSymbols</code> call only allows <code class="calibre2">.C</code> etc calls which specify entry points by R objects such as <code class="calibre2">C_pansari</code> (and not by character strings). Each provides some protection against accidentally finding your entry points when people supply a character string without a package, and avoids slowing down such searches. Routine <code class="calibre2">R_forceSymbols</code> is available from R 3.0.0, so packages using it should have a dependency on at least ‘R (&gt;= 3.0.0)’. (For the visibility attribute see <a href="the-r-api-entry-points-for-c-code.html.html#Controlling-visibility">Controlling visibility</a>.)</p>
+<p>In more detail, if a package <code class="calibre2">mypkg</code> contains entry points <code class="calibre2">reg</code> and <code class="calibre2">unreg</code> and the first is registered as a 0-argument <code class="calibre2">.Call</code> routine, we could use (from code in the package)</p>
+<div class="example">
+<pre class="example1"><code>.Call(&quot;reg&quot;)
+.Call(&quot;unreg&quot;)</code></pre>
+</div>
+<p>Without or with registration, these will both work. If <code class="calibre2">R_init_mypkg</code> calls <code class="calibre2">R_useDynamicSymbols(dll, FALSE)</code>, only the first will work. If in addition to registration the NAMESPACE file contains</p>
+<div class="example">
+<pre class="example1"><code>useDynLib(mypkg, .registration = TRUE, .fixes = &quot;C_&quot;)</code></pre>
+</div>
+<p>then we can call <code class="calibre2">.Call(C_reg)</code>. Finally, if <code class="calibre2">R_init_mypkg</code> also calls <code class="calibre2">R_forceSymbols(dll, TRUE)</code>, only <code class="calibre2">.Call(C_reg)</code> will work (and not <code class="calibre2">.Call(&quot;reg&quot;)</code>). This is usually what we want: it ensures that all of our own <code class="calibre2">.Call</code> calls go directly to the intended code in our package and that no one else accidentally finds our entry points. (Should someone need to call our code from outside the package, for example for debugging, they can use <code class="calibre2">.Call(mypkg:::C_reg)</code>.)</p>
+<hr />
+<p><a href="" id="Speed-considerations"></a> <a href="" id="Speed-considerations-1"></a></p>
+<h4 id="speed-considerations" class="subsection">5.4.1 Speed considerations</h4>
+<p>Sometimes registering native routines or using a <code class="calibre2">PACKAGE</code> argument can make a large difference. The results can depend quite markedly on the OS (and even if it is 32- or 64-bit), on the version of R and what else is loaded into R at the time.</p>
+<p>To fix ideas, first consider <code class="calibre2">x84_64</code> OS 10.7 and R 2.15.2. A simple <code class="calibre2">.Call</code> function might be</p>
+<div class="example">
+<pre class="example1"><code>foo &lt;- function(x) .Call(&quot;foo&quot;, x)</code></pre>
+</div>
+<p>with C code</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;Rinternals.h&gt;
+
+SEXP foo(SEXP x)
+{
+    return x;
+}</code></pre>
+</div>
+<p>If we compile with by <code class="calibre2">R CMD SHLIB foo.c</code>, load the code by <code class="calibre2">dyn.load(&quot;foo.so&quot;)</code> and run <code class="calibre2">foo(pi)</code> it took around 22 microseconds (us). Specifying the DLL by</p>
+<div class="example">
+<pre class="example1"><code>foo2 &lt;- function(x) .Call(&quot;foo&quot;, x, PACKAGE = &quot;foo&quot;)</code></pre>
+</div>
+<p>reduced the time to 1.7 us.</p>
+<p>Now consider making these functions part of a package whose NAMESPACE file uses <code class="calibre2">useDynlib(foo)</code>. This immediately reduces the running time as <code class="calibre2">&quot;foo&quot;</code> will be preferentially looked for foo.dll. Without specifying <code class="calibre2">PACKAGE</code> it took about 5 us (it needs to fathom out the appropriate DLL each time it is invoked but it does not need to search all DLLs), and with the <code class="calibre2">PACKAGE</code> argument it is again about 1.7 us.</p>
+<p>Next suppose the package has registered the native routine <code class="calibre2">foo</code>. Then <code class="calibre2">foo()</code> still has to find the appropriate DLL but can get to the entry point in the DLL faster, in about 4.2 us. And <code class="calibre2">foo2()</code> now takes about 1 us. If we register the symbols in the NAMESPACE file and use</p>
+<div class="example">
+<pre class="example1"><code>foo3 &lt;- function(x) .Call(C_foo, x)</code></pre>
+</div>
+<p>then the address for the native routine is looked up just once when the package is loaded, and <code class="calibre2">foo3(pi)</code> takes about 0.8 us.</p>
+<p>Versions using <code class="calibre2">.C()</code> rather than <code class="calibre2">.Call()</code> took about 0.2 us longer.</p>
+<p>These are all quite small differences, but C routines are not uncommonly invoked millions of times for run times of a few microseconds each, and those doing such things may wish to be aware of the differences.</p>
+<p>On Linux and Solaris there is a smaller overhead in looking up symbols.</p>
+<p>Symbol lookup on Windows used to be far slower, so R maintains a small cache. If the cache is currently empty enough that the symbol can be stored in the cache then the performance is similar to Linux and Solaris: if not it may be slower. R’s own code always uses registered symbols and so these never contribute to the cache: however many other packages do rely on symbol lookup.</p>
+<p>In more recent versions of R all the standard packages register native symbols and do not allow symbol search, so in a new session <code class="calibre2">foo()</code> can only look in foo.so and may be as fast as <code class="calibre2">foo2()</code>. This will no longer apply when many contributed packages are loaded, and generally those last loaded are searched first. For example, consider R 3.3.2 on x86_64 Linux. In an empty R session, both <code class="calibre2">foo()</code> and <code class="calibre2">foo2()</code> took about 0.75 us; however after packages <a href="https://CRAN.R-project.org/package=igraph"><strong>igraph</strong></a> and <a href="https://CRAN.R-project.org/package=spatstat"><strong>spatstat</strong></a> had been loaded (which loaded another 12 DLLs), <code class="calibre2">foo()</code> took 3.6 us but <code class="calibre2">foo2()</code> still took about 0.80 us. Using registration in a package reduced this to 0.55 us and <code class="calibre2">foo3()</code> took 0.40 us, times which were unchanged when further packages were loaded.</p>
+<hr />
+<p><a href="" id="Converting-a-package-to-use-registration"></a> <a href="" id="Example_003a-converting-a-package-to-use-registration"></a></p>
+<h4 id="example-converting-a-package-to-use-registration" class="subsection">5.4.2 Example: converting a package to use registration</h4>
+<p>The <strong>splines</strong> package was converted to use symbol registration in 2001, but we can use it as an example<a href="concept-index.html#FOOT122" id="DOCF122"><sup>122</sup></a> of what needs to be done for a small package.</p>
+<ul>
+<li><p>Find the relevant entry points. This is somewhat OS-specific, but something like the following should be possible at the OS command-line</p>
+<div class="example">
+<pre class="example1"><code>nm -g /path/to/splines.so | grep &quot; T &quot;
+000000000002670 T _spline_basis
+000000000001ec0 T _spline_value</code></pre>
+</div>
+<p>This indicates that there are two relevant entry points. (They may or may not have a leading underscore, as here. Fortran entry points will have a trailing underscore.) Check in the R code that they are called by the package and how: in this case they are used by <code class="calibre2">.Call</code>.</p>
+<p>Alternatively, examine the package’s R code for all <code class="calibre2">.C</code>, <code class="calibre2">.Fortran</code>, <code class="calibre2">.Call</code> and <code class="calibre2">.External</code> calls.</p></li>
+<li><p>Construct the registration table. First write skeleton registration code, conventionally in file src/init.c (or at the end of the only C source file in the package: if included in a C++ file the ‘R_init’ function would need to be declared <code class="calibre2">extern &quot;C&quot;</code>):</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;stdlib.h&gt; // for NULL
+#include &lt;R_ext/Rdynload.h&gt;
+
+#define CALLDEF(name, n)  {#name, (DL_FUNC) &amp;name, n}
+
+static const R_CallMethodDef R_CallDef[] = {
+   CALLDEF(spline_basis, ?),
+   CALLDEF(spline_value, ?),
+   {NULL, NULL, 0}
+};
+
+void R_init_splines(DllInfo *dll)
+{
+    R_registerRoutines(dll, NULL, R_CallDef, NULL, NULL);
+}</code></pre>
+</div>
+<p>and then replace the <code class="calibre2">?</code> in the skeleton with the actual numbers of arguments. You will need to add declarations (also known as ‘prototypes’) of the functions unless appending to the only C source file. Some packages will already have these in a header file, or you could create one and include it in init.c, for example splines.h containing</p>
+<div class="example">
+<pre class="smallexample"><code>#include &lt;Rinternals.h&gt; // for SEXP
+extern SEXP spline_basis(SEXP knots, SEXP order, SEXP xvals, SEXP derivs);
+extern SEXP spline_value(SEXP knots, SEXP coeff, SEXP order, SEXP x, SEXP deriv);</code></pre>
+</div>
+<p>Tools are available to extract declarations, at least for C and C++ code: see the help file for <code class="calibre2">package_native_routine_registration_skeleton</code> in package <strong>tools</strong>. Here we could have used</p>
+<div class="example">
+<pre class="example1"><code>cproto -I/path/to/R/include -e splines.c</code></pre>
+</div>
+<p>For examples of registering other types of calls, see packages <strong>graphics</strong> and <strong>stats</strong>. In particular, when registering entry points for <code class="calibre2">.Fortran</code> one needs declarations as if called from C, such as</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;R_ext/RS.h&gt;
+void F77_NAME(supsmu)(int *n, double *x, double *y,
+                      double *w, int *iper, double *span, double *alpha,
+                      double *smo, double *sc, double *edf);</code></pre>
+</div>
+<p>One can get away with inaccurate argument lists in the declarations: it is easy to specify the arguments for <code class="calibre2">.Call</code> (all <code class="calibre2">SEXP</code>) and <code class="calibre2">.External</code> (one <code class="calibre2">SEXP</code>) and as the arguments for <code class="calibre2">.C</code> and <code class="calibre2">.Fortran</code> are all pointers, specifying them as <code class="calibre2">void *</code> suffices. (For most platforms one can omit all the arguments.)</p></li>
+<li>(Optional but highly recommended.) Restrict <code class="calibre2">.Call</code> etc to using the symbols you chose to register by editing src/init.c to contain
+<div class="example">
+<pre class="example1"><code>void R_init_splines(DllInfo *dll)
+{
+    R_registerRoutines(dll, NULL, R_CallDef, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}</code></pre>
+</div></li>
+</ul>
+<p>A skeleton for the steps so far can be made using <code class="calibre2">package_native_routine_registration_skeleton</code> in package <strong>tools</strong>. This will optionally create declarations based on the usage in the R code.</p>
+<p>The remaining steps are optional but recommended.</p>
+<ul>
+<li>Edit the NAMESPACE file to create R objects for the registered symbols:
+<div class="example">
+<pre class="example1"><code>useDynLib(splines, .registration = TRUE, .fixes = &quot;C_&quot;)</code></pre>
+</div></li>
+<li><p>Find all the relevant calls in the R code and edit them to use the R objects. This entailed changing the lines</p>
+<div class="example">
+<pre class="smallexample"><code>temp &lt;- .Call(&quot;spline_basis&quot;, knots, ord, x, derivs, PACKAGE = &quot;splines&quot;)
+y[accept] &lt;- .Call(&quot;spline_value&quot;, knots, coeff, ord, x[accept], deriv, PACKAGE = &quot;splines&quot;)
+y = .Call(&quot;spline_value&quot;, knots, coef(object), ord, x, deriv, PACKAGE = &quot;splines&quot;)</code></pre>
+</div>
+<p>to</p>
+<div class="example">
+<pre class="smallexample"><code>temp &lt;- .Call(C_spline_basis, knots, ord, x, derivs)
+y[accept] &lt;- .Call(C_spline_value, knots, coeff, ord, x[accept], deriv)
+y = .Call(C_spline_value, knots, coef(object), ord, x, deriv)</code></pre>
+</div>
+<p>Check that there is no <code class="calibre2">exportPattern</code> directive which unintentionally exports the newly created R objects.</p></li>
+<li>Restrict <code class="calibre2">.Call</code> to using the R symbols by editing src/init.c to contain
+<div class="example">
+<pre class="example1"><code>void R_init_splines(DllInfo *dll)
+{
+    R_registerRoutines(dll, NULL, R_CallDef, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+    R_forceSymbols(dll, TRUE);
+}</code></pre>
+</div></li>
+<li><p>Consider visibility. On some OSes we can hide entry points from the loader, which precludes any possible name clashes and calling them accidentally (usually with incorrect arguments and crashing the R process). If we repeat the first step we now see</p>
+<div class="example">
+<pre class="example1"><code>nm -g /path/to/splines.so | grep &quot; T &quot;
+000000000002e00 T _R_init_splines
+0000000000025e0 T _spline_basis
+000000000001e20 T _spline_value</code></pre>
+</div>
+<p>If there were any entry points not intended to be used by the package we should try to avoid exporting them, for example by making them <code class="calibre2">static</code>. Now the two relevant entry points are only accessed <em>via</em> the registration table, we can hide them. There are two ways to do so on some Unix-alikes. We can hide individual entry points <em>via</em></p>
+<div class="example">
+<pre class="example1"><code>#include &lt;R_ext/Visibility.h&gt;
+
+SEXP attribute_hidden
+spline_basis(SEXP knots, SEXP order, SEXP xvals, SEXP derivs)
+…
+
+SEXP attribute_hidden
+spline_value(SEXP knots, SEXP coeff, SEXP order, SEXP x, SEXP deriv)
+…</code></pre>
+</div>
+<p>Alternatively, we can change the default visibility for all C symbols by including</p>
+<div class="example">
+<pre class="example1"><code>PKG_CFLAGS = $(C_VISIBILITY)</code></pre>
+</div>
+<p>in src/Makevars, and then we need to allow registration by declaring <code class="calibre2">R_init_splines</code> to be visible:</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;R_ext/Visibility.h&gt;
+
+void attribute_visible
+R_init_splines(DllInfo *dll)
+…</code></pre>
+</div>
+<p>See <a href="the-r-api-entry-points-for-c-code.html.html#Controlling-visibility">Controlling visibility</a> for more details, including using Fortran code and ways to restrict visibility on Windows.</p></li>
+<li><p>We end up with a file src/init.c containing</p>
+<blockquote>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left"><div class="example">
+<pre class="example1"><code>#include &lt;stdlib.h&gt;
+#include &lt;R_ext/Rdynload.h&gt;
+#include &lt;R_ext/Visibility.h&gt;  // optional
+
+#include &quot;splines.h&quot;
+
+#define CALLDEF(name, n)  {#name, (DL_FUNC) &amp;name, n}
+
+static const R_CallMethodDef R_CallDef[] = {
+    CALLDEF(spline_basis, 4),
+    CALLDEF(spline_value, 5),
+    {NULL, NULL, 0}
+};
+
+void
+attribute_visible  // optional
+R_init_splines(DllInfo *dll)
+{
+    R_registerRoutines(dll, NULL, R_CallDef, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+    R_forceSymbols(dll, TRUE);
+}</code></pre>
+</div></td>
+</tr>
+</tbody>
+</table>
+</blockquote></li>
+</ul>
+<hr />
+<p><a href="" id="Linking-to-native-routines-in-other-packages"></a> <a href="" id="Linking-to-native-routines-in-other-packages-1"></a></p>
+<h4 id="linking-to-native-routines-in-other-packages" class="subsection">5.4.3 Linking to native routines in other packages</h4>
+<p>In addition to registering C routines to be called by R, it can at times be useful for one package to make some of its C routines available to be called by C code in another package. The interface consists of two routines declared in header R_ext/Rdynload.h as</p>
+<p><a href="" id="index-R_005fRegisterCCallable"></a> <a href="" id="index-R_005fGetCCallable"></a></p>
+<div class="example">
+<pre class="example1"><code>void R_RegisterCCallable(const char *package, const char *name,
+                         DL_FUNC fptr);
+DL_FUNC R_GetCCallable(const char *package, const char *name);</code></pre>
+</div>
+<p>A package <strong>packA</strong> that wants to make a C routine <code class="calibre2">myCfun</code> available to C code in other packages would include the call</p>
+<div class="example">
+<pre class="example1"><code>R_RegisterCCallable(&quot;packA&quot;, &quot;myCfun&quot;, myCfun);</code></pre>
+</div>
+<p>in its initialization function <code class="calibre2">R_init_packA</code>. A package <strong>packB</strong> that wants to use this routine would retrieve the function pointer with a call of the form</p>
+<div class="example">
+<pre class="example1"><code>p_myCfun = R_GetCCallable(&quot;packA&quot;, &quot;myCfun&quot;);</code></pre>
+</div>
+<p>The author of <strong>packB</strong> is responsible for ensuring that <code class="calibre2">p_myCfun</code> has an appropriate declaration. In the future R may provide some automated tools to simplify exporting larger numbers of routines.</p>
+<p>A package that wishes to make use of header files in other packages needs to declare them as a comma-separated list in the field ‘LinkingTo’ in the DESCRIPTION file. This then arranges that the include directories in the installed linked-to packages are added to the include paths for C and C++ code.</p>
+<p>It must specify<a href="concept-index.html#FOOT123" id="DOCF123"><sup>123</sup></a> ‘Imports’ or ‘Depends’ of those packages, for they have to be loaded<a href="concept-index.html#FOOT124" id="DOCF124"><sup>124</sup></a> prior to this one (so the path to their compiled code has been registered).</p>
+<p>CRAN examples of the use of this mechanism include <a href="https://CRAN.R-project.org/package=coxme"><strong>coxme</strong></a> linking to <a href="https://CRAN.R-project.org/package=bdsmatrix"><strong>bdsmatrix</strong></a> and <a href="https://CRAN.R-project.org/package=xts"><strong>xts</strong></a> linking to <a href="https://CRAN.R-project.org/package=zoo"><strong>zoo</strong></a></p>
+<hr />
+<p><a href="" id="Creating-shared-objects"></a> <a href="" id="Creating-shared-objects-1"></a></p>
+<h3 id="creating-shared-objects" class="section">5.5 Creating shared objects</h3>
+<p><a href="" id="index-Creating-shared-objects"></a> <a href="" id="index-R-CMD-SHLIB"></a></p>
+<p>Shared objects for loading into R can be created using <code class="calibre2">R CMD SHLIB</code>. This accepts as arguments a list of files which must be object files (with extension .o) or sources for C, C++, FORTRAN 77, Fortran 9x, Objective C or Objective C++ (with extensions .c, .cc or .cpp, .f, .f90 or .f95, .m, and .mm or .M, respectively), or commands to be passed to the linker. See R CMD SHLIB --help (or the R help for <code class="calibre2">SHLIB</code>) for usage information.</p>
+<p>If compiling the source files does not work “out of the box”, you can specify additional flags by setting some of the variables <a href="" id="index-PKG_005fCPPFLAGS"></a> <code class="calibre2">PKG_CPPFLAGS</code> (for the C preprocessor, typically ‘-I’ flags), <a href="" id="index-PKG_005fCFLAGS"></a> <a href="" id="index-PKG_005fCXXFLAGS"></a> <a href="" id="index-PKG_005fFFLAGS"></a> <a href="" id="index-PKG_005fFCFLAGS"></a> <a href="" id="index-PKG_005fOBJCFLAGS"></a> <a href="" id="index-PKG_005fOBJCXXFLAGS"></a> <code class="calibre2">PKG_CFLAGS</code>, <code class="calibre2">PKG_CXXFLAGS</code>, <code class="calibre2">PKG_FFLAGS</code>, <code class="calibre2">PKG_FCFLAGS</code>, <code class="calibre2">PKG_OBJCFLAGS</code>, and <code class="calibre2">PKG_OBJCXXFLAGS</code> (for the C, C++, FORTRAN 77, Fortran 9x, Objective C, and Objective C++ compilers, respectively) in the file Makevars in the compilation directory (or, of course, create the object files directly from the command line). <a href="" id="index-PKG_005fLIBS"></a> Similarly, variable <code class="calibre2">PKG_LIBS</code> in Makevars can be used for additional ‘-l’ and ‘-L’ flags to be passed to the linker when building the shared object. (Supplying linker commands as arguments to <code class="calibre2">R CMD SHLIB</code> will take precedence over <code class="calibre2">PKG_LIBS</code> in Makevars.)</p>
+<p><a href="" id="index-OBJECTS-1"></a></p>
+<p>It is possible to arrange to include compiled code from other languages by setting the macro ‘OBJECTS’ in file Makevars, together with suitable rules to make the objects.</p>
+<p>Flags which are already set (for example in file etcR_ARCH/Makeconf) can be overridden by the environment variable <code class="calibre2">MAKEFLAGS</code> (at least for systems using a POSIX-compliant <code class="calibre2">make</code>), as in (Bourne shell syntax)</p>
+<div class="example">
+<pre class="example1"><code>MAKEFLAGS=&quot;CFLAGS=-O3&quot; R CMD SHLIB *.c</code></pre>
+</div>
+<p>It is also possible to set such variables in personal Makevars files, which are read after the local Makevars and the system makefiles or in a site-wide Makevars.site file.</p>
+<p>Note that as <code class="calibre2">R CMD SHLIB</code> uses Make, it will not remake a shared object just because the flags have changed, and if test.c and test.f both exist in the current directory</p>
+<div class="example">
+<pre class="example1"><code>R CMD SHLIB test.f</code></pre>
+</div>
+<p>will compile test.c!</p>
+<p>If the src subdirectory of an add-on package contains source code with one of the extensions listed above or a file Makevars but <strong>not</strong> a file Makefile, <code class="calibre2">R CMD INSTALL</code> creates a shared object (for loading into R through <code class="calibre2">useDynlib</code> in the NAMESPACE, or in the <code class="calibre2">.onLoad</code> function of the package) using the <code class="calibre2">R CMD SHLIB</code> mechanism. If file Makevars exists it is read first, then the system makefile and then any personal Makevars files.</p>
+<p>If the src subdirectory of package contains a file Makefile, this is used by <code class="calibre2">R CMD INSTALL</code> in place of the <code class="calibre2">R CMD SHLIB</code> mechanism. <code class="calibre2">make</code> is called with makefiles R_HOME/etcR_ARCH/Makeconf, src/Makefile and any personal Makevars files (in that order). The first target found in src/Makefile is used.</p>
+<p>It is better to make use of a Makevars file rather than a Makefile: the latter should be needed only exceptionally.</p>
+<p>Under Windows the same commands work, but Makevars.win will be used in preference to Makevars, and only src/Makefile.win will be used by <code class="calibre2">R CMD INSTALL</code> with src/Makefile being ignored. For past experiences of building DLLs with a variety of compilers, see file ‘README.packages’ and <a href="http://www.stats.uwo.ca/faculty/murdoch/software/compilingDLLs/" class="uri">http://www.stats.uwo.ca/faculty/murdoch/software/compilingDLLs/</a> . Under Windows you can supply an exports definitions file called dllname-win.def: otherwise all entry points in objects (but not libraries) supplied to <code class="calibre2">R CMD SHLIB</code> will be exported from the DLL. An example is stats-win.def for the <strong>stats</strong> package: a CRAN example in package <a href="https://CRAN.R-project.org/package=fastICA"><strong>fastICA</strong></a>.</p>
+<p>If you feel tempted to read the source code and subvert these mechanisms, please resist. Far too much developer time has been wasted in chasing down errors caused by failures to follow this documentation, and even more by package authors demanding explanations as to why their packages no longer work. In particular, undocumented environment or <code class="calibre2">make</code> variables are not for use by package writers and are subject to change without notice.</p>
+<hr />
+<p><a href="" id="Interfacing-C_002b_002b-code"></a> <a href="" id="Interfacing-C_002b_002b-code-1"></a></p>
+<h3 id="interfacing-c-code" class="section">5.6 Interfacing C++ code</h3>
+<p><a href="" id="index-Interfacing-C_002b_002b-code"></a> <a href="" id="index-C_002b_002b-code_002c-interfacing"></a></p>
+<p>Suppose we have the following hypothetical C++ library, consisting of the two files X.h and X.cpp, and implementing the two classes <code class="calibre2">X</code> and <code class="calibre2">Y</code> which we want to use in R.</p>
+<blockquote>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left"><div class="example">
+<pre class="example1"><code>// X.h
+
+class X {
+public: X (); ~X ();
+};
+
+class Y {
+public: Y (); ~Y ();
+};</code></pre>
+</div></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<blockquote>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left"><div class="example">
+<pre class="example1"><code>// X.cpp
+
+#include &lt;R.h&gt;
+#include &quot;X.h&quot;
+
+static Y y;
+
+X::X()  { REprintf(&quot;constructor X&#92;n&quot;); }
+X::~X() { REprintf(&quot;destructor X&#92;n&quot;);  }
+Y::Y()  { REprintf(&quot;constructor Y&#92;n&quot;); }
+Y::~Y() { REprintf(&quot;destructor Y&#92;n&quot;);  }</code></pre>
+</div></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>To use with R, the only thing we have to do is writing a wrapper function and ensuring that the function is enclosed in</p>
+<div class="example">
+<pre class="example1"><code>extern &quot;C&quot; {
+
+}</code></pre>
+</div>
+<p>For example,</p>
+<blockquote>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left"><div class="example">
+<pre class="example1"><code>// X_main.cpp:
+
+#include &quot;X.h&quot;
+
+extern &quot;C&quot; {
+
+void X_main () {
+  X x;
+}
+
+} // extern &quot;C&quot;</code></pre>
+</div></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>Compiling and linking should be done with the C++ compiler-linker (rather than the C compiler-linker or the linker itself); otherwise, the C++ initialization code (and hence the constructor of the static variable <code class="calibre2">Y</code>) are not called. On a properly configured system, one can simply use</p>
+<div class="example">
+<pre class="example1"><code>R CMD SHLIB X.cpp X_main.cpp</code></pre>
+</div>
+<p>to create the shared object, typically X.so (the file name extension may be different on your platform). Now starting R yields</p>
+<div class="example">
+<pre class="example1"><code>R version 2.14.1 Patched (2012-01-16 r58124)
+Copyright (C) 2012 The R Foundation for Statistical Computing
+...
+Type    &quot;q()&quot; to quit R.</code></pre>
+<pre class="example1"><code></code></pre>
+<pre class="example1"><code>R&gt; dyn.load(paste(&quot;X&quot;, .Platform$dynlib.ext, sep = &quot;&quot;))
+constructor Y
+R&gt; .C(&quot;X_main&quot;)
+constructor X
+destructor X
+list()
+R&gt; q()
+Save workspace image? [y/n/c]: y
+destructor Y</code></pre>
+</div>
+<p>The R for Windows FAQ (rw-FAQ) contains details of how to compile this example under Windows.</p>
+<p>Earlier versions of this example used C++ iostreams: this is best avoided. There is no guarantee that the output will appear in the R console, and indeed it will not on the R for Windows console. Use R code or the C entry points (see <a href="the-r-api-entry-points-for-c-code.html.html#Printing">Printing</a>) for all I/O if at all possible. Examples have been seen where merely loading a DLL that contained calls to C++ I/O upset R’s own C I/O (for example by resetting buffers on open files).</p>
+<p>Most R header files can be included within C++ programs but they should <strong>not</strong> be included within an <code class="calibre2">extern &quot;C&quot;</code> block (as they include system headers<a href="concept-index.html#FOOT125" id="DOCF125"><sup>125</sup></a>). The inclusion of system headers in C++ changed in R 3.3.0<a href="concept-index.html#FOOT126" id="DOCF126"><sup>126</sup></a>, so if you care about earlier versions of R please check your package there.</p>
+<p>Legacy header S.h cannot be used with C++.</p>
+<p><a href="" id="External-C_002b_002b-code"></a></p>
+<h4 id="external-c-code" class="subsection">5.6.1 External C++ code</h4>
+<p>Quite a lot of external C++ software is header-only (e.g. most of the Boost ‘libraries’ including all those supplied by package <a href="https://CRAN.R-project.org/package=BH"><strong>BH</strong></a>, and most of Armadillo as supplied by package <a href="https://CRAN.R-project.org/package=RcppArmadillo"><strong>RcppArmadillo</strong></a>) and so is compiled when an R package which uses it is installed. This causes few problems.</p>
+<p>A small number of external libraries used in R packages have a C++ interface to a library of compiled code, e.g. packages <a href="https://CRAN.R-project.org/package=rgdal"><strong>rgdal</strong></a> and <a href="https://CRAN.R-project.org/package=rjags"><strong>rjags</strong></a>. This raises many more problems! The C++ interface uses name-mangling and the ABI<a href="concept-index.html#FOOT127" id="DOCF127"><sup>127</sup></a> may depend on the compiler, version and even C++ defines<a href="concept-index.html#FOOT128" id="DOCF128"><sup>128</sup></a>, so requires the package C++ code to be compiled in exactly the same way as the library (and what that was is often undocumented). Examples include use of <code class="calibre2">g++</code> <em>vs</em> <code class="calibre2">clang++</code> or Solaris’ <code class="calibre2">CC</code>, and the two ABIs available for C++11 in <code class="calibre2">g++</code> with different defaults for GCC 4.9 and 5.x in some Linux distributions.</p>
+<p>Even fewer external libraries use C++ internally but present a C interface, such as <a href="https://CRAN.R-project.org/package=rgeos"><strong>rgeos</strong></a>. These require the C++ runtime library to be linked into the package’s shared object/DLL, and this is best done by including a dummy C++ file in the package sources.</p>
+<p>There is a recent trend to link to the C++ interfaces offered by C software such as <strong>hdf5</strong>, <strong>pcre</strong> and <strong>ImageMagick</strong>. Their C interfaces are much preferred for portability (and can be used from C++ code). Also, the C++ interfaces are often optional in the software build or packaged separately and so users installing from package sources are far less likely to already have them installed.</p>
+<hr />
+<p><a href="" id="Fortran-I_002fO"></a> <a href="" id="Fortran-I_002fO-1"></a></p>
+<h3 id="fortran-io" class="section">5.7 Fortran I/O</h3>
+<p>We have already warned against the use of C++ iostreams not least because output is not guaranteed to appear on the R console, and this warning applies equally to Fortran (77 or 9x) output to units <code class="calibre2">*</code> and <code class="calibre2">6</code>. See <a href="the-r-api-entry-points-for-c-code.html.html#Printing-from-FORTRAN">Printing from FORTRAN</a>, which describes workarounds.</p>
+<p>In the past most Fortran compilers implemented I/O on top of the C I/O system and so the two interworked successfully. This was true of <code class="calibre2">g77</code>, but it is less true of <code class="calibre2">gfortran</code> as used in <code class="calibre2">gcc</code> 4 and later. In particular, any package that makes use of Fortran I/O will when compiled on Windows interfere with C I/O: when the Fortran I/O is initialized (typically when the package is loaded) the C <code class="calibre2">stdout</code> and <code class="calibre2">stderr</code> are switched to LF line endings. (Function <code class="calibre2">init</code> in file src/modules/lapack/init_win.c shows how to mitigate this.)</p>
+<hr />
+<p><a href="" id="Linking-to-other-packages"></a> <a href="" id="Linking-to-other-packages-1"></a></p>
+<h3 id="linking-to-other-packages" class="section">5.8 Linking to other packages</h3>
+<p>It is not in general possible to link a DLL in package <strong>packA</strong> to a DLL provided by package <strong>packB</strong> (for the security reasons mentioned in <a href="#dyn_002eload-and-dyn_002eunload">dyn.load and dyn.unload</a>, and also because some platforms distinguish between shared objects and dynamic libraries), but it is on Windows.</p>
+<p>Note that there can be tricky versioning issues here, as package <strong>packB</strong> could be re-installed after package <strong>packA</strong> — it is desirable that the API provided by package <strong>packB</strong> remains backwards-compatible.</p>
+<p>Shipping a static library in package <strong>packB</strong> for other packages to link to avoids most of the difficulties.</p>
+<hr />
+<p><a href="" id="Unix_002dalikes"></a> <a href="" id="Unix_002dalikes-1"></a></p>
+<h4 id="unix-alikes" class="subsection">5.8.1 Unix-alikes</h4>
+<p>It is possible to link a shared object in package <strong>packA</strong> to a library provided by package <strong>packB</strong> under limited circumstances on a Unix-alike OS. There are severe portability issues, so this is not recommended for a distributed package.</p>
+<p>This is easiest if <strong>packB</strong> provides a static library packB/lib/libpackB.a. (Note using directory lib rather than libs is conventional, and architecture-specific sub-directories may be needed and are assumed in the sample code below. The code in the static library will need to be compiled with <code class="calibre2">PIC</code> flags on platforms where it matters.) Then as the code from package <strong>packB</strong> is incorporated when package <strong>packA</strong> is installed, we only need to find the static library at install time for package <strong>packA</strong>. The only issue is to find package <strong>packB</strong>, and for that we can ask R by something like (long lines broken for display here)</p>
+<div class="example">
+<pre class="example1"><code>PKGB_PATH=‘echo ’library(packB);
+  cat(system.file(&quot;lib&quot;,  package=&quot;packB&quot;, mustWork=TRUE))&#39; &#92;
+ | &quot;${R_HOME}/bin/R&quot; --vanilla --slave`
+PKG_LIBS=&quot;$(PKGB_PATH)$(R_ARCH)/libpackB.a&quot;</code></pre>
+</div>
+<p>For a dynamic library packB/lib/libpackB.so (packB/lib/libpackB.dylib on macOS: note that you cannot link to a shared object, .so, on that platform) we could use</p>
+<div class="example">
+<pre class="example1"><code>PKGB_PATH=‘echo ’library(packB);
+  cat(system.file(&quot;lib&quot;, package=&quot;packB&quot;, mustWork=TRUE))&#39; &#92;
+ | &quot;${R_HOME}/bin/R&quot; --vanilla --slave`
+PKG_LIBS=-L&quot;$(PKGB_PATH)$(R_ARCH)&quot; -lpackB</code></pre>
+</div>
+<p>This will work for installation, but very likely not when package <code class="calibre2">packB</code> is loaded, as the path to package <strong>packB</strong>’s lib directory is not in the <code class="calibre2">ld.so</code><a href="concept-index.html#FOOT129" id="DOCF129"><sup>129</sup></a> search path. You can arrange to put it there <strong>before</strong> R is launched by setting (on some platforms) <code class="calibre2">LD_RUN_PATH</code> or <code class="calibre2">LD_LIBRARY_PATH</code> or adding to the <code class="calibre2">ld.so</code> cache (see <code class="calibre2">man ldconfig</code>). On platforms that support it, the path to the directory containing the dynamic library can be hardcoded at install time (which assumes that the location of package <strong>packB</strong> will not be changed nor the package updated to a changed API). On systems with the <code class="calibre2">gcc</code> or <code class="calibre2">clang</code> and the GNU linker (e.g. Linux) and some others this can be done by e.g.</p>
+<div class="example">
+<pre class="example1"><code>PKGB_PATH=‘echo ’library(packB);
+  cat(system.file(&quot;lib&quot;, package=&quot;packB&quot;, mustWork=TRUE)))&#39; &#92;
+ | &quot;${R_HOME}/bin/R&quot; --vanilla --slave`
+PKG_LIBS=-L&quot;$(PKGB_PATH)$(R_ARCH)&quot; -Wl,-rpath,&quot;$(PKGB_PATH)$(R_ARCH)&quot; -lpackB</code></pre>
+</div>
+<p>Some other systems (e.g. Solaris with its native linker) use -Rdir rather than -rpath,dir (and this is accepted by the compiler as well as the linker).</p>
+<p>It may be possible to figure out what is required semi-automatically from the result of <code class="calibre2">R CMD libtool --config</code> (look for ‘hardcode’).</p>
+<p>Making headers provided by package <strong>packB</strong> available to the code to be compiled in package <strong>packA</strong> can be done by the <code class="calibre2">LinkingTo</code> mechanism (see <a href="#Registering-native-routines">Registering native routines</a>).</p>
+<hr />
+<p><a href="" id="Windows"></a> <a href="" id="Windows-1"></a></p>
+<h4 id="windows" class="subsection">5.8.2 Windows</h4>
+<p>Suppose package <strong>packA</strong> wants to make use of compiled code provided by <strong>packB</strong> in DLL packB/libs/exB.dll, possibly the package’s DLL packB/libs/packB.dll. (This can be extended to linking to more than one package in a similar way.) There are three issues to be addressed:</p>
+<ul>
+<li><p>Making headers provided by package <strong>packB</strong> available to the code to be compiled in package <strong>packA</strong>.</p>
+<p>This is done by the <code class="calibre2">LinkingTo</code> mechanism (see <a href="#Registering-native-routines">Registering native routines</a>).</p></li>
+<li><p>preparing <code class="calibre2">packA.dll</code> to link to packB/libs/exB.dll.</p>
+<p>This needs an entry in Makevars.win of the form</p>
+<div class="example">
+<pre class="example1"><code>PKG_LIBS= -L&lt;something&gt; -lexB</code></pre>
+</div>
+<p>and one possibility is that <code class="calibre2">&lt;something&gt;</code> is the path to the installed pkgB/libs directory. To find that we need to ask R where it is by something like</p>
+<div class="example">
+<pre class="example1"><code>PKGB_PATH=‘echo ’library(packB);
+  cat(system.file(&quot;libs&quot;, package=&quot;packB&quot;, mustWork=TRUE))&#39; &#92;
+ | rterm --vanilla --slave`
+PKG_LIBS= -L&quot;$(PKGB_PATH)$(R_ARCH)&quot; -lexB</code></pre>
+</div>
+<p>Another possibility is to use an import library, shipping with package <strong>packA</strong> an exports file exB.def. Then Makevars.win could contain</p>
+<div class="example">
+<pre class="example1"><code>PKG_LIBS= -L. -lexB
+
+all: $(SHLIB) before
+
+before: libexB.dll.a
+libexB.dll.a: exB.def</code></pre>
+</div>
+<p>and then installing package <strong>packA</strong> will make and use the import library for exB.dll. (One way to prepare the exports file is to use pexports.exe.)</p></li>
+<li><p>loading packA.dll which depends on exB.dll.</p>
+<p>If <code class="calibre2">exB.dll</code> was used by package <strong>packB</strong> (because it is in fact packB.dll or packB.dll depends on it) and <strong>packB</strong> has been loaded before <strong>packA</strong>, then nothing more needs to be done as exB.dll will already be loaded into the R executable. (This is the most common scenario.)</p>
+<p>More generally, we can use the <code class="calibre2">DLLpath</code> argument to <code class="calibre2">library.dynam</code> to ensure that <code class="calibre2">exB.dll</code> is found, for example by setting</p>
+<div class="example">
+<pre class="example1"><code>library.dynam(&quot;packA&quot;, pkg, lib,
+              DLLpath = system.file(&quot;libs&quot;, package=&quot;packB&quot;))</code></pre>
+</div>
+<p>Note that <code class="calibre2">DLLpath</code> can only set one path, and so for linking to two or more packages you would need to resort to setting environment variable <code class="calibre2">PATH</code>.</p></li>
+</ul>
+<hr />
+<p><a href="" id="Handling-R-objects-in-C"></a> <a href="" id="Handling-R-objects-in-C-1"></a></p>
+<h3 id="handling-r-objects-in-c" class="section">5.9 Handling R objects in C</h3>
+<p><a href="" id="index-Handling-R-objects-in-C"></a></p>
+<p>Using C code to speed up the execution of an R function is often very fruitful. Traditionally this has been done <em>via</em> the <code class="calibre2">.C</code> function in R. However, if a user wants to write C code using internal R data structures, then that can be done using the <code class="calibre2">.Call</code> and <code class="calibre2">.External</code> functions. The syntax for the calling function in R in each case is similar to that of <code class="calibre2">.C</code>, but the two functions have different C interfaces. Generally the <code class="calibre2">.Call</code> interface is simpler to use, but <code class="calibre2">.External</code> is a little more general. <a href="" id="index-_002eCall"></a> <a href="" id="index-_002eExternal"></a></p>
+<p>A call to <code class="calibre2">.Call</code> is very similar to <code class="calibre2">.C</code>, for example</p>
+<div class="example">
+<pre class="example1"><code>.Call(&quot;convolve2&quot;, a, b)</code></pre>
+</div>
+<p>The first argument should be a character string giving a C symbol name of code that has already been loaded into R. Up to 65 R objects can passed as arguments. The C side of the interface is</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;R.h&gt;
+#include &lt;Rinternals.h&gt;
+
+SEXP convolve2(SEXP a, SEXP b)
+ ...</code></pre>
+</div>
+<p>A call to <code class="calibre2">.External</code> is almost identical</p>
+<div class="example">
+<pre class="example1"><code>.External(&quot;convolveE&quot;, a, b)</code></pre>
+</div>
+<p>but the C side of the interface is different, having only one argument</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;R.h&gt;
+#include &lt;Rinternals.h&gt;
+
+SEXP convolveE(SEXP args)
+ ...</code></pre>
+</div>
+<p>Here <code class="calibre2">args</code> is a <code class="calibre2">LISTSXP</code>, a Lisp-style pairlist from which the arguments can be extracted.</p>
+<p>In each case the R objects are available for manipulation <em>via</em> a set of functions and macros defined in the header file Rinternals.h or some S-compatibility macros<a href="concept-index.html#FOOT130" id="DOCF130"><sup>130</sup></a> defined in Rdefines.h. See <a href="#Interface-functions-_002eCall-and-_002eExternal">Interface functions .Call and .External</a> for details on <code class="calibre2">.Call</code> and <code class="calibre2">.External</code>.</p>
+<p>Before you decide to use <code class="calibre2">.Call</code> or <code class="calibre2">.External</code>, you should look at other alternatives. First, consider working in interpreted R code; if this is fast enough, this is normally the best option. You should also see if using <code class="calibre2">.C</code> is enough. If the task to be performed in C is simple enough involving only atomic vectors and requiring no call to R, <code class="calibre2">.C</code> suffices. A great deal of useful code was written using just <code class="calibre2">.C</code> before <code class="calibre2">.Call</code> and <code class="calibre2">.External</code> were available. These interfaces allow much more control, but they also impose much greater responsibilities so need to be used with care. Neither <code class="calibre2">.Call</code> nor <code class="calibre2">.External</code> copy their arguments: you should treat arguments you receive through these interfaces as read-only.</p>
+<p>To handle R objects from within C code we use the macros and functions that have been used to implement the core parts of R. A public<a href="concept-index.html#FOOT131" id="DOCF131"><sup>131</sup></a> subset of these is defined in the header file Rinternals.h in the directory R_INCLUDE_DIR (default R_HOME/include) that should be available on any R installation.</p>
+<p>A substantial amount of R, including the standard packages, is implemented using the functions and macros described here, so the R source code provides a rich source of examples and “how to do it”: do make use of the source code for inspirational examples.</p>
+<p>It is necessary to know something about how R objects are handled in C code. All the R objects you will deal with will be handled with the type <em>SEXP</em><a href="concept-index.html#FOOT132" id="DOCF132"><sup>132</sup></a>, which is a pointer to a structure with typedef <code class="calibre2">SEXPREC</code>. Think of this structure as a <em>variant type</em> that can handle all the usual types of R objects, that is vectors of various modes, functions, environments, language objects and so on. The details are given later in this section and in <a href="./R-ints.html#R-Internal-Structures">R Internal Structures</a> in R Internals, but for most purposes the programmer does not need to know them. Think rather of a model such as that used by Visual Basic, in which R objects are handed around in C code (as they are in interpreted R code) as the variant type, and the appropriate part is extracted for, for example, numerical calculations, only when it is needed. As in interpreted R code, much use is made of coercion to force the variant object to the right type.</p>
+<hr />
+<p><a href="" id="Garbage-Collection"></a> <a href="" id="Handling-the-effects-of-garbage-collection"></a></p>
+<h4 id="handling-the-effects-of-garbage-collection" class="subsection">5.9.1 Handling the effects of garbage collection</h4>
+<p><a href="" id="index-Garbage-collection"></a> <a href="" id="index-PROTECT"></a> <a href="" id="index-UNPROTECT"></a></p>
+<p>We need to know a little about the way R handles memory allocation. The memory allocated for R objects is not freed by the user; instead, the memory is from time to time <em>garbage collected</em>. That is, some or all of the allocated memory not being used is freed or marked as re-usable.</p>
+<p>The R object types are represented by a C structure defined by a typedef <code class="calibre2">SEXPREC</code> in Rinternals.h. It contains several things among which are pointers to data blocks and to other <code class="calibre2">SEXPREC</code>s. A <code class="calibre2">SEXP</code> is simply a pointer to a <code class="calibre2">SEXPREC</code>.</p>
+<p>If you create an R object in your C code, you must tell R that you are using the object by using the <code class="calibre2">PROTECT</code> macro on a pointer to the object. This tells R that the object is in use so it is not destroyed during garbage collection. Notice that it is the object which is protected, not the pointer variable. It is a common mistake to believe that if you invoked <code class="calibre2">PROTECT(p)</code> at some point then p is protected from then on, but that is not true once a new object is assigned to p.</p>
+<p>Protecting an R object automatically protects all the R objects pointed to in the corresponding <code class="calibre2">SEXPREC</code>, for example all elements of a protected list are automatically protected.</p>
+<p>The programmer is solely responsible for housekeeping the calls to <code class="calibre2">PROTECT</code>. There is a corresponding macro <code class="calibre2">UNPROTECT</code> that takes as argument an <code class="calibre2">int</code> giving the number of objects to unprotect when they are no longer needed. The protection mechanism is stack-based, so <code class="calibre2">UNPROTECT(n)</code> unprotects the last n objects which were protected. The calls to <code class="calibre2">PROTECT</code> and <code class="calibre2">UNPROTECT</code> must balance when the user’s code returns. R will warn about <code class="calibre2">&quot;stack imbalance in .Call&quot;</code> (or <code class="calibre2">.External</code>) if the housekeeping is wrong.</p>
+<p>Here is a small example of creating an R numeric vector in C code:</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;R.h&gt;
+#include &lt;Rinternals.h&gt;
+
+    SEXP ab;
+      ....
+    ab = PROTECT(allocVector(REALSXP, 2));
+    REAL(ab)[0] = 123.45;
+    REAL(ab)[1] = 67.89;
+    UNPROTECT(1);</code></pre>
+</div>
+<p>Now, the reader may ask how the R object could possibly get removed during those manipulations, as it is just our C code that is running. As it happens, we can do without the protection in this example, but in general we do not know (nor want to know) what is hiding behind the R macros and functions we use, and any of them might cause memory to be allocated, hence garbage collection and hence our object <code class="calibre2">ab</code> to be removed. It is usually wise to err on the side of caution and assume that any of the R macros and functions might remove the object.</p>
+<p>In some cases it is necessary to keep better track of whether protection is really needed. Be particularly aware of situations where a large number of objects are generated. The pointer protection stack has a fixed size (default 10,000) and can become full. It is not a good idea then to just <code class="calibre2">PROTECT</code> everything in sight and <code class="calibre2">UNPROTECT</code> several thousand objects at the end. It will almost invariably be possible to either assign the objects as part of another object (which automatically protects them) or unprotect them immediately after use.</p>
+<p>Protection is not needed for objects which R already knows are in use. In particular, this applies to function arguments.</p>
+<p>There is a less-used macro <code class="calibre2">UNPROTECT_PTR(s)</code> that unprotects the object pointed to by the <code class="calibre2">SEXP</code> s, even if it is not the top item on the pointer protection stack. This is rarely needed outside the parser (the R sources currently have three examples, one in src/main/plot3d.c). <a href="" id="index-UNPROTECT_005fPTR"></a></p>
+<p>Sometimes an object is changed (for example duplicated, coerced or grown) yet the current value needs to be protected. For these cases <code class="calibre2">PROTECT_WITH_INDEX</code> saves an index of the protection location that can be used to replace the protected value using <code class="calibre2">REPROTECT</code>. <a href="" id="index-PROTECT_005fWITH_005fINDEX"></a> <a href="" id="index-REPROTECT"></a> For example (from the internal code for <code class="calibre2">optim</code>)</p>
+<div class="example">
+<pre class="example1"><code>    PROTECT_INDEX ipx;
+
+    ....
+    PROTECT_WITH_INDEX(s = eval(OS-&gt;R_fcall, OS-&gt;R_env), &amp;ipx);
+    REPROTECT(s = coerceVector(s, REALSXP), ipx);</code></pre>
+</div>
+<p>Note that it is dangerous to mix <code class="calibre2">UNPROTECT_PTR</code> with <code class="calibre2">PROTECT_WITH_INDEX</code>, as the former changes the protection locations of objects that were protected after the one being unprotected.</p>
+<p><a href="" id="index-R_005fPreserveObject"></a> <a href="" id="index-R_005fReleaseObject"></a></p>
+<p>There is another way to avoid the affects of garbage collection: a call to <code class="calibre2">R_PreserveObject</code> adds an object to an internal list of objects not to be collects, and a subsequent call to <code class="calibre2">R_ReleaseObject</code> removes it from that list. This provides a way for objects which are not returned as part of R objects to be protected across calls to compiled code: on the other hand it becomes the user’s responsibility to release them when they are no longer needed (and this often requires the use of a finalizer). It is less efficient that the normal protection mechanism, and should be used sparingly.</p>
+<hr />
+<p><a href="" id="Allocating-storage"></a> <a href="" id="Allocating-storage-1"></a></p>
+<h4 id="allocating-storage" class="subsection">5.9.2 Allocating storage</h4>
+<p><a href="" id="index-Allocating-storage"></a></p>
+<p>For many purposes it is sufficient to allocate R objects and manipulate those. There are quite a few <code class="calibre2">allocXxx</code> functions defined in Rinternals.h—you may want to explore them.</p>
+<p><a href="" id="index-allocVector"></a></p>
+<p>One that is commonly used is <code class="calibre2">allocVector</code>, the C-level equivalent of R-level <code class="calibre2">vector()</code> and its wrappers such as <code class="calibre2">integer()</code> and <code class="calibre2">character()</code>. One distinction is that whereas the R functions always initialize the elements of the vector, <code class="calibre2">allocVector</code> only does so for lists, expressions and character vectors (the cases where the elements are themselves R objects).</p>
+<p>If storage is required for C objects during the calculations this is best allocating by calling <code class="calibre2">R_alloc</code>; see <a href="the-r-api-entry-points-for-c-code.html.html#Memory-allocation">Memory allocation</a>. All of these memory allocation routines do their own error-checking, so the programmer may assume that they will raise an error and not return if the memory cannot be allocated.</p>
+<hr />
+<p><a href="" id="Details-of-R-types"></a> <a href="" id="Details-of-R-types-1"></a></p>
+<h4 id="details-of-r-types" class="subsection">5.9.3 Details of R types</h4>
+<p><a href="" id="index-Details-of-R-types"></a></p>
+<p>Users of the Rinternals.h macros will need to know how the R types are known internally. The different R data types are represented in C by <em>SEXPTYPE</em>. Some of these are familiar from R and some are internal data types. The usual R object modes are given in the table.</p>
+<blockquote>
+<table>
+<thead>
+<tr class="header">
+<th align="left">SEXPTYPE</th>
+<th align="left">R equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code class="calibre2">REALSXP</code></td>
+<td align="left">numeric with storage mode <code class="calibre2">double</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code class="calibre2">INTSXP</code></td>
+<td align="left">integer</td>
+</tr>
+<tr class="odd">
+<td align="left"><code class="calibre2">CPLXSXP</code></td>
+<td align="left">complex</td>
+</tr>
+<tr class="even">
+<td align="left"><code class="calibre2">LGLSXP</code></td>
+<td align="left">logical</td>
+</tr>
+<tr class="odd">
+<td align="left"><code class="calibre2">STRSXP</code></td>
+<td align="left">character</td>
+</tr>
+<tr class="even">
+<td align="left"><code class="calibre2">VECSXP</code></td>
+<td align="left">list (generic vector)</td>
+</tr>
+<tr class="odd">
+<td align="left"><code class="calibre2">LISTSXP</code></td>
+<td align="left">pairlist</td>
+</tr>
+<tr class="even">
+<td align="left"><code class="calibre2">DOTSXP</code></td>
+<td align="left">a ‘…’ object</td>
+</tr>
+<tr class="odd">
+<td align="left"><code class="calibre2">NILSXP</code></td>
+<td align="left">NULL</td>
+</tr>
+<tr class="even">
+<td align="left"><code class="calibre2">SYMSXP</code></td>
+<td align="left">name/symbol</td>
+</tr>
+<tr class="odd">
+<td align="left"><code class="calibre2">CLOSXP</code></td>
+<td align="left">function or function closure</td>
+</tr>
+<tr class="even">
+<td align="left"><code class="calibre2">ENVSXP</code></td>
+<td align="left">environment</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>Among the important internal <code class="calibre2">SEXPTYPE</code>s are <code class="calibre2">LANGSXP</code>, <code class="calibre2">CHARSXP</code>, <code class="calibre2">PROMSXP</code>, etc. (<strong>N.B.</strong>: although it is possible to return objects of internal types, it is unsafe to do so as assumptions are made about how they are handled which may be violated at user-level evaluation.) More details are given in <a href="./R-ints.html#R-Internal-Structures">R Internal Structures</a> in R Internals.</p>
+<p>Unless you are very sure about the type of the arguments, the code should check the data types. Sometimes it may also be necessary to check data types of objects created by evaluating an R expression in the C code. You can use functions like <code class="calibre2">isReal</code>, <code class="calibre2">isInteger</code> and <code class="calibre2">isString</code> to do type checking. See the header file Rinternals.h for definitions of other such functions. All of these take a <code class="calibre2">SEXP</code> as argument and return 1 or 0 to indicate TRUE or FALSE.</p>
+<p>What happens if the <code class="calibre2">SEXP</code> is not of the correct type? Sometimes you have no other option except to generate an error. You can use the function <code class="calibre2">error</code> for this. It is usually better to coerce the object to the correct type. For example, if you find that an <code class="calibre2">SEXP</code> is of the type <code class="calibre2">INTEGER</code>, but you need a <code class="calibre2">REAL</code> object, you can change the type by using</p>
+<div class="example">
+<pre class="example1"><code>newSexp = PROTECT(coerceVector(oldSexp, REALSXP));</code></pre>
+</div>
+<p>Protection is needed as a new <em>object</em> is created; the object formerly pointed to by the <code class="calibre2">SEXP</code> is still protected but now unused.<a href="concept-index.html#FOOT133" id="DOCF133"><sup>133</sup></a></p>
+<p>All the coercion functions do their own error-checking, and generate <code class="calibre2">NA</code>s with a warning or stop with an error as appropriate.</p>
+<p>Note that these coercion functions are <em>not</em> the same as calling <code class="calibre2">as.numeric</code> (and so on) in R code, as they do not dispatch on the class of the object. Thus it is normally preferable to do the coercion in the calling R code.</p>
+<p>So far we have only seen how to create and coerce R objects from C code, and how to extract the numeric data from numeric R vectors. These can suffice to take us a long way in interfacing R objects to numerical algorithms, but we may need to know a little more to create useful return objects.</p>
+<hr />
+<p><a href="" id="Attributes"></a> <a href="" id="Attributes-1"></a></p>
+<h4 id="attributes" class="subsection">5.9.4 Attributes</h4>
+<p><a href="" id="index-Attributes"></a></p>
+<p>Many R objects have attributes: some of the most useful are classes and the <code class="calibre2">dim</code> and <code class="calibre2">dimnames</code> that mark objects as matrices or arrays. It can also be helpful to work with the <code class="calibre2">names</code> attribute of vectors.</p>
+<p>To illustrate this, let us write code to take the outer product of two vectors (which <code class="calibre2">outer</code> and <code class="calibre2">%o%</code> already do). As usual the R code is simple</p>
+<div class="example">
+<pre class="example1"><code>out &lt;- function(x, y)
+{
+    storage.mode(x) &lt;- storage.mode(y) &lt;- &quot;double&quot;
+    .Call(&quot;out&quot;, x, y)
+}</code></pre>
+</div>
+<p>where we expect <code class="calibre2">x</code> and <code class="calibre2">y</code> to be numeric vectors (possibly integer), possibly with names. This time we do the coercion in the calling R code.</p>
+<p>C code to do the computations is</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;R.h&gt;
+#include &lt;Rinternals.h&gt;
+
+SEXP out(SEXP x, SEXP y)
+{
+    int nx = length(x), ny = length(y);
+    SEXP ans = PROTECT(allocMatrix(REALSXP, nx, ny));
+    double *rx = REAL(x), *ry = REAL(y), *rans = REAL(ans);
+    for(int i = 0; i &lt; nx; i++) {
+        double tmp = rx[i];
+        for(int j = 0; j &lt; ny; j++)
+            rans[i + nx*j] = tmp * ry[j];
+    }
+    UNPROTECT(1);
+    return ans;
+}</code></pre>
+</div>
+<p>Note the way <code class="calibre2">REAL</code> is used: as it is a function call it can be considerably faster to store the result and index that.</p>
+<p>However, we would like to set the <code class="calibre2">dimnames</code> of the result. We can use</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;R.h&gt;
+#include &lt;Rinternals.h&gt;
+</code></pre>
+<pre class="example1"><code>SEXP out(SEXP x, SEXP y)
+{
+    int nx = length(x), ny = length(y);
+    SEXP ans = PROTECT(allocMatrix(REALSXP, nx, ny));
+    double *rx = REAL(x), *ry = REAL(y), *rans = REAL(ans);
+
+    for(int i = 0; i &lt; nx; i++) {
+      double tmp = rx[i];
+      for(int j = 0; j &lt; ny; j++)
+        rans[i + nx*j] = tmp * ry[j];
+    }
+
+    SEXP dimnames = PROTECT(allocVector(VECSXP, 2));
+    SET_VECTOR_ELT(dimnames, 0, getAttrib(x, R_NamesSymbol));
+    SET_VECTOR_ELT(dimnames, 1, getAttrib(y, R_NamesSymbol));
+    setAttrib(ans, R_DimNamesSymbol, dimnames);</code></pre>
+<pre class="example1"><code></code></pre>
+<pre class="example1"><code>    UNPROTECT(2);
+    return ans;
+}</code></pre>
+</div>
+<p>This example introduces several new features. The <code class="calibre2">getAttrib</code> and <code class="calibre2">setAttrib</code> <a href="" id="index-getAttrib"></a> <a href="" id="index-setAttrib"></a> functions get and set individual attributes. Their second argument is a <code class="calibre2">SEXP</code> defining the name in the symbol table of the attribute we want; these and many such symbols are defined in the header file Rinternals.h.</p>
+<p>There are shortcuts here too: the functions <code class="calibre2">namesgets</code>, <code class="calibre2">dimgets</code> and <code class="calibre2">dimnamesgets</code> are the internal versions of the default methods of <code class="calibre2">names&lt;-</code>, <code class="calibre2">dim&lt;-</code> and <code class="calibre2">dimnames&lt;-</code> (for vectors and arrays), and there are functions such as <code class="calibre2">GetMatrixDimnames</code> and <code class="calibre2">GetArrayDimnames</code>.</p>
+<p>What happens if we want to add an attribute that is not pre-defined? We need to add a symbol for it <em>via</em> a call to <a href="" id="index-install"></a> <code class="calibre2">install</code>. Suppose for illustration we wanted to add an attribute <code class="calibre2">&quot;version&quot;</code> with value <code class="calibre2">3.0</code>. We could use</p>
+<div class="example">
+<pre class="example1"><code>    SEXP version;
+    version = PROTECT(allocVector(REALSXP, 1));
+    REAL(version)[0] = 3.0;
+    setAttrib(ans, install(&quot;version&quot;), version);
+    UNPROTECT(1);</code></pre>
+</div>
+<p>Using <code class="calibre2">install</code> when it is not needed is harmless and provides a simple way to retrieve the symbol from the symbol table if it is already installed. However, the lookup takes a non-trivial amount of time, so consider code such as</p>
+<div class="example">
+<pre class="example1"><code>static SEXP VerSymbol = NULL;
+...
+    if (VerSymbol == NULL) VerSymbol = install(&quot;version&quot;);</code></pre>
+</div>
+<p>if it is to be done frequently.</p>
+<p>This example can be simplified by another convenience function:</p>
+<div class="example">
+<pre class="example1"><code>    SEXP version = PROTECT(ScalarReal(3.0));
+    setAttrib(ans, install(&quot;version&quot;), version);
+    UNPROTECT(1);</code></pre>
+</div>
+<hr />
+<p><a href="" id="Classes"></a> <a href="" id="Classes-1"></a></p>
+<h4 id="classes" class="subsection">5.9.5 Classes</h4>
+<p><a href="" id="index-Classes"></a></p>
+<p>In R the class is just the attribute named <code class="calibre2">&quot;class&quot;</code> so it can be handled as such, but there is a shortcut <code class="calibre2">classgets</code>. Suppose we want to give the return value in our example the class <code class="calibre2">&quot;mat&quot;</code>. We can use</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;R.h&gt;
+#include &lt;Rinternals.h&gt;
+      ....
+    SEXP ans, dim, dimnames, class;
+      ....
+    class = PROTECT(allocVector(STRSXP, 1));
+    SET_STRING_ELT(class, 0, mkChar(&quot;mat&quot;));
+    classgets(ans, class);
+    UNPROTECT(4);
+    return ans;
+}</code></pre>
+</div>
+<p>As the value is a character vector, we have to know how to create that from a C character array, which we do using the function <code class="calibre2">mkChar</code>.</p>
+<hr />
+<p><a href="" id="Handling-lists"></a> <a href="" id="Handling-lists-1"></a></p>
+<h4 id="handling-lists" class="subsection">5.9.6 Handling lists</h4>
+<p><a href="" id="index-Handling-lists"></a></p>
+<p>Some care is needed with lists, as R moved early on from using LISP-like lists (now called “pairlists”) to S-like generic vectors. As a result, the appropriate test for an object of mode <code class="calibre2">list</code> is <code class="calibre2">isNewList</code>, and we need <code class="calibre2">allocVector(VECSXP, n</code>) and <em>not</em> <code class="calibre2">allocList(n)</code>.</p>
+<p>List elements can be retrieved or set by direct access to the elements of the generic vector. Suppose we have a list object</p>
+<div class="example">
+<pre class="example1"><code>a &lt;- list(f = 1, g = 2, h = 3)</code></pre>
+</div>
+<p>Then we can access <code class="calibre2">a$g</code> as <code class="calibre2">a[[2]]</code> by</p>
+<div class="example">
+<pre class="example1"><code>    double g;
+      ....
+    g = REAL(VECTOR_ELT(a, 1))[0];</code></pre>
+</div>
+<p>This can rapidly become tedious, and the following function (based on one in package <strong>stats</strong>) is very useful:</p>
+<div class="example">
+<pre class="example1"><code>/* get the list element named str, or return NULL */
+
+SEXP getListElement(SEXP list, const char *str)
+{
+    SEXP elmt = R_NilValue, names = getAttrib(list, R_NamesSymbol);</code></pre>
+<pre class="example1"><code></code></pre>
+<pre class="example1"><code>    for (int i = 0; i &lt; length(list); i++)
+        if(strcmp(CHAR(STRING_ELT(names, i)), str) == 0) {
+           elmt = VECTOR_ELT(list, i);
+           break;
+        }
+    return elmt;
+}</code></pre>
+</div>
+<p>and enables us to say</p>
+<div class="example">
+<pre class="example1"><code>  double g;
+  g = REAL(getListElement(a, &quot;g&quot;))[0];</code></pre>
+</div>
+<hr />
+<p><a href="" id="Handling-character-data"></a> <a href="" id="Handling-character-data-1"></a></p>
+<h4 id="handling-character-data" class="subsection">5.9.7 Handling character data</h4>
+<p><a href="" id="index-handling-character-data"></a></p>
+<p>R character vectors are stored as <code class="calibre2">STRSXP</code>s, a vector type like <code class="calibre2">VECSXP</code> where every element is of type <code class="calibre2">CHARSXP</code>. The <code class="calibre2">CHARSXP</code> elements of <code class="calibre2">STRSXP</code>s are accessed using <code class="calibre2">STRING_ELT</code> and <code class="calibre2">SET_STRING_ELT</code>.</p>
+<p><code class="calibre2">CHARSXP</code>s are read-only objects and must never be modified. In particular, the C-style string contained in a <code class="calibre2">CHARSXP</code> should be treated as read-only and for this reason the <code class="calibre2">CHAR</code> function used to access the character data of a <code class="calibre2">CHARSXP</code> returns <code class="calibre2">(const char *)</code> (this also allows compilers to issue warnings about improper use). Since <code class="calibre2">CHARSXP</code>s are immutable, the same <code class="calibre2">CHARSXP</code> can be shared by any <code class="calibre2">STRSXP</code> needing an element representing the same string. R maintains a global cache of <code class="calibre2">CHARSXP</code>s so that there is only ever one <code class="calibre2">CHARSXP</code> representing a given string in memory.</p>
+<p><a href="" id="index-mkChar"></a> <a href="" id="index-mkCharLen"></a></p>
+<p>You can obtain a <code class="calibre2">CHARSXP</code> by calling <code class="calibre2">mkChar</code> and providing a nul-terminated C-style string. This function will return a pre-existing <code class="calibre2">CHARSXP</code> if one with a matching string already exists, otherwise it will create a new one and add it to the cache before returning it to you. The variant <code class="calibre2">mkCharLen</code> can be used to create a <code class="calibre2">CHARSXP</code> from part of a buffer and will ensure null-termination.</p>
+<p>Note that R character strings are restricted to <code class="calibre2">2^31 - 1</code> bytes, and hence so should the input to <code class="calibre2">mkChar</code> be (C allows longer strings on 64-bit platforms).</p>
+<hr />
+<p><a href="" id="Finding-and-setting-variables"></a> <a href="" id="Finding-and-setting-variables-1"></a></p>
+<h4 id="finding-and-setting-variables" class="subsection">5.9.8 Finding and setting variables</h4>
+<p><a href="" id="index-Finding-variables"></a> <a href="" id="index-Setting-variables"></a></p>
+<p>It will be usual that all the R objects needed in our C computations are passed as arguments to <code class="calibre2">.Call</code> or <code class="calibre2">.External</code>, but it is possible to find the values of R objects from within the C given their names. The following code is the equivalent of <code class="calibre2">get(name, envir = rho)</code>.</p>
+<div class="example">
+<pre class="example1"><code>SEXP getvar(SEXP name, SEXP rho)
+{
+    SEXP ans;
+
+    if(!isString(name) || length(name) != 1)
+        error(&quot;name is not a single string&quot;);
+    if(!isEnvironment(rho))
+        error(&quot;rho should be an environment&quot;);
+    ans = findVar(installChar(STRING_ELT(name, 0)), rho);
+    Rprintf(&quot;first value is %f&#92;n&quot;, REAL(ans)[0]);
+    return R_NilValue;
+}</code></pre>
+</div>
+<p>The main work is done by <a href="" id="index-findVar"></a> <code class="calibre2">findVar</code>, but to use it we need to install <code class="calibre2">name</code> as a name in the symbol table. As we wanted the value for internal use, we return <code class="calibre2">NULL</code>.</p>
+<p>Similar functions with syntax</p>
+<div class="example">
+<pre class="example1"><code>void defineVar(SEXP symbol, SEXP value, SEXP rho)
+void setVar(SEXP symbol, SEXP value, SEXP rho)</code></pre>
+</div>
+<p><a href="" id="index-defineVar"></a> <a href="" id="index-setVar"></a></p>
+<p>can be used to assign values to R variables. <code class="calibre2">defineVar</code> creates a new binding or changes the value of an existing binding in the specified environment frame; it is the analogue of <code class="calibre2">assign(symbol, value, envir = rho, inherits = FALSE)</code>, but unlike <code class="calibre2">assign</code>, <code class="calibre2">defineVar</code> does not make a copy of the object <code class="calibre2">value</code>.<a href="concept-index.html#FOOT134" id="DOCF134"><sup>134</sup></a> <code class="calibre2">setVar</code> searches for an existing binding for <code class="calibre2">symbol</code> in <code class="calibre2">rho</code> or its enclosing environments. If a binding is found, its value is changed to <code class="calibre2">value</code>. Otherwise, a new binding with the specified value is created in the global environment. This corresponds to <code class="calibre2">assign(symbol, value, envir = rho, inherits = TRUE)</code>.</p>
+<hr />
+<p><a href="" id="Some-convenience-functions"></a> <a href="" id="Some-convenience-functions-1"></a></p>
+<h4 id="some-convenience-functions" class="subsection">5.9.9 Some convenience functions</h4>
+<p>Some operations are done so frequently that there are convenience functions to handle them. (All these are provided via the header file Rinternals.h.)</p>
+<p>Suppose we wanted to pass a single logical argument <code class="calibre2">ignore_quotes</code>: we could use</p>
+<div class="example">
+<pre class="example1"><code>    int ign = asLogical(ignore_quotes);
+    if(ign == NA_LOGICAL) error(&quot;&#39;ignore_quotes&#39; must be TRUE or FALSE&quot;);</code></pre>
+</div>
+<p>which will do any coercion needed (at least from a vector argument), and return <code class="calibre2">NA_LOGICAL</code> if the value passed was <code class="calibre2">NA</code> or coercion failed. There are also <code class="calibre2">asInteger</code>, <code class="calibre2">asReal</code> and <code class="calibre2">asComplex</code>. The function <code class="calibre2">asChar</code> returns a <code class="calibre2">CHARSXP</code>. All of these functions ignore any elements of an input vector after the first.</p>
+<p>To return a length-one real vector we can use</p>
+<div class="example">
+<pre class="example1"><code>    double x;
+
+    ...
+    return ScalarReal(x);</code></pre>
+</div>
+<p>and there are versions of this for all the atomic vector types (those for a length-one character vector being <code class="calibre2">ScalarString</code> with argument a <code class="calibre2">CHARSXP</code> and <code class="calibre2">mkString</code> with argument <code class="calibre2">const char *</code>).</p>
+<p>Some of the <code class="calibre2">isXXXX</code> functions differ from their apparent R-level counterparts: for example <code class="calibre2">isVector</code> is true for any atomic vector type (<code class="calibre2">isVectorAtomic</code>) and for lists and expressions (<code class="calibre2">isVectorList</code>) (with no check on attributes). <code class="calibre2">isMatrix</code> is a test of a length-2 <code class="calibre2">&quot;dim&quot;</code> attribute.</p>
+<p>There are a series of small macros/functions to help construct pairlists and language objects (whose internal structures just differ by <code class="calibre2">SEXPTYPE</code>). Function <code class="calibre2">CONS(u, v)</code> is the basic building block: it constructs a pairlist from <code class="calibre2">u</code> followed by <code class="calibre2">v</code> (which is a pairlist or <code class="calibre2">R_NilValue</code>). <code class="calibre2">LCONS</code> is a variant that constructs a language object. Functions <code class="calibre2">list1</code> to <code class="calibre2">list6</code> construct a pairlist from one to six items, and <code class="calibre2">lang1</code> to <code class="calibre2">lang6</code> do the same for a language object (a function to call plus zero to five arguments). Functions <code class="calibre2">elt</code> and <code class="calibre2">lastElt</code> find the ith element and the last element of a pairlist, and <code class="calibre2">nthcdr</code> returns a pointer to the nth position in the pairlist (whose <code class="calibre2">CAR</code> is the nth item).</p>
+<p>Functions <code class="calibre2">str2type</code> and <code class="calibre2">type2str</code> map R length-one character strings to and from <code class="calibre2">SEXPTYPE</code> numbers, and <code class="calibre2">type2char</code> maps numbers to C character strings.</p>
+<hr />
+<p><a href="" id="Semi_002dinternal-convenience-functions"></a> <a href="" id="Semi_002dinternal-convenience-functions-1"></a></p>
+<h4 id="semi-internal-convenience-functions" class="subsection">5.9.9.1 Semi-internal convenience functions</h4>
+<p>There is quite a collection of functions that may be used in your C code <em>if</em> you are willing to adapt to rare “API” changes. These typically contain “workhorses” of their R counterparts.</p>
+<p>Functions <code class="calibre2">any_duplicated</code> and <code class="calibre2">any_duplicated3</code> are fast versions of R’s <code class="calibre2">any(duplicated(.))</code>.</p>
+<p>Function <code class="calibre2">R_compute_identical</code> corresponds to R’s <code class="calibre2">identical</code> function.</p>
+<hr />
+<p><a href="" id="Named-objects-and-copying"></a> <a href="" id="Named-objects-and-copying-1"></a></p>
+<h4 id="named-objects-and-copying" class="subsection">5.9.10 Named objects and copying</h4>
+<p><a href="" id="index-duplicate"></a> <a href="" id="index-Copying-objects"></a></p>
+<p>When assignments are done in R such as</p>
+<div class="example">
+<pre class="example1"><code>x &lt;- 1:10
+y &lt;- x</code></pre>
+</div>
+<p>the named object is not necessarily copied, so after those two assignments <code class="calibre2">y</code> and <code class="calibre2">x</code> are bound to the same <code class="calibre2">SEXPREC</code> (the structure a <code class="calibre2">SEXP</code> points to). This means that any code which alters one of them has to make a copy before modifying the copy if the usual R semantics are to apply. Note that whereas <code class="calibre2">.C</code> and <code class="calibre2">.Fortran</code> do copy their arguments (unless the dangerous <code class="calibre2">dup = FALSE</code> is used), <code class="calibre2">.Call</code> and <code class="calibre2">.External</code> do not. So <code class="calibre2">duplicate</code> is commonly called on arguments to <code class="calibre2">.Call</code> before modifying them.</p>
+<p>However, at least some of this copying is unneeded. In the first assignment shown, <code class="calibre2">x &lt;- 1:10</code>, R first creates an object with value <code class="calibre2">1:10</code> and then assigns it to <code class="calibre2">x</code> but if <code class="calibre2">x</code> is modified no copy is necessary as the temporary object with value <code class="calibre2">1:10</code> cannot be referred to again. R distinguishes between named and unnamed objects <em>via</em> a field in a <code class="calibre2">SEXPREC</code> that can be accessed <em>via</em> the macros <code class="calibre2">NAMED</code> and <code class="calibre2">SET_NAMED</code>. This can take values</p>
+<dl>
+<dt><code class="calibre2">0</code></dt>
+<dd><p>The object is not bound to any symbol</p>
+</dd>
+<dt><code class="calibre2">1</code></dt>
+<dd><p>The object has been bound to exactly one symbol</p>
+</dd>
+<dt><code class="calibre2">2</code></dt>
+<dd><p>The object has potentially been bound to two or more symbols, and one should act as if another variable is currently bound to this value.</p>
+</dd>
+</dl>
+<p>Note the past tenses: R does not do full reference counting and there may currently be fewer bindings.</p>
+<p>It is safe to modify the value of any <code class="calibre2">SEXP</code> for which <code class="calibre2">NAMED(foo)</code> is zero, and if <code class="calibre2">NAMED(foo)</code> is two, the value should be duplicated (<em>via</em> a call to <code class="calibre2">duplicate</code>) before any modification. Note that it is the responsibility of the author of the code making the modification to do the duplication, even if it is <code class="calibre2">x</code> whose value is being modified after <code class="calibre2">y &lt;- x</code>.</p>
+<p>The case <code class="calibre2">NAMED(foo) == 1</code> allows some optimization, but it can be ignored (and duplication done whenever <code class="calibre2">NAMED(foo) &gt; 0</code>). (This optimization is not currently usable in user code.) It is intended for use within replacement functions. Suppose we used</p>
+<div class="example">
+<pre class="example1"><code>x &lt;- 1:10
+foo(x) &lt;- 3</code></pre>
+</div>
+<p>which is computed as</p>
+<div class="example">
+<pre class="example1"><code>x &lt;- 1:10
+x &lt;- &quot;foo&lt;-&quot;(x, 3)</code></pre>
+</div>
+<p>Then inside <code class="calibre2">&quot;foo&lt;-&quot;</code> the object pointing to the current value of <code class="calibre2">x</code> will have <code class="calibre2">NAMED(foo)</code> as one, and it would be safe to modify it as the only symbol bound to it is <code class="calibre2">x</code> and that will be rebound immediately. (Provided the remaining code in <code class="calibre2">&quot;foo&lt;-&quot;</code> make no reference to <code class="calibre2">x</code>, and no one is going to attempt a direct call such as <code class="calibre2">y &lt;- &quot;foo&lt;-&quot;(x)</code>.)</p>
+<p>This mechanism is likely to be replaced in future versions of R.</p>
+<hr />
+<p><a href="" id="Interface-functions-_002eCall-and-_002eExternal"></a> <a href="" id="Interface-functions-_002eCall-and-_002eExternal-1"></a></p>
+<h3 id="interface-functions-.call-and-.external" class="section">5.10 Interface functions <code class="calibre18">.Call</code> and <code class="calibre18">.External</code></h3>
+<p><a href="" id="index-Interfaces-to-compiled-code-1"></a></p>
+<p>In this section we consider the details of the R/C interfaces.</p>
+<p>These two interfaces have almost the same functionality. <code class="calibre2">.Call</code> is based on the interface of the same name in S version 4, and <code class="calibre2">.External</code> is based on R’s <code class="calibre2">.Internal</code>. <code class="calibre2">.External</code> is more complex but allows a variable number of arguments.</p>
+<hr />
+<p><a href="" id="Calling-_002eCall"></a> <a href="" id="Calling-_002eCall-1"></a></p>
+<h4 id="calling-.call" class="subsection">5.10.1 Calling <code class="calibre2">.Call</code></h4>
+<p><a href="" id="index-_002eCall-1"></a></p>
+<p>Let us convert our finite convolution example to use <code class="calibre2">.Call</code>. The calling function in R is</p>
+<div class="example">
+<pre class="example1"><code>conv &lt;- function(a, b) .Call(&quot;convolve2&quot;, a, b)</code></pre>
+</div>
+<p>which could hardly be simpler, but as we shall see all the type coercion is transferred to the C code, which is</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;R.h&gt;
+#include &lt;Rinternals.h&gt;
+
+SEXP convolve2(SEXP a, SEXP b)
+{
+    int na, nb, nab;
+    double *xa, *xb, *xab;
+    SEXP ab;
+
+    a = PROTECT(coerceVector(a, REALSXP));
+    b = PROTECT(coerceVector(b, REALSXP));
+    na = length(a); nb = length(b); nab = na + nb - 1;
+    ab = PROTECT(allocVector(REALSXP, nab));
+    xa = REAL(a); xb = REAL(b); xab = REAL(ab);
+    for(int i = 0; i &lt; nab; i++) xab[i] = 0.0;
+    for(int i = 0; i &lt; na; i++)
+        for(int j = 0; j &lt; nb; j++) xab[i + j] += xa[i] * xb[j];
+    UNPROTECT(3);
+    return ab;
+}</code></pre>
+</div>
+<hr />
+<p><a href="" id="Calling-_002eExternal"></a> <a href="" id="Calling-_002eExternal-1"></a></p>
+<h4 id="calling-.external" class="subsection">5.10.2 Calling <code class="calibre2">.External</code></h4>
+<p><a href="" id="index-_002eExternal-1"></a></p>
+<p>We can use the same example to illustrate <code class="calibre2">.External</code>. The R code changes only by replacing <code class="calibre2">.Call</code> by <code class="calibre2">.External</code></p>
+<div class="example">
+<pre class="example1"><code>conv &lt;- function(a, b) .External(&quot;convolveE&quot;, a, b)</code></pre>
+</div>
+<p>but the main change is how the arguments are passed to the C code, this time as a single SEXP. The only change to the C code is how we handle the arguments.</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;R.h&gt;
+#include &lt;Rinternals.h&gt;
+
+SEXP convolveE(SEXP args)
+{
+    int i, j, na, nb, nab;
+    double *xa, *xb, *xab;
+    SEXP a, b, ab;
+
+    a = PROTECT(coerceVector(CADR(args), REALSXP));
+    b = PROTECT(coerceVector(CADDR(args), REALSXP));
+    ...
+}</code></pre>
+</div>
+<p>Once again we do not need to protect the arguments, as in the R side of the interface they are objects that are already in use. The macros</p>
+<div class="example">
+<pre class="example1"><code>  first = CADR(args);
+  second = CADDR(args);
+  third = CADDDR(args);
+  fourth = CAD4R(args);</code></pre>
+</div>
+<p>provide convenient ways to access the first four arguments. More generally we can use the <a href="" id="index-CAR"></a> <a href="" id="index-CDR"></a> <code class="calibre2">CDR</code> and <code class="calibre2">CAR</code> macros as in</p>
+<div class="example">
+<pre class="example1"><code>  args = CDR(args); a = CAR(args);
+  args = CDR(args); b = CAR(args);</code></pre>
+</div>
+<p>which clearly allows us to extract an unlimited number of arguments (whereas <code class="calibre2">.Call</code> has a limit, albeit at 65 not a small one).</p>
+<p>More usefully, the <code class="calibre2">.External</code> interface provides an easy way to handle calls with a variable number of arguments, as <code class="calibre2">length(args)</code> will give the number of arguments supplied (of which the first is ignored). We may need to know the names (‘tags’) given to the actual arguments, which we can by using the <code class="calibre2">TAG</code> macro and using something like the following example, that prints the names and the first value of its arguments if they are vector types.</p>
+<div class="example">
+<pre class="example1"><code>SEXP showArgs(SEXP args)
+{
+    args = CDR(args); /* skip ‘name’ */
+    for(int i = 0; args != R_NilValue; i++, args = CDR(args)) {
+        const char *name =
+            isNull(TAG(args)) ? &quot;&quot; : CHAR(PRINTNAME(TAG(args)));
+        SEXP el = CAR(args);
+        if (length(el) == 0) {
+            Rprintf(&quot;[%d] ‘%s’ R type, length 0&#92;n&quot;, i+1, name);
+           continue;
+        }</code></pre>
+<pre class="example1"><code>        switch(TYPEOF(el)) {
+        case REALSXP:
+            Rprintf(&quot;[%d] ‘%s’ %f&#92;n&quot;, i+1, name, REAL(el)[0]);
+            break;</code></pre>
+<pre class="example1"><code>        case LGLSXP:
+        case INTSXP:
+            Rprintf(&quot;[%d] ‘%s’ %d&#92;n&quot;, i+1, name, INTEGER(el)[0]);
+            break;</code></pre>
+<pre class="example1"><code>        case CPLXSXP:
+        {
+            Rcomplex cpl = COMPLEX(el)[0];
+            Rprintf(&quot;[%d] ‘%s’ %f + %fi&#92;n&quot;, i+1, name, cpl.r, cpl.i);
+        }
+            break;</code></pre>
+<pre class="example1"><code>        case STRSXP:
+            Rprintf(&quot;[%d] ‘%s’ %s&#92;n&quot;, i+1, name,
+                   CHAR(STRING_ELT(el, 0)));
+           break;</code></pre>
+<pre class="example1"><code>        default:
+            Rprintf(&quot;[%d] ‘%s’ R type&#92;n&quot;, i+1, name);
+       }
+    }
+    return R_NilValue;
+}</code></pre>
+</div>
+<p>This can be called by the wrapper function</p>
+<div class="example">
+<pre class="example1"><code>showArgs &lt;- function(...) invisible(.External(&quot;showArgs&quot;, ...))</code></pre>
+</div>
+<p>Note that this style of programming is convenient but not necessary, as an alternative style is</p>
+<div class="example">
+<pre class="example1"><code>showArgs1 &lt;- function(...) invisible(.Call(&quot;showArgs1&quot;, list(...)))</code></pre>
+</div>
+<p>The (very similar) C code is in the scripts.</p>
+<hr />
+<p><a href="" id="Missing-and-special-values"></a> <a href="" id="Missing-and-special-values-1"></a></p>
+<h4 id="missing-and-special-values" class="subsection">5.10.3 Missing and special values</h4>
+<p><a href="" id="index-Missing-values"></a> <a href="" id="index-IEEE-special-values"></a></p>
+<p>One piece of error-checking the <code class="calibre2">.C</code> call does (unless <code class="calibre2">NAOK</code> is true) is to check for missing (<code class="calibre2">NA</code>) and IEEE special values (<code class="calibre2">Inf</code>, <code class="calibre2">-Inf</code> and <code class="calibre2">NaN</code>) and give an error if any are found. With the <code class="calibre2">.Call</code> interface these will be passed to our code. In this example the special values are no problem, as IEC60559 arithmetic will handle them correctly. In the current implementation this is also true of <code class="calibre2">NA</code> as it is a type of <code class="calibre2">NaN</code>, but it is unwise to rely on such details. Thus we will re-write the code to handle <code class="calibre2">NA</code>s using macros defined in R_ext/Arith.h included by R.h.</p>
+<p>The code changes are the same in any of the versions of <code class="calibre2">convolve2</code> or <code class="calibre2">convolveE</code>:</p>
+<div class="example">
+<pre class="example1"><code>    ...
+  for(int i = 0; i &lt; na; i++)
+    for(int j = 0; j &lt; nb; j++)
+        if(ISNA(xa[i]) || ISNA(xb[j]) || ISNA(xab[i + j]))
+            xab[i + j] = NA_REAL;
+        else
+            xab[i + j] += xa[i] * xb[j];
+    ...</code></pre>
+</div>
+<p><a href="" id="index-ISNA"></a> <a href="" id="index-ISNAN"></a></p>
+<p>Note that the <code class="calibre2">ISNA</code> macro, and the similar macros <code class="calibre2">ISNAN</code> (which checks for <code class="calibre2">NaN</code> or <code class="calibre2">NA</code>) and <code class="calibre2">R_FINITE</code> (which is false for <code class="calibre2">NA</code> and all the special values), only apply to numeric values of type <code class="calibre2">double</code>. Missingness of integers, logicals and character strings can be tested by equality to the constants <code class="calibre2">NA_INTEGER</code>, <code class="calibre2">NA_LOGICAL</code> and <code class="calibre2">NA_STRING</code>. These and <code class="calibre2">NA_REAL</code> can be used to set elements of R vectors to <code class="calibre2">NA</code>.</p>
+<p>The constants <code class="calibre2">R_NaN</code>, <code class="calibre2">R_PosInf</code> and <code class="calibre2">R_NegInf</code> can be used to set <code class="calibre2">double</code>s to the special values.</p>
+<hr />
+<p><a href="" id="Evaluating-R-expressions-from-C"></a> <a href="" id="Evaluating-R-expressions-from-C-1"></a></p>
+<h3 id="evaluating-r-expressions-from-c" class="section">5.11 Evaluating R expressions from C</h3>
+<p><a href="" id="index-Evaluating-R-expressions-from-C"></a></p>
+<p>The main function we will use is</p>
+<div class="example">
+<pre class="example1"><code>SEXP eval(SEXP expr, SEXP rho);</code></pre>
+</div>
+<p>the equivalent of the interpreted R code <code class="calibre2">eval(expr, envir = rho)</code> (so <code class="calibre2">rho</code> must be an environment), although we can also make use of <code class="calibre2">findVar</code>, <code class="calibre2">defineVar</code> and <code class="calibre2">findFun</code> (which restricts the search to functions).</p>
+<p>To see how this might be applied, here is a simplified internal version of <code class="calibre2">lapply</code> for expressions, used as</p>
+<div class="example">
+<pre class="example1"><code>a &lt;- list(a = 1:5, b = rnorm(10), test = runif(100))
+.Call(&quot;lapply&quot;, a, quote(sum(x)), new.env())</code></pre>
+</div>
+<p>with C code</p>
+<div class="example">
+<pre class="example1"><code>SEXP lapply(SEXP list, SEXP expr, SEXP rho)
+{
+    int n = length(list);
+    SEXP ans;
+
+    if(!isNewList(list)) error(&quot;&#39;list&#39; must be a list&quot;);
+    if(!isEnvironment(rho)) error(&quot;&#39;rho&#39; should be an environment&quot;);
+    ans = PROTECT(allocVector(VECSXP, n));
+    for(int i = 0; i &lt; n; i++) {
+        defineVar(install(&quot;x&quot;), VECTOR_ELT(list, i), rho);
+        SET_VECTOR_ELT(ans, i, eval(expr, rho));
+    }
+    setAttrib(ans, R_NamesSymbol, getAttrib(list, R_NamesSymbol));
+    UNPROTECT(1);
+    return ans;
+}</code></pre>
+</div>
+<p>It would be closer to <code class="calibre2">lapply</code> if we could pass in a function rather than an expression. One way to do this is <em>via</em> interpreted R code as in the next example, but it is possible (if somewhat obscure) to do this in C code. The following is based on the code in src/main/optimize.c.</p>
+<div class="example">
+<pre class="example1"><code>SEXP lapply2(SEXP list, SEXP fn, SEXP rho)
+{
+    int n = length(list);
+    SEXP R_fcall, ans;
+
+    if(!isNewList(list)) error(&quot;&#39;list&#39; must be a list&quot;);
+    if(!isFunction(fn)) error(&quot;&#39;fn&#39; must be a function&quot;);
+    if(!isEnvironment(rho)) error(&quot;&#39;rho&#39; should be an environment&quot;);
+    R_fcall = PROTECT(lang2(fn, R_NilValue));
+    ans = PROTECT(allocVector(VECSXP, n));
+    for(int i = 0; i &lt; n; i++) {
+        SETCADR(R_fcall, VECTOR_ELT(list, i));
+        SET_VECTOR_ELT(ans, i, eval(R_fcall, rho));
+    }
+    setAttrib(ans, R_NamesSymbol, getAttrib(list, R_NamesSymbol));
+    UNPROTECT(2);
+    return ans;
+}</code></pre>
+</div>
+<p>used by</p>
+<div class="example">
+<pre class="example1"><code>.Call(&quot;lapply2&quot;, a, sum, new.env())</code></pre>
+</div>
+<p>Function <code class="calibre2">lang2</code> creates an executable pairlist of two elements, but this will only be clear to those with a knowledge of a LISP-like language.</p>
+<p>As a more comprehensive example of constructing an R call in C code and evaluating, consider the following fragment of <code class="calibre2">printAttributes</code> in src/main/print.c.</p>
+<div class="example">
+<pre class="example1"><code>    /* Need to construct a call to
+       print(CAR(a), digits=digits)
+       based on the R_print structure, then eval(call, env).
+       See do_docall for the template for this sort of thing.
+    */
+    SEXP s, t;
+    t = s = PROTECT(allocList(3));
+    SET_TYPEOF(s, LANGSXP);
+    SETCAR(t, install(&quot;print&quot;)); t = CDR(t);
+    SETCAR(t,  CAR(a)); t = CDR(t);
+    SETCAR(t, ScalarInteger(digits));
+    SET_TAG(t, install(&quot;digits&quot;));
+    eval(s, env);
+    UNPROTECT(1);</code></pre>
+</div>
+<p>At this point <code class="calibre2">CAR(a)</code> is the R object to be printed, the current attribute. There are three steps: the call is constructed as a pairlist of length 3, the list is filled in, and the expression represented by the pairlist is evaluated.</p>
+<p>A pairlist is quite distinct from a generic vector list, the only user-visible form of list in R. A pairlist is a linked list (with <code class="calibre2">CDR(t)</code> computing the next entry), with items (accessed by <code class="calibre2">CAR(t)</code>) and names or tags (set by <code class="calibre2">SET_TAG</code>). In this call there are to be three items, a symbol (pointing to the function to be called) and two argument values, the first unnamed and the second named. Setting the type to <code class="calibre2">LANGSXP</code> makes this a call which can be evaluated.</p>
+<hr />
+<p><a href="" id="Zero_002dfinding"></a> <a href="" id="Zero_002dfinding-1"></a></p>
+<h4 id="zero-finding" class="subsection">5.11.1 Zero-finding</h4>
+<p><a href="" id="index-Zero_002dfinding"></a></p>
+<p>In this section we re-work the example of Becker, Chambers &amp; Wilks (1988, pp.~205–10) on finding a zero of a univariate function. The R code and an example are</p>
+<div class="example">
+<pre class="example1"><code>zero &lt;- function(f, guesses, tol = 1e-7) {
+    f.check &lt;- function(x) {
+        x &lt;- f(x)
+        if(!is.numeric(x)) stop(&quot;Need a numeric result&quot;)
+        as.double(x)
+    }
+    .Call(&quot;zero&quot;, body(f.check), as.double(guesses), as.double(tol),
+          new.env())
+}
+
+cube1 &lt;- function(x) (x^2 + 1) * (x - 1.5)
+zero(cube1, c(0, 5))</code></pre>
+</div>
+<p>where this time we do the coercion and error-checking in the R code. The C code is</p>
+<div class="example">
+<pre class="example1"><code>SEXP mkans(double x)
+{
+    // no need for PROTECT() here, as REAL(.) does not allocate:
+    SEXP ans = allocVector(REALSXP, 1);
+    REAL(ans)[0] = x;
+    return ans;
+}</code></pre>
+<pre class="example1"><code></code></pre>
+<pre class="example1"><code>double feval(double x, SEXP f, SEXP rho)
+{
+    // a version with (too) much PROTECT()ion .. &quot;better safe than sorry&quot;
+    SEXP symbol, value;
+    PROTECT(symbol = install(&quot;x&quot;));
+    PROTECT(value = mkans(x));
+    defineVar(symbol, value, rho);
+    UNPROTECT(2);
+    return(REAL(eval(f, rho))[0]);
+}</code></pre>
+<pre class="example1"><code></code></pre>
+<pre class="example1"><code>SEXP zero(SEXP f, SEXP guesses, SEXP stol, SEXP rho)
+{
+    double x0 = REAL(guesses)[0], x1 = REAL(guesses)[1],
+           tol = REAL(stol)[0];
+    double f0, f1, fc, xc;</code></pre>
+<pre class="example1"><code></code></pre>
+<pre class="example1"><code>    if(tol &lt;= 0.0) error(&quot;non-positive tol value&quot;);
+    f0 = feval(x0, f, rho); f1 = feval(x1, f, rho);
+    if(f0 == 0.0) return mkans(x0);
+    if(f1 == 0.0) return mkans(x1);
+    if(f0*f1 &gt; 0.0) error(&quot;x[0] and x[1] have the same sign&quot;);</code></pre>
+<pre class="example1"><code></code></pre>
+<pre class="example1"><code>    for(;;) {
+        xc = 0.5*(x0+x1);
+        if(fabs(x0-x1) &lt; tol) return  mkans(xc);
+        fc = feval(xc, f, rho);
+        if(fc == 0) return  mkans(xc);
+        if(f0*fc &gt; 0.0) {
+            x0 = xc; f0 = fc;
+        } else {
+            x1 = xc; f1 = fc;
+        }
+    }
+}</code></pre>
+</div>
+<hr />
+<p><a href="" id="Calculating-numerical-derivatives"></a> <a href="" id="Calculating-numerical-derivatives-1"></a></p>
+<h4 id="calculating-numerical-derivatives" class="subsection">5.11.2 Calculating numerical derivatives</h4>
+<p><a href="" id="index-Numerical-derivatives"></a></p>
+<p>We will use a longer example (by Saikat DebRoy) to illustrate the use of evaluation and <code class="calibre2">.External</code>. This calculates numerical derivatives, something that could be done as effectively in interpreted R code but may be needed as part of a larger C calculation.</p>
+<p>An interpreted R version and an example are</p>
+<div class="example">
+<pre class="example1"><code>numeric.deriv &lt;- function(expr, theta, rho=sys.frame(sys.parent()))
+{
+    eps &lt;- sqrt(.Machine$double.eps)
+    ans &lt;- eval(substitute(expr), rho)
+    grad &lt;- matrix(, length(ans), length(theta),
+                   dimnames=list(NULL, theta))
+    for (i in seq_along(theta)) {
+        old &lt;- get(theta[i], envir=rho)
+        delta &lt;- eps * max(1, abs(old))
+        assign(theta[i], old+delta, envir=rho)
+        ans1 &lt;- eval(substitute(expr), rho)
+        assign(theta[i], old, envir=rho)
+        grad[, i] &lt;- (ans1 - ans)/delta
+    }
+    attr(ans, &quot;gradient&quot;) &lt;- grad
+    ans
+}
+omega &lt;- 1:5; x &lt;- 1; y &lt;- 2
+numeric.deriv(sin(omega*x*y), c(&quot;x&quot;, &quot;y&quot;))</code></pre>
+</div>
+<p>where <code class="calibre2">expr</code> is an expression, <code class="calibre2">theta</code> a character vector of variable names and <code class="calibre2">rho</code> the environment to be used.</p>
+<p>For the compiled version the call from R will be</p>
+<div class="example">
+<pre class="example1"><code>.External(&quot;numeric_deriv&quot;, expr, theta, rho)</code></pre>
+</div>
+<p>with example usage</p>
+<div class="example">
+<pre class="example1"><code>.External(&quot;numeric_deriv&quot;, quote(sin(omega*x*y)),
+          c(&quot;x&quot;, &quot;y&quot;), .GlobalEnv)</code></pre>
+</div>
+<p>Note the need to quote the expression to stop it being evaluated in the caller.</p>
+<p>Here is the complete C code which we will explain section by section.</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;R.h&gt; /* for DOUBLE_EPS */
+#include &lt;Rinternals.h&gt;
+
+SEXP numeric_deriv(SEXP args)
+{
+    SEXP theta, expr, rho, ans, ans1, gradient, par, dimnames;
+    double tt, xx, delta, eps = sqrt(DOUBLE_EPS), *rgr, *rans;
+    int i, start;</code></pre>
+<pre class="example1"><code></code></pre>
+<pre class="example1"><code>    expr = CADR(args);
+    if(!isString(theta = CADDR(args)))
+        error(&quot;theta should be of type character&quot;);
+    if(!isEnvironment(rho = CADDDR(args)))
+        error(&quot;rho should be an environment&quot;);</code></pre>
+<pre class="example1"><code></code></pre>
+<pre class="example1"><code>    ans = PROTECT(coerceVector(eval(expr, rho), REALSXP));
+    gradient = PROTECT(allocMatrix(REALSXP, LENGTH(ans), LENGTH(theta)));
+    rgr = REAL(gradient); rans = REAL(ans);</code></pre>
+<pre class="example1"><code></code></pre>
+<pre class="example1"><code>    for(i = 0, start = 0; i &lt; LENGTH(theta); i++, start += LENGTH(ans)) {
+        par = PROTECT(findVar(installChar(STRING_ELT(theta, i)), rho));
+        tt = REAL(par)[0];
+        xx = fabs(tt);
+        delta = (xx &lt; 1) ? eps : xx*eps;
+        REAL(par)[0] += delta;
+        ans1 = PROTECT(coerceVector(eval(expr, rho), REALSXP));
+        for(int j = 0; j &lt; LENGTH(ans); j++)
+            rgr[j + start] = (REAL(ans1)[j] - rans[j])/delta;
+        REAL(par)[0] = tt;
+        UNPROTECT(2); /* par, ans1 */
+    }</code></pre>
+<pre class="example1"><code></code></pre>
+<pre class="example1"><code>    dimnames = PROTECT(allocVector(VECSXP, 2));
+    SET_VECTOR_ELT(dimnames, 1,  theta);
+    dimnamesgets(gradient, dimnames);
+    setAttrib(ans, install(&quot;gradient&quot;), gradient);
+    UNPROTECT(3); /* ans  gradient  dimnames */
+    return ans;
+}</code></pre>
+</div>
+<p>The code to handle the arguments is</p>
+<div class="example">
+<pre class="example1"><code>    expr = CADR(args);
+    if(!isString(theta = CADDR(args)))
+        error(&quot;theta should be of type character&quot;);
+    if(!isEnvironment(rho = CADDDR(args)))
+        error(&quot;rho should be an environment&quot;);</code></pre>
+</div>
+<p>Note that we check for correct types of <code class="calibre2">theta</code> and <code class="calibre2">rho</code> but do not check the type of <code class="calibre2">expr</code>. That is because <code class="calibre2">eval</code> can handle many types of R objects other than <code class="calibre2">EXPRSXP</code>. There is no useful coercion we can do, so we stop with an error message if the arguments are not of the correct mode.</p>
+<p>The first step in the code is to evaluate the expression in the environment <code class="calibre2">rho</code>, by</p>
+<div class="example">
+<pre class="example1"><code>    ans = PROTECT(coerceVector(eval(expr, rho), REALSXP));</code></pre>
+</div>
+<p>We then allocate space for the calculated derivative by</p>
+<div class="example">
+<pre class="example1"><code>    gradient = PROTECT(allocMatrix(REALSXP, LENGTH(ans), LENGTH(theta)));</code></pre>
+</div>
+<p>The first argument to <code class="calibre2">allocMatrix</code> gives the <code class="calibre2">SEXPTYPE</code> of the matrix: here we want it to be <code class="calibre2">REALSXP</code>. The other two arguments are the numbers of rows and columns. (Note that <code class="calibre2">LENGTH</code> is intended to be used for vectors: <code class="calibre2">length</code> is more generally applicable.)</p>
+<div class="example">
+<pre class="example1"><code>    for(i = 0, start = 0; i &lt; LENGTH(theta); i++, start += LENGTH(ans)) {
+        par = PROTECT(findVar(installChar(STRING_ELT(theta, i)), rho));</code></pre>
+</div>
+<p>Here, we are entering a for loop. We loop through each of the variables. In the <code class="calibre2">for</code> loop, we first create a symbol corresponding to the <code class="calibre2">i</code>’th element of the <code class="calibre2">STRSXP</code> <code class="calibre2">theta</code>. Here, <code class="calibre2">STRING_ELT(theta, i)</code> accesses the <code class="calibre2">i</code>’th element of the <code class="calibre2">STRSXP</code> <code class="calibre2">theta</code>. Macro <code class="calibre2">CHAR()</code> extracts the actual character representation<a href="concept-index.html#FOOT135" id="DOCF135"><sup>135</sup></a> of it: it returns a pointer. We then install the name and use <code class="calibre2">findVar</code> to find its value.</p>
+<div class="example">
+<pre class="example1"><code>        tt = REAL(par)[0];
+        xx = fabs(tt);
+        delta = (xx &lt; 1) ? eps : xx*eps;
+        REAL(par)[0] += delta;
+        ans1 = PROTECT(coerceVector(eval(expr, rho), REALSXP));</code></pre>
+</div>
+<p>We first extract the real value of the parameter, then calculate <code class="calibre2">delta</code>, the increment to be used for approximating the numerical derivative. Then we change the value stored in <code class="calibre2">par</code> (in environment <code class="calibre2">rho</code>) by <code class="calibre2">delta</code> and evaluate <code class="calibre2">expr</code> in environment <code class="calibre2">rho</code> again. Because we are directly dealing with original R memory locations here, R does the evaluation for the changed parameter value.</p>
+<div class="example">
+<pre class="example1"><code>        for(int j = 0; j &lt; LENGTH(ans); j++)
+            rgr[j + start] = (REAL(ans1)[j] - rans[j])/delta;
+        REAL(par)[0] = tt;
+        UNPROTECT(2);
+    }</code></pre>
+</div>
+<p>Now, we compute the <code class="calibre2">i</code>’th column of the gradient matrix. Note how it is accessed: R stores matrices by column (like FORTRAN).</p>
+<div class="example">
+<pre class="example1"><code>    dimnames = PROTECT(allocVector(VECSXP, 2));
+    SET_VECTOR_ELT(dimnames, 1, theta);
+    dimnamesgets(gradient, dimnames);
+    setAttrib(ans, install(&quot;gradient&quot;), gradient);
+    UNPROTECT(3);
+    return ans;
+}</code></pre>
+</div>
+<p>First we add column names to the gradient matrix. This is done by allocating a list (a <code class="calibre2">VECSXP</code>) whose first element, the row names, is <code class="calibre2">NULL</code> (the default) and the second element, the column names, is set as <code class="calibre2">theta</code>. This list is then assigned as the attribute having the symbol <code class="calibre2">R_DimNamesSymbol</code>. Finally we set the gradient matrix as the gradient attribute of <code class="calibre2">ans</code>, unprotect the remaining protected locations and return the answer <code class="calibre2">ans</code>.</p>
+<hr />
+<p><a href="" id="Parsing-R-code-from-C"></a> <a href="" id="Parsing-R-code-from-C-1"></a></p>
+<h3 id="parsing-r-code-from-c" class="section">5.12 Parsing R code from C</h3>
+<p><a href="" id="index-Parsing-R-code-from-C"></a></p>
+<p>Suppose an R extension want to accept an R expression from the user and evaluate it. The previous section covered evaluation, but the expression will be entered as text and needs to be parsed first. A small part of R’s parse interface is declared in header file R_ext/Parse.h<a href="concept-index.html#FOOT136" id="DOCF136"><sup>136</sup></a>.</p>
+<p>An example of the usage can be found in the (example) Windows package <strong>windlgs</strong> included in the R source tree. The essential part is</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;R.h&gt;
+#include &lt;Rinternals.h&gt;
+#include &lt;R_ext/Parse.h&gt;
+
+SEXP menu_ttest3()
+{
+    char cmd[256];
+    SEXP cmdSexp, cmdexpr, ans = R_NilValue;
+    ParseStatus status;
+   ...
+    if(done == 1) {
+        cmdSexp = PROTECT(allocVector(STRSXP, 1));
+        SET_STRING_ELT(cmdSexp, 0, mkChar(cmd));
+        cmdexpr = PROTECT(R_ParseVector(cmdSexp, -1, &amp;status, R_NilValue));
+        if (status != PARSE_OK) {
+            UNPROTECT(2);
+            error(&quot;invalid call %s&quot;, cmd);
+        }
+        /* Loop is needed here as EXPSEXP will be of length &gt; 1 */
+        for(int i = 0; i &lt; length(cmdexpr); i++)
+            ans = eval(VECTOR_ELT(cmdexpr, i), R_GlobalEnv);
+        UNPROTECT(2);
+    }
+    return ans;
+}</code></pre>
+</div>
+<p>Note that a single line of text may give rise to more than one R expression.</p>
+<p><a href="" id="index-R_005fParseVector"></a></p>
+<p><code class="calibre2">R_ParseVector</code> is essentially the code used to implement <code class="calibre2">parse(text=)</code> at R level. The first argument is a character vector (corresponding to <code class="calibre2">text</code>) and the second the maximal number of expressions to parse (corresponding to <code class="calibre2">n</code>). The third argument is a pointer to a variable of an enumeration type, and it is normal (as <code class="calibre2">parse</code> does) to regard all values other than <code class="calibre2">PARSE_OK</code> as an error. Other values which might be returned are <code class="calibre2">PARSE_INCOMPLETE</code> (an incomplete expression was found) and <code class="calibre2">PARSE_ERROR</code> (a syntax error), in both cases the value returned being <code class="calibre2">R_NilValue</code>. The fourth argument is a length one character vector to be used as a filename in error messages, a <code class="calibre2">srcfile</code> object or the R <code class="calibre2">NULL</code> object (as in the example above). If a <code class="calibre2">srcfile</code> object was used, a <code class="calibre2">srcref</code> attribute would be attached to the result, containing a list of <code class="calibre2">srcref</code> objects of the same length as the expression, to allow it to be echoed with its original formatting.</p>
+<hr />
+<p><a href="" id="Accessing-source-references"></a> <a href="" id="Accessing-source-references-1"></a></p>
+<h4 id="accessing-source-references" class="subsection">5.12.1 Accessing source references</h4>
+<p>The source references added by the parser are recorded by R’s evaluator as it evaluates code. Two functions make these available to debuggers running C code: <a href="" id="index-R_005fSrcref"></a> <a href="" id="index-R_005fGetCurrentSrcref"></a> <a href="" id="index-R_005fGetSrcFilename"></a></p>
+<div class="example">
+<pre class="example1"><code>SEXP R_GetCurrentSrcref(int skip);</code></pre>
+</div>
+<p>This function checks <code class="calibre2">R_Srcref</code> and the current evaluation stack for entries that contain source reference information. The <code class="calibre2">skip</code> argument tells how many source references to skip before returning the <code class="calibre2">SEXP</code> of the <code class="calibre2">srcref</code> object, counting from the top of the stack. If <code class="calibre2">skip &lt; 0</code>, <code class="calibre2">abs(skip)</code> locations are counted up from the bottom of the stack. If too few or no source references are found, <code class="calibre2">NULL</code> is returned.</p>
+<div class="example">
+<pre class="example1"><code>SEXP R_GetSrcFilename(SEXP srcref);</code></pre>
+</div>
+<p>This function extracts the filename from the source reference for display, returning a length 1 character vector containing the filename. If no name is found, <code class="calibre2">&quot;&quot;</code> is returned.</p>
+<hr />
+<p><a href="" id="External-pointers-and-weak-references"></a> <a href="" id="External-pointers-and-weak-references-1"></a></p>
+<h3 id="external-pointers-and-weak-references" class="section">5.13 External pointers and weak references</h3>
+<p>The <code class="calibre2">SEXPTYPE</code>s <code class="calibre2">EXTPTRSXP</code> and <code class="calibre2">WEAKREFSXP</code> can be encountered at R level, but are created in C code.</p>
+<p><a href="" id="index-external-pointer"></a></p>
+<p>External pointer <code class="calibre2">SEXP</code>s are intended to handle references to C structures such as ‘handles’, and are used for this purpose in package <a href="https://CRAN.R-project.org/package=RODBC"><strong>RODBC</strong></a> for example. They are unusual in their copying semantics in that when an R object is copied, the external pointer object is not duplicated. (For this reason external pointers should only be used as part of an object with normal semantics, for example an attribute or an element of a list.)</p>
+<p>An external pointer is created by</p>
+<div class="example">
+<pre class="example1"><code>SEXP R_MakeExternalPtr(void *p, SEXP tag, SEXP prot);</code></pre>
+</div>
+<p>where <code class="calibre2">p</code> is the pointer (and hence this cannot portably be a function pointer), and <code class="calibre2">tag</code> and <code class="calibre2">prot</code> are references to ordinary R objects which will remain in existence (be protected from garbage collection) for the lifetime of the external pointer object. A useful convention is to use the <code class="calibre2">tag</code> field for some form of type identification and the <code class="calibre2">prot</code> field for protecting the memory that the external pointer represents, if that memory is allocated from the R heap. Both <code class="calibre2">tag</code> and <code class="calibre2">prot</code> can be <code class="calibre2">R_NilValue</code>, and often are.</p>
+<p>An alternative way as from R 3.4.0 to create an external pointer from a function pointer is</p>
+<div class="example">
+<pre class="example1"><code>typedef void * (*R_DL_FUNC)();
+SEXP R_MakeExternalPtrFn(R_DL_FUNC p, SEXP tag, SEXP prot);</code></pre>
+</div>
+<p>The elements of an external pointer can be accessed and set <em>via</em></p>
+<div class="example">
+<pre class="example1"><code>void *R_ExternalPtrAddr(SEXP s);
+DL_FUNC R_ExternalPtrAddrFn(SEXP s);
+SEXP R_ExternalPtrTag(SEXP s);
+SEXP R_ExternalPtrProtected(SEXP s);
+void R_ClearExternalPtr(SEXP s);
+void R_SetExternalPtrAddr(SEXP s, void *p);
+void R_SetExternalPtrTag(SEXP s, SEXP tag);
+void R_SetExternalPtrProtected(SEXP s, SEXP p);</code></pre>
+</div>
+<p>Clearing a pointer sets its value to the C <code class="calibre2">NULL</code> pointer.</p>
+<p><a href="" id="index-finalizer"></a></p>
+<p>An external pointer object can have a <em>finalizer</em>, a piece of code to be run when the object is garbage collected. This can be R code or C code, and the various interfaces are, respectively.</p>
+<div class="example">
+<pre class="example1"><code>void R_RegisterFinalizerEx(SEXP s, SEXP fun, Rboolean onexit);
+
+typedef void (*R_CFinalizer_t)(SEXP);
+void R_RegisterCFinalizerEx(SEXP s, R_CFinalizer_t fun, Rboolean onexit);</code></pre>
+</div>
+<p>The R function indicated by <code class="calibre2">fun</code> should be a function of a single argument, the object to be finalized. R does not perform a garbage collection when shutting down, and the <code class="calibre2">onexit</code> argument of the extended forms can be used to ask that the finalizer be run during a normal shutdown of the R session. It is suggested that it is good practice to clear the pointer on finalization.</p>
+<p>The only R level function for interacting with external pointers is <code class="calibre2">reg.finalizer</code> which can be used to set a finalizer.</p>
+<p>It is probably not a good idea to allow an external pointer to be <code class="calibre2">save</code>d and then reloaded, but if this happens the pointer will be set to the C <code class="calibre2">NULL</code> pointer.</p>
+<p>Finalizers can be run at many places in the code base and much of it, including the R interpreter, is not re-entrant. So great care is needed in choosing the code to be run in a finalizer. Finalizers are marked to be run at garbage collection but only run at a somewhat safe point thereafter.</p>
+<p><a href="" id="index-weak-reference"></a></p>
+<p>Weak references are used to allow the programmer to maintain information on entities without preventing the garbage collection of the entities once they become unreachable.</p>
+<p>A weak reference contains a key and a value. The value is reachable is if it either reachable directly or <em>via</em> weak references with reachable keys. Once a value is determined to be unreachable during garbage collection, the key and value are set to <code class="calibre2">R_NilValue</code> and the finalizer will be run later in the garbage collection.</p>
+<p>Weak reference objects are created by one of</p>
+<div class="example">
+<pre class="example1"><code>SEXP R_MakeWeakRef(SEXP key, SEXP val, SEXP fin, Rboolean onexit);
+SEXP R_MakeWeakRefC(SEXP key, SEXP val, R_CFinalizer_t fin,
+                    Rboolean onexit);</code></pre>
+</div>
+<p>where the R or C finalizer are specified in exactly the same way as for an external pointer object (whose finalization interface is implemented <em>via</em> weak references).</p>
+<p>The parts can be accessed <em>via</em></p>
+<div class="example">
+<pre class="example1"><code>SEXP R_WeakRefKey(SEXP w);
+SEXP R_WeakRefValue(SEXP w);
+void R_RunWeakRefFinalizer(SEXP w);</code></pre>
+</div>
+<p>A toy example of the use of weak references can be found at <a href="http://homepage.stat.uiowa.edu/~luke/R/references/weakfinex.html"><code class="calibre2">homepage.stat.uiowa.edu/~luke/R/references/weakfinex.html</code></a>, but that is used to add finalizers to external pointers which can now be done more directly. At the time of writing no CRAN or Bioconductor package uses weak references.</p>
+<hr />
+<p><a href="" id="An-external-pointer-example"></a> <a href="" id="An-example-2"></a></p>
+<h4 id="an-example" class="subsection">5.13.1 An example</h4>
+<p>Package <a href="https://CRAN.R-project.org/package=RODBC"><strong>RODBC</strong></a> uses external pointers to maintain its <em>channels</em>, connections to databases. There can be several connections open at once, and the status information for each is stored in a C structure (pointed to by <code class="calibre2">thisHandle</code> in the code extract below) that is returned <em>via</em> an external pointer as part of the RODBC ‘channel’ (as the <code class="calibre2">&quot;handle_ptr&quot;</code> attribute). The external pointer is created by</p>
+<div class="example">
+<pre class="example1"><code>    SEXP ans, ptr;
+    ans = PROTECT(allocVector(INTSXP, 1));
+    ptr = R_MakeExternalPtr(thisHandle, install(&quot;RODBC_channel&quot;), R_NilValue);
+    PROTECT(ptr);
+    R_RegisterCFinalizerEx(ptr, chanFinalizer, TRUE);
+            ...
+    /* return the channel no */
+    INTEGER(ans)[0] = nChannels;
+    /* and the connection string as an attribute */
+    setAttrib(ans, install(&quot;connection.string&quot;), constr);
+    setAttrib(ans, install(&quot;handle_ptr&quot;), ptr);
+    UNPROTECT(3);
+    return ans;</code></pre>
+</div>
+<p>Note the symbol given to identify the usage of the external pointer, and the use of the finalizer. Since the final argument when registering the finalizer is <code class="calibre2">TRUE</code>, the finalizer will be run at the end of the R session (unless it crashes). This is used to close and clean up the connection to the database. The finalizer code is simply</p>
+<div class="example">
+<pre class="example1"><code>static void chanFinalizer(SEXP ptr)
+{
+    if(!R_ExternalPtrAddr(ptr)) return;
+    inRODBCClose(R_ExternalPtrAddr(ptr));
+    R_ClearExternalPtr(ptr); /* not really needed */
+}</code></pre>
+</div>
+<p>Clearing the pointer and checking for a <code class="calibre2">NULL</code> pointer avoids any possibility of attempting to close an already-closed channel.</p>
+<p>R’s connections provide another example of using external pointers, in that case purely to be able to use a finalizer to close and destroy the connection if it is no longer is use.</p>
+<hr />
+<p><a href="" id="Vector-accessor-functions"></a> <a href="" id="Vector-accessor-functions-1"></a></p>
+<h3 id="vector-accessor-functions" class="section">5.14 Vector accessor functions</h3>
+<p>The vector accessors like <code class="calibre2">REAL</code> and <code class="calibre2">INTEGER</code> and <code class="calibre2">VECTOR_ELT</code> are <em>functions</em> when used in R extensions. (For efficiency they are macros when used in the R source code, apart from <code class="calibre2">SET_STRING_ELT</code> and <code class="calibre2">SET_VECTOR_ELT</code> which are always functions.)</p>
+<p>The accessor functions check that they are being used on an appropriate type of <code class="calibre2">SEXP</code>.</p>
+<p>If efficiency is essential, the macro versions of the accessors can be obtained by defining ‘USE_RINTERNALS’ before including Rinternals.h. If you find it necessary to do so, please do test that your code compiles without ‘USE_RINTERNALS’ defined, as this provides a stricter test that the accessors have been used correctly. Note too that the use of ‘USE_RINTERNALS’ when the header is included in C++ code is not supported: doing so may use C99 features which are not necessarily supported by the C++ compiler. Nor is use with Rdefines.h supported.</p>
+<hr />
+<p><a href="" id="Character-encoding-issues"></a> <a href="" id="Character-encoding-issues-1"></a></p>
+<h3 id="character-encoding-issues" class="section">5.15 Character encoding issues</h3>
+<p><a href="" id="index-translateChar"></a> <a href="" id="index-translateCharUTF8"></a></p>
+<p><code class="calibre2">CHARSXP</code>s can be marked as coming from a known encoding (Latin-1 or UTF-8). This is mainly intended for human-readable output, and most packages can just treat such <code class="calibre2">CHARSXP</code>s as a whole. However, if they need to be interpreted as characters or output at C level then it would normally be correct to ensure that they are converted to the encoding of the current locale: this can be done by accessing the data in the <code class="calibre2">CHARSXP</code> by <code class="calibre2">translateChar</code> rather than by <code class="calibre2">CHAR</code>. If re-encoding is needed this allocates memory with <code class="calibre2">R_alloc</code> which thus persists to the end of the <code class="calibre2">.Call</code>/<code class="calibre2">.External</code> call unless <code class="calibre2">vmaxset</code> is used (see <a href="the-r-api-entry-points-for-c-code.html.html#Transient-storage-allocation">Transient storage allocation</a>).</p>
+<p>There is a similar function <code class="calibre2">translateCharUTF8</code> which converts to UTF-8: this has the advantage that a faithful translation is almost always possible (whereas only a few languages can be represented in the encoding of the current locale unless that is UTF-8).</p>
+<p><a href="" id="index-getCharCE"></a> <a href="" id="index-mkCharCE"></a></p>
+<p>There is a public interface to the encoding marked on <code class="calibre2">CHARXSXPs</code> <em>via</em></p>
+<div class="example">
+<pre class="example1"><code>typedef enum {CE_NATIVE, CE_UTF8, CE_LATIN1, CE_SYMBOL, CE_ANY} cetype_t;
+cetype_t getCharCE(SEXP);
+SEXP mkCharCE(const char *, cetype_t);</code></pre>
+</div>
+<p>Only <code class="calibre2">CE_UTF8</code> and <code class="calibre2">CE_LATIN1</code> are marked on <code class="calibre2">CHARSXPs</code> (and so <code class="calibre2">Rf_getCharCE</code> will only return one of the first three), and these should only be used on non-ASCII strings. Value <code class="calibre2">CE_SYMBOL</code> is used internally to indicate Adobe Symbol encoding. Value <code class="calibre2">CE_ANY</code> is used to indicate a character string that will not need re-encoding – this is used for character strings known to be in ASCII, and can also be used as an input parameter where the intention is that the string is treated as a series of bytes. (See the comments under <code class="calibre2">mkChar</code> about the length of input allowed.)</p>
+<p>Function</p>
+<p><a href="" id="index-reEnc"></a></p>
+<div class="example">
+<pre class="example1"><code>const char *reEnc(const char *x, cetype_t ce_in, cetype_t ce_out,
+                  int subst);</code></pre>
+</div>
+<p>can be used to re-encode character strings: like <code class="calibre2">translateChar</code> it returns a string allocated by <code class="calibre2">R_alloc</code>. This can translate from <code class="calibre2">CE_SYMBOL</code> to <code class="calibre2">CE_UTF8</code>, but not conversely. Argument <code class="calibre2">subst</code> controls what to do with untranslatable characters or invalid input: this is done byte-by-byte with <code class="calibre2">1</code> indicates to output hex of the form <code class="calibre2">&lt;a0&gt;</code>, and <code class="calibre2">2</code> to replace by <code class="calibre2">.</code>, with any other value causing the byte to produce no output.</p>
+<p><a href="" id="index-mkCharLenCE"></a></p>
+<p>There is also</p>
+<div class="example">
+<pre class="example1"><code>SEXP mkCharLenCE(const char *, size_t, cetype_t);</code></pre>
+</div>
+<p>to create marked character strings of a given length.</p>
+<hr />
+<p><a href="" id="The-R-API"></a> <a href="" id="The-R-API_003a-entry-points-for-C-code"></a></p>
+<div id="calibre_pb_14" class="calibre6">
+
+</div>
+
+
+

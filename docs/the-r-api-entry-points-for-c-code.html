@@ -1,0 +1,2344 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Writing R extensions</title>
+  <meta name="description" content="Writing R Extensions covers how to create your own packages, write R help files, and the foreign language interfaces.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Writing R extensions" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Writing R Extensions covers how to create your own packages, write R help files, and the foreign language interfaces." />
+  <meta name="github-repo" content="ColinFay/writing-r-extensions" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Writing R extensions" />
+  
+  <meta name="twitter:description" content="Writing R Extensions covers how to create your own packages, write R help files, and the foreign language interfaces." />
+  
+
+<meta name="author" content="R Development Core Team">
+
+
+<meta name="date" content="2017-10-09">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="system-and-foreign-language-interfaces.html">
+<link rel="next" href="generic-functions-and-methods.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-1');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Writing R Extensions</a></li>
+<li class="chapter" data-level="" data-path="acknowledgements.html"><a href="acknowledgements.html"><i class="fa fa-check"></i>Acknowledgements</a></li>
+<li class="chapter" data-level="1" data-path="creating-r-packages.html"><a href="creating-r-packages.html"><i class="fa fa-check"></i><b>1</b> Creating R packages</a></li>
+<li class="chapter" data-level="2" data-path="writing-r-documentation-files.html"><a href="writing-r-documentation-files.html"><i class="fa fa-check"></i><b>2</b> Writing R documentation files</a></li>
+<li class="chapter" data-level="3" data-path="tidying-and-profiling-r-code.html"><a href="tidying-and-profiling-r-code.html"><i class="fa fa-check"></i><b>3</b> Tidying and profiling R code</a></li>
+<li class="chapter" data-level="4" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>4</b> Debugging</a></li>
+<li class="chapter" data-level="5" data-path="system-and-foreign-language-interfaces.html"><a href="system-and-foreign-language-interfaces.html"><i class="fa fa-check"></i><b>5</b> System and foreign language interfaces</a></li>
+<li class="chapter" data-level="6" data-path="the-r-api-entry-points-for-c-code.html"><a href="the-r-api-entry-points-for-c-code.html"><i class="fa fa-check"></i><b>6</b> The R API: entry points for C code</a></li>
+<li class="chapter" data-level="7" data-path="generic-functions-and-methods.html"><a href="generic-functions-and-methods.html"><i class="fa fa-check"></i><b>7</b> Generic functions and methods</a></li>
+<li class="chapter" data-level="8" data-path="linking-guis-and-other-front-ends-to-r.html"><a href="linking-guis-and-other-front-ends-to-r.html"><i class="fa fa-check"></i><b>8</b> Linking GUIs and other front-ends to R</a></li>
+<li class="chapter" data-level="9" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>9</b> Function and variable index</a></li>
+<li class="chapter" data-level="10" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>10</b> Concept index</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Writing R extensions</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="the-r-api-entry-points-for-c-code" class="section level1">
+<h1><span class="header-section-number">Chapter 6</span> The R API: entry points for C code</h1>
+<p>
+There are a large number of entry points in the R executable/DLL that can be called from C code (and some that can be called from FORTRAN code). Only those documented here are stable enough that they will only be changed with considerable notice.
+</p>
+<p>
+The recommended procedure to use these is to include the header file R.h in your C code by
+</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;R.h&gt;</code></pre>
+</div>
+<p>
+This will include several other header files from the directory R_INCLUDE_DIR/R_ext, and there are other header files there that can be included too, but many of the features they contain should be regarded as undocumented and unstable.
+</p>
+<p>
+Most of these header files, including all those included by R.h, can be used from C++ code.
+</p>
+<blockquote>
+<p>
+<strong>Note:</strong> Because R re-maps many of its external names to avoid clashes with user code, it is <em>essential</em> to include the appropriate header files when using these entry points.
+</p>
+</blockquote>
+<p>
+This remapping can cause problems<a href="concept-index.html#FOOT137" id="DOCF137"><sup>137</sup></a>, and can be eliminated by defining <code class="calibre2">R_NO_REMAP</code> and prepending ‘Rf_’ to <em>all</em> the function names used from Rinternals.h and R_ext/Error.h. These problems can usually be avoided by including other headers (such as system headers and those for external software used by the package) before R.h.
+</p>
+<p>
+We can classify the entry points as
+</p>
+<dl>
+<dt>
+<em>API</em>
+</dt>
+<dd>
+<p>
+Entry points which are documented in this manual and declared in an installed header file. These can be used in distributed packages and will only be changed after deprecation.
+</p>
+</dd>
+<dt>
+<em>public</em>
+</dt>
+<dd>
+<p>
+Entry points declared in an installed header file that are exported on all R platforms but are not documented and subject to change without notice.
+</p>
+</dd>
+<dt>
+<em>private</em>
+</dt>
+<dd>
+<p>
+Entry points that are used when building R and exported on all R platforms but are not declared in the installed header files. Do not use these in distributed code.
+</p>
+</dd>
+<dt>
+<em>hidden</em>
+</dt>
+<dd>
+<p>
+Entry points that are where possible (Windows and some modern Unix-alike compilers/loaders when using R as a shared library) not exported.
+</p>
+</dd>
+</dl>
+<hr />
+<p>
+<a href="" id="Memory-allocation"></a> <a href="" id="Memory-allocation-1"></a>
+</p>
+<h3 id="memory-allocation" class="section">
+6.1 Memory allocation
+</h3>
+<p>
+<a href="" id="index-Memory-allocation-from-C"></a>
+</p>
+<p>
+There are two types of memory allocation available to the C programmer, one in which R manages the clean-up and the other in which user has full control (and responsibility).
+</p>
+<hr />
+<p>
+<a href="" id="Transient-storage-allocation"></a> <a href="" id="Transient-storage-allocation-1"></a>
+</p>
+<h4 id="transient-storage-allocation" class="subsection">
+6.1.1 Transient storage allocation
+</h4>
+<p>
+<a href="" id="index-R_005falloc"></a> <a href="" id="index-R_005fallocLD"></a> <a href="" id="index-S_005falloc"></a> <a href="" id="index-S_005frealloc"></a> <a href="" id="index-vmaxget"></a> <a href="" id="index-vmaxset"></a>
+</p>
+<p>
+Here R will reclaim the memory at the end of the call to <code class="calibre2">.C</code>, <code class="calibre2">.Call</code> or <code class="calibre2">.External</code>. Use
+</p>
+<div class="example">
+<pre class="example1"><code>char *R_alloc(size_t n, int size)</code></pre>
+</div>
+<p>
+which allocates n units of size bytes each. A typical usage (from package <strong>stats</strong>) is
+</p>
+<div class="example">
+<pre class="example1"><code>x = (int *) R_alloc(nrows(merge)+2, sizeof(int));</code></pre>
+</div>
+<p>
+(<code class="calibre2">size_t</code> is defined in stddef.h which the header defining <code class="calibre2">R_alloc</code> includes.)
+</p>
+<p>
+There is a similar call, <code class="calibre2">S_alloc</code> (for compatibility with older versions of S) which zeroes the memory allocated,
+</p>
+<div class="example">
+<pre class="example1"><code>char *S_alloc(long n, int size)</code></pre>
+</div>
+<p>
+and
+</p>
+<div class="example">
+<pre class="example1"><code>char *S_realloc(char *p, long new, long old, int size)</code></pre>
+</div>
+<p>
+which changes the allocation size from old to new units, and zeroes the additional units.
+</p>
+<p>
+For compatibility with current versions of S, header S.h (only) defines wrapper macros equivalent to
+</p>
+<div class="example">
+<pre class="example1"><code>type* Salloc(long n, int type)
+type* Srealloc(char *p, long new, long old, int type)</code></pre>
+</div>
+<p>
+This memory is taken from the heap, and released at the end of the <code class="calibre2">.C</code>, <code class="calibre2">.Call</code> or <code class="calibre2">.External</code> call. Users can also manage it, by noting the current position with a call to <code class="calibre2">vmaxget</code> and subsequently clearing memory allocated by a call to <code class="calibre2">vmaxset</code>. An example might be
+</p>
+<div class="example">
+<pre class="example1"><code>void *vmax = vmaxget()
+// a loop involving the use of R_alloc at each iteration
+vmaxset(vmax)</code></pre>
+</div>
+<p>
+This is only recommended for experts.
+</p>
+<p>
+Note that this memory will be freed on error or user interrupt (if allowed: see <a href="the-r-api-entry-points-for-c-code.html#Allowing-interrupts">Allowing interrupts</a>).
+</p>
+<p>
+The memory returned is only guaranteed to be aligned as required for <code class="calibre2">double</code> pointers: take precautions if casting to a pointer which needs more. There is also
+</p>
+<div class="example">
+<pre class="example1"><code>long double *R_allocLD(size_t n)</code></pre>
+</div>
+<p>
+which is guaranteed to have the 16-byte alignment needed for <code class="calibre2">long double</code> pointers on some platforms.
+</p>
+<p>
+These functions should only be used in code called by <code class="calibre2">.C</code> etc, never from front-ends. They are not thread-safe.
+</p>
+<hr />
+<p>
+<a href="" id="User_002dcontrolled-memory"></a> <a href="" id="User_002dcontrolled-memory-1"></a>
+</p>
+<h4 id="user-controlled-memory" class="subsection">
+6.1.2 User-controlled memory
+</h4>
+<p>
+<a href="" id="index-Calloc"></a> <a href="" id="index-Realloc"></a> <a href="" id="index-Free"></a>
+</p>
+<p>
+The other form of memory allocation is an interface to <code class="calibre2">malloc</code>, the interface providing R error handling. This memory lasts until freed by the user and is additional to the memory allocated for the R workspace.
+</p>
+<p>
+The interface functions are
+</p>
+<div class="example">
+<pre class="example1"><code>type* Calloc(size_t n, type)
+type* Realloc(any *p, size_t n, type)
+void Free(any *p)</code></pre>
+</div>
+<p>
+providing analogues of <code class="calibre2">calloc</code>, <code class="calibre2">realloc</code> and <code class="calibre2">free</code>. If there is an error during allocation it is handled by R, so if these routines return the memory has been successfully allocated or freed. <code class="calibre2">Free</code> will set the pointer p to <code class="calibre2">NULL</code>. (Some but not all versions of S do so.)
+</p>
+<p>
+Users should arrange to <code class="calibre2">Free</code> this memory when no longer needed, including on error or user interrupt. This can often be done most conveniently from an <code class="calibre2">on.exit</code> action in the calling R function – see <code class="calibre2">pwilcox</code> for an example.
+</p>
+<p>
+Do not assume that memory allocated by <code class="calibre2">Calloc</code>/<code class="calibre2">Realloc</code> comes from the same pool as used by <code class="calibre2">malloc</code>: in particular do not use <code class="calibre2">free</code> or <code class="calibre2">strdup</code> with it.
+</p>
+<p>
+Memory obtained by these functions should be aligned in the same way as <code class="calibre2">malloc</code>, that is ‘suitably aligned for any kind of variable’.
+</p>
+<p>
+These entry points need to be prefixed by <code class="calibre2">R_</code> if <code class="calibre2">STRICT_R_HEADERS</code> has been defined.
+</p>
+<hr />
+<p>
+<a href="" id="Error-handling"></a> <a href="" id="Error-handling-1"></a>
+</p>
+<h3 id="error-handling" class="section">
+6.2 Error handling
+</h3>
+<p>
+<a href="" id="index-Error-handling-from-C"></a>
+</p>
+<p>
+The basic error handling routines are the equivalents of <code class="calibre2">stop</code> and <code class="calibre2">warning</code> in R code, and use the same interface.
+</p>
+<div class="example">
+<pre class="example1"><code>void error(const char * format, ...);
+void warning(const char * format, ...);</code></pre>
+</div>
+<p>
+These have the same call sequences as calls to <code class="calibre2">printf</code>, but in the simplest case can be called with a single character string argument giving the error message. (Don’t do this if the string contains ‘%’ or might otherwise be interpreted as a format.)
+</p>
+<p>
+If <code class="calibre2">STRICT_R_HEADERS</code> is not defined there is also an S-compatibility interface which uses calls of the form
+</p>
+<div class="example">
+<pre class="example1"><code>PROBLEM ...... ERROR
+MESSAGE ...... WARN
+PROBLEM ...... RECOVER(NULL_ENTRY)
+MESSAGE ...... WARNING(NULL_ENTRY)</code></pre>
+</div>
+<p>
+the last two being the forms available in all S versions. Here ‘……’ is a set of arguments to <code class="calibre2">printf</code>, so can be a string or a format string followed by arguments separated by commas.
+</p>
+<hr />
+<p>
+<a href="" id="Error-handling-from-FORTRAN"></a> <a href="" id="Error-handling-from-FORTRAN-1"></a>
+</p>
+<h4 id="error-handling-from-fortran" class="subsection">
+6.2.1 Error handling from FORTRAN
+</h4>
+<p>
+<a href="" id="index-Error-handling-from-FORTRAN"></a>
+</p>
+<p>
+There are two interface function provided to call <code class="calibre2">error</code> and <code class="calibre2">warning</code> from FORTRAN code, in each case with a simple character string argument. They are defined as
+</p>
+<div class="example">
+<pre class="example1"><code>subroutine rexit(message)
+subroutine rwarn(message)</code></pre>
+</div>
+<p>
+Messages of more than 255 characters are truncated, with a warning.
+</p>
+<hr />
+<p>
+<a href="" id="Random-numbers"></a> <a href="" id="Random-number-generation"></a>
+</p>
+<h3 id="random-number-generation" class="section">
+6.3 Random number generation
+</h3>
+<p>
+<a href="" id="index-Random-numbers-in-C"></a> <a href="" id="index-unif_005frand"></a> <a href="" id="index-norm_005frand"></a> <a href="" id="index-exp_005frand"></a> <a href="" id="index-GetRNGstate"></a> <a href="" id="index-PutRNGstate"></a> <a href="" id="index-_002eRandom_002eseed"></a> <a href="" id="index-seed_005fin"></a> <a href="" id="index-seed_005fout"></a>
+</p>
+<p>
+The interface to R’s internal random number generation routines is
+</p>
+<div class="example">
+<pre class="example1"><code>double unif_rand();
+double norm_rand();
+double exp_rand();</code></pre>
+</div>
+<p>
+giving one uniform, normal or exponential pseudo-random variate. However, before these are used, the user must call
+</p>
+<div class="example">
+<pre class="example1"><code>GetRNGstate();</code></pre>
+</div>
+<p>
+and after all the required variates have been generated, call
+</p>
+<div class="example">
+<pre class="example1"><code>PutRNGstate();</code></pre>
+</div>
+<p>
+These essentially read in (or create) <code class="calibre2">.Random.seed</code> and write it out after use.
+</p>
+<p>
+File S.h defines <code class="calibre2">seed_in</code> and <code class="calibre2">seed_out</code> for S-compatibility rather than <code class="calibre2">GetRNGstate</code> and <code class="calibre2">PutRNGstate</code>. These take a <code class="calibre2">long *</code> argument which is ignored.
+</p>
+<p>
+The random number generator is private to R; there is no way to select the kind of RNG or set the seed except by evaluating calls to the R functions.
+</p>
+<p>
+The C code behind R’s <code class="calibre2">rxxx</code> functions can be accessed by including the header file Rmath.h; See <a href="the-r-api-entry-points-for-c-code.html#Distribution-functions">Distribution functions</a>. Those calls generate a single variate and should also be enclosed in calls to <code class="calibre2">GetRNGstate</code> and <code class="calibre2">PutRNGstate</code>.
+</p>
+<hr />
+<p>
+<a href="" id="Missing-and-IEEE-values"></a> <a href="" id="Missing-and-IEEE-special-values"></a>
+</p>
+<h3 id="missing-and-ieee-special-values" class="section">
+6.4 Missing and IEEE special values
+</h3>
+<p>
+<a href="" id="index-Missing-values-1"></a> <a href="" id="index-IEEE-special-values-1"></a> <a href="" id="index-ISNA-1"></a> <a href="" id="index-ISNAN-1"></a> <a href="" id="index-R_005fFINITE"></a> <a href="" id="index-R_005fIsNaN"></a> <a href="" id="index-R_005fPosInf"></a> <a href="" id="index-R_005fNegInf"></a> <a href="" id="index-NA_005fREAL"></a>
+</p>
+<p>
+A set of functions is provided to test for <code class="calibre2">NA</code>, <code class="calibre2">Inf</code>, <code class="calibre2">-Inf</code> and <code class="calibre2">NaN</code>. These functions are accessed <em>via</em> macros:
+</p>
+<div class="example">
+<pre class="example1"><code>ISNA(x)        True for R’s NA only
+ISNAN(x)       True for R’s NA and IEEE NaN
+R_FINITE(x)    False for Inf, -Inf, NA, NaN</code></pre>
+</div>
+<p>
+and <em>via</em> function <code class="calibre2">R_IsNaN</code> which is true for <code class="calibre2">NaN</code> but not <code class="calibre2">NA</code>.
+</p>
+<p>
+Do use <code class="calibre2">R_FINITE</code> rather than <code class="calibre2">isfinite</code> or <code class="calibre2">finite</code>; the latter is often mendacious and <code class="calibre2">isfinite</code> is only available on a some platforms, on which <code class="calibre2">R_FINITE</code> is a macro expanding to <code class="calibre2">isfinite</code>.
+</p>
+<p>
+Currently in C code <code class="calibre2">ISNAN</code> is a macro calling <code class="calibre2">isnan</code>. (Since this gives problems on some C++ systems, if the R headers is called from C++ code a function call is used.)
+</p>
+<p>
+You can check for <code class="calibre2">Inf</code> or <code class="calibre2">-Inf</code> by testing equality to <code class="calibre2">R_PosInf</code> or <code class="calibre2">R_NegInf</code>, and set (but not test) an <code class="calibre2">NA</code> as <code class="calibre2">NA_REAL</code>.
+</p>
+<p>
+All of the above apply to <em>double</em> variables only. For integer variables there is a variable accessed by the macro <code class="calibre2">NA_INTEGER</code> which can used to set or test for missingness.
+</p>
+<hr />
+<p>
+<a href="" id="Printing"></a> <a href="" id="Printing-1"></a>
+</p>
+<h3 id="printing" class="section">
+6.5 Printing
+</h3>
+<p>
+<a href="" id="index-Printing-from-C"></a> <a href="" id="index-Rprintf"></a> <a href="" id="index-REprintf"></a> <a href="" id="index-Rvprintf"></a> <a href="" id="index-REvprintf"></a>
+</p>
+<p>
+The most useful function for printing from a C routine compiled into R is <code class="calibre2">Rprintf</code>. This is used in exactly the same way as <code class="calibre2">printf</code>, but is guaranteed to write to R’s output (which might be a GUI console rather than a file, and can be re-directed by <code class="calibre2">sink</code>). It is wise to write complete lines (including the <code class="calibre2">“\n”</code>) before returning to R. It is defined in R_ext/Print.h.
+</p>
+<p>
+The function <code class="calibre2">REprintf</code> is similar but writes on the error stream (<code class="calibre2">stderr</code>) which may or may not be different from the standard output stream.
+</p>
+<p>
+Functions <code class="calibre2">Rvprintf</code> and <code class="calibre2">REvprintf</code> are analogues using the <code class="calibre2">vprintf</code> interface. Because that is a C99<a href="concept-index.html#FOOT138" id="DOCF138"><sup>138</sup></a> interface, they are only defined by R_ext/Print.h in C++ code if the macro <code class="calibre2">R_USE_C99_IN_CXX</code> is defined when it is included.
+</p>
+<p>
+Another circumstance when it may be important to use these functions is when using parallel computation on a cluster of computational nodes, as their output will be re-directed/logged appropriately.
+</p>
+<hr />
+<p>
+<a href="" id="Printing-from-FORTRAN"></a> <a href="" id="Printing-from-FORTRAN-1"></a>
+</p>
+<h4 id="printing-from-fortran" class="subsection">
+6.5.1 Printing from FORTRAN
+</h4>
+<p>
+<a href="" id="index-Printing-from-FORTRAN"></a>
+</p>
+<p>
+On many systems FORTRAN <code class="calibre2">write</code> and <code class="calibre2">print</code> statements can be used, but the output may not interleave well with that of C, and will be invisible on GUI interfaces. They are not portable and best avoided.
+</p>
+<p>
+Three subroutines are provided to ease the output of information from FORTRAN code.
+</p>
+<div class="example">
+<pre class="example1"><code>subroutine dblepr(label, nchar, data, ndata)
+subroutine realpr(label, nchar, data, ndata)
+subroutine intpr (label, nchar, data, ndata)</code></pre>
+</div>
+<p>
+Here label is a character label of up to 255 characters, nchar is its length (which can be <code class="calibre2">-1</code> if the whole label is to be used), and data is an array of length at least ndata of the appropriate type (<code class="calibre2">double precision</code>, <code class="calibre2">real</code> and <code class="calibre2">integer</code> respectively). These routines print the label on one line and then print data as if it were an R vector on subsequent line(s). They work with zero ndata, and so can be used to print a label alone.
+</p>
+<hr />
+<p>
+<a href="" id="Calling-C-from-FORTRAN-and-vice-versa"></a> <a href="" id="Calling-C-from-FORTRAN-and-vice-versa-1"></a>
+</p>
+<h3 id="calling-c-from-fortran-and-vice-versa" class="section">
+6.6 Calling C from FORTRAN and vice versa
+</h3>
+<p>
+<a href="" id="index-Calling-C-from-FORTRAN-and-vice-versa"></a>
+</p>
+<p>
+Naming conventions for symbols generated by FORTRAN differ by platform: it is not safe to assume that FORTRAN names appear to C with a trailing underscore. To help cover up the platform-specific differences there is a set of macros that should be used.
+</p>
+<dl>
+<dt>
+<code class="calibre2">F77_SUB(name)</code>
+</dt>
+<dd>
+<p>
+to define a function in C to be called from FORTRAN
+</p>
+</dd>
+<dt>
+<code class="calibre2">F77_NAME(name)</code>
+</dt>
+<dd>
+<p>
+to declare a FORTRAN routine in C before use
+</p>
+</dd>
+<dt>
+<code class="calibre2">F77_CALL(name)</code>
+</dt>
+<dd>
+<p>
+to call a FORTRAN routine from C
+</p>
+</dd>
+<dt>
+<code class="calibre2">F77_COMDECL(name)</code>
+</dt>
+<dd>
+<p>
+to declare a FORTRAN common block in C
+</p>
+</dd>
+<dt>
+<code class="calibre2">F77_COM(name)</code>
+</dt>
+<dd>
+<p>
+to access a FORTRAN common block from C
+</p>
+</dd>
+</dl>
+<p>
+On most current platforms these are all the same, but it is unwise to rely on this. Note that names with underscores are not legal in FORTRAN 77, and are not portably handled by the above macros. (Also, all FORTRAN names for use by R are lower case, but this is not enforced by the macros.)
+</p>
+<p>
+For example, suppose we want to call R’s normal random numbers from FORTRAN. We need a C wrapper along the lines of
+</p>
+<p>
+<a href="" id="index-Random-numbers-in-FORTRAN"></a>
+</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;R.h&gt;
+
+void F77_SUB(rndstart)(void) { GetRNGstate(); }
+void F77_SUB(rndend)(void) { PutRNGstate(); }
+double F77_SUB(normrnd)(void) { return norm_rand(); }</code></pre>
+</div>
+<p>
+to be called from FORTRAN as in
+</p>
+<div class="example">
+<pre class="example1"><code>      subroutine testit()
+      double precision normrnd, x
+      call rndstart()
+      x = normrnd()
+      call dblepr(&quot;X was&quot;, 5, x, 1)
+      call rndend()
+      end</code></pre>
+</div>
+<p>
+Note that this is not guaranteed to be portable, for the return conventions might not be compatible between the C and FORTRAN compilers used. (Passing values <em>via</em> arguments is safer.)
+</p>
+<p>
+The standard packages, for example <strong>stats</strong>, are a rich source of further examples.
+</p>
+<p>
+Passing character strings from C to FORTRAN 77 or <em>vice versa</em> is not portable (and to Fortran 90 or later is even less so). We have found that it helps to ensure that a C string to be passed is followed by several <code class="calibre2">nul</code>s (and not just the one needed as a C terminator). But for maximal portability character strings in FORTRAN should be avoided.
+</p>
+<hr />
+<p>
+<a href="" id="Numerical-analysis-subroutines"></a> <a href="" id="Numerical-analysis-subroutines-1"></a>
+</p>
+<h3 id="numerical-analysis-subroutines" class="section">
+6.7 Numerical analysis subroutines
+</h3>
+<p>
+<a href="" id="index-Numerical-analysis-subroutines-from-C"></a>
+</p>
+<p>
+R contains a large number of mathematical functions for its own use, for example numerical linear algebra computations and special functions.
+</p>
+<p>
+The header files R_ext/BLAS.h, R_ext/Lapack.h and R_ext/Linpack.h contains declarations of the BLAS, LAPACK and LINPACK linear algebra functions included in R. These are expressed as calls to FORTRAN subroutines, and they will also be usable from users’ FORTRAN code. Although not part of the official API, this set of subroutines is unlikely to change (but might be supplemented).
+</p>
+<p>
+The header file Rmath.h lists many other functions that are available and documented in the following subsections. Many of these are C interfaces to the code behind R functions, so the R function documentation may give further details.
+</p>
+<hr />
+<p>
+<a href="" id="Distribution-functions"></a> <a href="" id="Distribution-functions-1"></a>
+</p>
+<h4 id="distribution-functions" class="subsection">
+6.7.1 Distribution functions
+</h4>
+<p>
+<a href="" id="index-Distribution-functions-from-C"></a>
+</p>
+<p>
+The routines used to calculate densities, cumulative distribution functions and quantile functions for the standard statistical distributions are available as entry points.
+</p>
+<p>
+The arguments for the entry points follow the pattern of those for the normal distribution:
+</p>
+<div class="example">
+<pre class="example1"><code>double dnorm(double x, double mu, double sigma, int give_log);
+double pnorm(double x, double mu, double sigma, int lower_tail,
+             int give_log);
+double qnorm(double p, double mu, double sigma, int lower_tail,
+             int log_p);
+double rnorm(double mu, double sigma);</code></pre>
+</div>
+<p>
+That is, the first argument gives the position for the density and CDF and probability for the quantile function, followed by the distribution’s parameters. Argument lower_tail should be <code class="calibre2">TRUE</code> (or <code class="calibre2">1</code>) for normal use, but can be <code class="calibre2">FALSE</code> (or <code class="calibre2">0</code>) if the probability of the upper tail is desired or specified.
+</p>
+<p>
+Finally, give_log should be non-zero if the result is required on log scale, and log_p should be non-zero if p has been specified on log scale.
+</p>
+<p>
+Note that you directly get the cumulative (or “integrated”) <em>hazard</em> function, H(t) = - log(1 - F(t)), by using
+</p>
+<div class="example">
+<pre class="example1"><code>- pdist(t, ..., /*lower_tail = */ FALSE, /* give_log = */ TRUE)</code></pre>
+</div>
+<p>
+or shorter (and more cryptic) <code class="calibre2">- pdist(t, …, 0, 1)</code>. <a href="" id="index-cumulative-hazard"></a>
+</p>
+<p>
+The random-variate generation routine <code class="calibre2">rnorm</code> returns one normal variate. See <a href="the-r-api-entry-points-for-c-code.html#Random-numbers">Random numbers</a>, for the protocol in using the random-variate routines. <a href="" id="index-Random-numbers-in-C-1"></a>
+</p>
+<p>
+Note that these argument sequences are (apart from the names and that <code class="calibre2">rnorm</code> has no n) mainly the same as the corresponding R functions of the same name, so the documentation of the R functions can be used. Note that the exponential and gamma distributions are parametrized by <code class="calibre2">scale</code> rather than <code class="calibre2">rate</code>.
+</p>
+<p>
+For reference, the following table gives the basic name (to be prefixed by ‘d’, ‘p’, ‘q’ or ‘r’ apart from the exceptions noted) and distribution-specific arguments for the complete set of distributions.
+</p>
+<blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+beta
+</td>
+<td align="left">
+<code class="calibre2">beta</code>
+</td>
+<td align="left">
+<code class="calibre2">a</code>, <code class="calibre2">b</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+non-central beta
+</td>
+<td align="left">
+<code class="calibre2">nbeta</code>
+</td>
+<td align="left">
+<code class="calibre2">a</code>, <code class="calibre2">b</code>, <code class="calibre2">ncp</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+binomial
+</td>
+<td align="left">
+<code class="calibre2">binom</code>
+</td>
+<td align="left">
+<code class="calibre2">n</code>, <code class="calibre2">p</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+Cauchy
+</td>
+<td align="left">
+<code class="calibre2">cauchy</code>
+</td>
+<td align="left">
+<code class="calibre2">location</code>, <code class="calibre2">scale</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+chi-squared
+</td>
+<td align="left">
+<code class="calibre2">chisq</code>
+</td>
+<td align="left">
+<code class="calibre2">df</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+non-central chi-squared
+</td>
+<td align="left">
+<code class="calibre2">nchisq</code>
+</td>
+<td align="left">
+<code class="calibre2">df</code>, <code class="calibre2">ncp</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+exponential
+</td>
+<td align="left">
+<code class="calibre2">exp</code>
+</td>
+<td align="left">
+<code class="calibre2">scale</code> (and <strong>not</strong> <code class="calibre2">rate</code>)
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+F
+</td>
+<td align="left">
+<code class="calibre2">f</code>
+</td>
+<td align="left">
+<code class="calibre2">n1</code>, <code class="calibre2">n2</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+non-central F
+</td>
+<td align="left">
+<code class="calibre2">nf</code>
+</td>
+<td align="left">
+<code class="calibre2">n1</code>, <code class="calibre2">n2</code>, <code class="calibre2">ncp</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+gamma
+</td>
+<td align="left">
+<code class="calibre2">gamma</code>
+</td>
+<td align="left">
+<code class="calibre2">shape</code>, <code class="calibre2">scale</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+geometric
+</td>
+<td align="left">
+<code class="calibre2">geom</code>
+</td>
+<td align="left">
+<code class="calibre2">p</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+hypergeometric
+</td>
+<td align="left">
+<code class="calibre2">hyper</code>
+</td>
+<td align="left">
+<code class="calibre2">NR</code>, <code class="calibre2">NB</code>, <code class="calibre2">n</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+logistic
+</td>
+<td align="left">
+<code class="calibre2">logis</code>
+</td>
+<td align="left">
+<code class="calibre2">location</code>, <code class="calibre2">scale</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+lognormal
+</td>
+<td align="left">
+<code class="calibre2">lnorm</code>
+</td>
+<td align="left">
+<code class="calibre2">logmean</code>, <code class="calibre2">logsd</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+negative binomial
+</td>
+<td align="left">
+<code class="calibre2">nbinom</code>
+</td>
+<td align="left">
+<code class="calibre2">size</code>, <code class="calibre2">prob</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+normal
+</td>
+<td align="left">
+<code class="calibre2">norm</code>
+</td>
+<td align="left">
+<code class="calibre2">mu</code>, <code class="calibre2">sigma</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+Poisson
+</td>
+<td align="left">
+<code class="calibre2">pois</code>
+</td>
+<td align="left">
+<code class="calibre2">lambda</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+Student’s t
+</td>
+<td align="left">
+<code class="calibre2">t</code>
+</td>
+<td align="left">
+<code class="calibre2">n</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+non-central t
+</td>
+<td align="left">
+<code class="calibre2">nt</code>
+</td>
+<td align="left">
+<code class="calibre2">df</code>, <code class="calibre2">delta</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+Studentized range
+</td>
+<td align="left">
+<code class="calibre2">tukey</code> (*)
+</td>
+<td align="left">
+<code class="calibre2">rr</code>, <code class="calibre2">cc</code>, <code class="calibre2">df</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+uniform
+</td>
+<td align="left">
+<code class="calibre2">unif</code>
+</td>
+<td align="left">
+<code class="calibre2">a</code>, <code class="calibre2">b</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+Weibull
+</td>
+<td align="left">
+<code class="calibre2">weibull</code>
+</td>
+<td align="left">
+<code class="calibre2">shape</code>, <code class="calibre2">scale</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+Wilcoxon rank sum
+</td>
+<td align="left">
+<code class="calibre2">wilcox</code>
+</td>
+<td align="left">
+<code class="calibre2">m</code>, <code class="calibre2">n</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+Wilcoxon signed rank
+</td>
+<td align="left">
+<code class="calibre2">signrank</code>
+</td>
+<td align="left">
+<code class="calibre2">n</code>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+Entries marked with an asterisk only have ‘p’ and ‘q’ functions available, and none of the non-central distributions have ‘r’ functions. After a call to <code class="calibre2">dwilcox</code>, <code class="calibre2">pwilcox</code> or <code class="calibre2">qwilcox</code> the function <code class="calibre2">wilcox_free()</code> should be called, and similarly for the signed rank functions.
+</p>
+<p>
+(If remapping is suppressed, the Normal distribution names are <code class="calibre2">Rf_dnorm4</code>, <code class="calibre2">Rf_pnorm5</code> and <code class="calibre2">Rf_qnorm5</code>.)
+</p>
+<p>
+For the negative binomial distribution (‘nbinom’), in addition to the <code class="calibre2">(size, prob)</code> parametrization, the alternative <code class="calibre2">(size, mu)</code> parametrization is provided as well by functions ‘[dpqr]nbinom_mu()’, see ?NegBinomial in R.
+</p>
+<p>
+Functions <code class="calibre2">dpois_raw(x, <em>)</code> and <code class="calibre2">dbinom_raw(x, </em>)</code> are versions of the Poisson and binomial probability mass functions which work continuously in <code class="calibre2">x</code>, whereas <code class="calibre2">dbinom(x,<em>)</code> and <code class="calibre2">dpois(x,</em>)</code> only return non zero values for integer <code class="calibre2">x</code>.
+</p>
+<div class="example">
+<pre class="example1"><code>double dbinom_raw(double x, double n, double p, double q, int give_log)
+double dpois_raw (double x, double lambda, int give_log)</code></pre>
+</div>
+<p>
+Note that <code class="calibre2">dbinom_raw()</code> gets both p and q = 1-p which may be advantageous when one of them is close to 1.
+</p>
+<hr />
+<p>
+<a href="" id="Mathematical-functions"></a> <a href="" id="Mathematical-functions-1"></a>
+</p>
+<h4 id="mathematical-functions" class="subsection">
+6.7.2 Mathematical functions
+</h4>
+<p>
+<a href="" id="index-gammafn"></a> <a href="" id="index-lgammafn"></a> <a href="" id="index-digamma"></a> <a href="" id="index-trigamma"></a> <a href="" id="index-tetragamma"></a> <a href="" id="index-pentagamma"></a> <a href="" id="index-psigamma"></a> <a href="" id="index-Gamma-function"></a>
+</p>
+<dl>
+<dt>
+<a href="" id="index-gammafn-1"></a>Function: <em>double</em> <strong>gammafn</strong> <em>(double x)</em><br /> <a href="" id="index-lgammafn-1"></a>Function: <em>double</em> <strong>lgammafn</strong> <em>(double x)</em><br /> <a href="" id="index-digamma-1"></a>Function: <em>double</em> <strong>digamma</strong> <em>(double x)</em><br /> <a href="" id="index-trigamma-1"></a>Function: <em>double</em> <strong>trigamma</strong> <em>(double x)</em><br /> <a href="" id="index-tetragamma-1"></a>Function: <em>double</em> <strong>tetragamma</strong> <em>(double x)</em><br /> <a href="" id="index-pentagamma-1"></a>Function: <em>double</em> <strong>pentagamma</strong> <em>(double x)</em><br /> <a href="" id="index-psigamma-1"></a>Function: <em>double</em> <strong>psigamma</strong> <em>(double x, double deriv)</em>
+</dt>
+<dd>
+<p>
+The Gamma function, the natural logarithm of its absolute value and first four derivatives and the n-th derivative of Psi, the digamma function, which is the derivative of <code class="calibre2">lgammafn</code>. In other words, <code class="calibre2">digamma(x)</code> is the same as <code class="calibre2">psigamma(x,0)</code>, <code class="calibre2">trigamma(x) == psigamma(x,1)</code>, etc.
+</p>
+</dd>
+</dl>
+<p>
+<a href="" id="index-beta"></a> <a href="" id="index-lbeta"></a> <a href="" id="index-Beta-function"></a>
+</p>
+<dl>
+<dt>
+<a href="" id="index-beta-1"></a>Function: <em>double</em> <strong>beta</strong> <em>(double a, double b)</em><br /> <a href="" id="index-lbeta-1"></a>Function: <em>double</em> <strong>lbeta</strong> <em>(double a, double b)</em>
+</dt>
+<dd>
+<p>
+The (complete) Beta function and its natural logarithm.
+</p>
+</dd>
+</dl>
+<p>
+<a href="" id="index-choose"></a> <a href="" id="index-lchoose"></a>
+</p>
+<dl>
+<dt>
+<a href="" id="index-choose-1"></a>Function: <em>double</em> <strong>choose</strong> <em>(double n, double k)</em><br /> <a href="" id="index-lchoose-1"></a>Function: <em>double</em> <strong>lchoose</strong> <em>(double n, double k)</em>
+</dt>
+<dd>
+<p>
+The number of combinations of k items chosen from from n and the natural logarithm of its absolute value, generalized to arbitrary real n. k is rounded to the nearest integer (with a warning if needed).
+</p>
+</dd>
+</dl>
+<p>
+<a href="" id="index-bessel_005fi"></a> <a href="" id="index-bessel_005fj"></a> <a href="" id="index-bessel_005fk"></a> <a href="" id="index-bessel_005fy"></a> <a href="" id="index-Bessel-functions"></a>
+</p>
+<dl>
+<dt>
+<a href="" id="index-bessel_005fi-1"></a>Function: <em>double</em> <strong>bessel_i</strong> <em>(double x, double nu, double expo)</em><br /> <a href="" id="index-bessel_005fj-1"></a>Function: <em>double</em> <strong>bessel_j</strong> <em>(double x, double nu)</em><br /> <a href="" id="index-bessel_005fk-1"></a>Function: <em>double</em> <strong>bessel_k</strong> <em>(double x, double nu, double expo)</em><br /> <a href="" id="index-bessel_005fy-1"></a>Function: <em>double</em> <strong>bessel_y</strong> <em>(double x, double nu)</em>
+</dt>
+<dd>
+<p>
+Bessel functions of types I, J, K and Y with index nu. For <code class="calibre2">bessel_i</code> and <code class="calibre2">bessel_k</code> there is the option to return <span class="nolinebreak">exp(-</span>x) I(x; nu) or exp(x) K(x; nu) if expo is 2. (Use <code class="calibre2">expo == 1</code> for unscaled values.)
+</p>
+</dd>
+</dl>
+<hr />
+<p>
+<a href="" id="Numerical-Utilities"></a> <a href="" id="Numerical-Utilities-1"></a>
+</p>
+<h4 id="numerical-utilities" class="subsection">
+6.7.3 Numerical Utilities
+</h4>
+<p>
+There are a few other numerical utility functions available as entry points.
+</p>
+<dl>
+<dt>
+<a href="" id="index-R_005fpow"></a>Function: <em>double</em> <strong>R_pow</strong> <em>(double x, double y)</em><br /> <a href="" id="index-R_005fpow_005fdi"></a>Function: <em>double</em> <strong>R_pow_di</strong> <em>(double x, int i)</em>
+</dt>
+<dd>
+<p>
+<code class="calibre2">R_pow(x, y)</code> and <code class="calibre2">R_pow_di(x, i)</code> compute <code class="calibre2">x^y</code> and <code class="calibre2">x^i</code>, respectively using <code class="calibre2">R_FINITE</code> checks and returning the proper result (the same as R) for the cases where x, y or i are 0 or missing or infinite or <code class="calibre2">NaN</code>.
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-log1p"></a>Function: <em>double</em> <strong>log1p</strong> <em>(double x)</em>
+</dt>
+<dd>
+<p>
+Computes <code class="calibre2">log(1 + x)</code> (<em>log 1 <strong>p</strong>lus x</em>), accurately even for small x, i.e., |x| &lt;&lt; 1.
+</p>
+<p>
+This should be provided by your platform, in which case it is not included in Rmath.h, but is (probably) in math.h which Rmath.h includes (except under C++, so it may not be declared for C++98).
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-log1pmx"></a>Function: <em>double</em> <strong>log1pmx</strong> <em>(double x)</em>
+</dt>
+<dd>
+<p>
+Computes <code class="calibre2">log(1 + x) - x</code> (<em>log 1 <strong>p</strong>lus x <strong>m</strong>inus <strong>x</strong></em>), accurately even for small x, i.e., |x| &lt;&lt; 1.
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-log1pexp"></a>Function: <em>double</em> <strong>log1pexp</strong> <em>(double x)</em>
+</dt>
+<dd>
+<p>
+Computes <code class="calibre2">log(1 + exp(x))</code> (<em>log 1 <strong>p</strong>lus <strong>exp</strong></em>), accurately, notably for large x, e.g., x &gt; 720.
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-expm1"></a>Function: <em>double</em> <strong>expm1</strong> <em>(double x)</em>
+</dt>
+<dd>
+<p>
+Computes <code class="calibre2">exp(x) - 1</code> (<em>exp x <strong>m</strong>inus 1</em>), accurately even for small x, i.e., |x| &lt;&lt; 1.
+</p>
+<p>
+This should be provided by your platform, in which case it is not included in Rmath.h, but is (probably) in math.h which Rmath.h includes (except under C++, so it may not be declared for C++98).
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-lgamma1p"></a>Function: <em>double</em> <strong>lgamma1p</strong> <em>(double x)</em>
+</dt>
+<dd>
+<p>
+Computes <code class="calibre2">log(gamma(x + 1))</code> (<em>log(gamma(1 <strong>p</strong>lus x))</em>), accurately even for small x, i.e., 0 &lt; x &lt; 0.5.
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-cospi"></a>Function: <em>double</em> <strong>cospi</strong> <em>(double x)</em>
+</dt>
+<dd>
+<p>
+Computes <code class="calibre2">cos(pi * x)</code> (where <code class="calibre2">pi</code> is 3.14159…), accurately, notably for half integer x.
+</p>
+<p>
+This might be provided by your platform<a href="concept-index.html#FOOT139" id="DOCF139"><sup>139</sup></a>, in which case it is not included in Rmath.h, but is in math.h which Rmath.h includes. (Ensure that neither math.h nor cmath is included before Rmath.h or define
+</p>
+<div class="example">
+<pre class="example1"><code>#define __STDC_WANT_IEC_60559_FUNCS_EXT__ 1</code></pre>
+</div>
+<p>
+before the first inclusion.)
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-sinpi"></a>Function: <em>double</em> <strong>sinpi</strong> <em>(double x)</em>
+</dt>
+<dd>
+<p>
+Computes <code class="calibre2">sin(pi * x)</code> accurately, notably for (half) integer x.
+</p>
+<p>
+This might be provided by your platform, in which case it is not included in Rmath.h, but is in math.h which Rmath.h includes (but see the comments for <code class="calibre2">cospi</code>).
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-tanpi"></a>Function: <em>double</em> <strong>tanpi</strong> <em>(double x)</em>
+</dt>
+<dd>
+<p>
+Computes <code class="calibre2">tan(pi * x)</code> accurately, notably for (half) integer x.
+</p>
+<p>
+This might be provided by your platform, in which case it is not included in Rmath.h, but is in math.h which Rmath.h includes (but see the comments for <code class="calibre2">cospi</code>).
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-logspace_005fadd"></a>Function: <em>double</em> <strong>logspace_add</strong> <em>(double logx, double logy)</em><br /> <a href="" id="index-logspace_005fsub"></a>Function: <em>double</em> <strong>logspace_sub</strong> <em>(double logx, double logy)</em><br /> <a href="" id="index-logspace_005fsum"></a>Function: <em>double</em> <strong>logspace_sum</strong> <em>(const double* logx, int n)</em>
+</dt>
+<dd>
+<p>
+Compute the log of a sum or difference from logs of terms, i.e., “x + y” as <code class="calibre2">log (exp(logx) + exp(logy))</code> and “x - y” as <code class="calibre2">log (exp(logx) - exp(logy))</code>, and “sum_i x[i]” as <code class="calibre2">log (sum[i = 1:n exp(logx[i])] )</code> without causing unnecessary overflows or throwing away too much accuracy.
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-imax2"></a>Function: <em>int</em> <strong>imax2</strong> <em>(int x, int y)</em><br /> <a href="" id="index-imin2"></a>Function: <em>int</em> <strong>imin2</strong> <em>(int x, int y)</em><br /> <a href="" id="index-fmax2"></a>Function: <em>double</em> <strong>fmax2</strong> <em>(double x, double y)</em><br /> <a href="" id="index-fmin2"></a>Function: <em>double</em> <strong>fmin2</strong> <em>(double x, double y)</em>
+</dt>
+<dd>
+<p>
+Return the larger (<code class="calibre2">max</code>) or smaller (<code class="calibre2">min</code>) of two integer or double numbers, respectively. Note that <code class="calibre2">fmax2</code> and <code class="calibre2">fmin2</code> differ from C99/C++11’s <code class="calibre2">fmax</code> and <code class="calibre2">fmin</code> when one of the arguments is a <code class="calibre2">NaN</code>: these versions return <code class="calibre2">NaN</code>.
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-sign"></a>Function: <em>double</em> <strong>sign</strong> <em>(double x)</em>
+</dt>
+<dd>
+<p>
+Compute the <em>signum</em> function, where sign(x) is 1, 0, or <em>-1</em>, when x is positive, 0, or negative, respectively, and <code class="calibre2">NaN</code> if <code class="calibre2">x</code> is a <code class="calibre2">NaN</code>.
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-fsign"></a>Function: <em>double</em> <strong>fsign</strong> <em>(double x, double y)</em>
+</dt>
+<dd>
+<p>
+Performs “transfer of sign” and is defined as |x| * sign(y).
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-fprec"></a>Function: <em>double</em> <strong>fprec</strong> <em>(double x, double digits)</em>
+</dt>
+<dd>
+<p>
+Returns the value of x rounded to digits decimal digits (after the decimal point).
+</p>
+<p>
+This is the function used by R’s <code class="calibre2">signif()</code>.
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-fround"></a>Function: <em>double</em> <strong>fround</strong> <em>(double x, double digits)</em>
+</dt>
+<dd>
+<p>
+Returns the value of x rounded to digits <em>significant</em> decimal digits.
+</p>
+<p>
+This is the function used by R’s <code class="calibre2">round()</code>. (Note that C99/C++11 provide a <code class="calibre2">round</code> function but C++98 need not.)
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-ftrunc"></a>Function: <em>double</em> <strong>ftrunc</strong> <em>(double x)</em>
+</dt>
+<dd>
+<p>
+Returns the value of x truncated (to an integer value) towards zero.
+</p>
+<p>
+(Note that C99/C++11 provide a <code class="calibre2">round</code> function but C++98 need not.)
+</p>
+</dd>
+</dl>
+<hr />
+<p>
+<a href="" id="Mathematical-constants"></a> <a href="" id="Mathematical-constants-1"></a>
+</p>
+<h4 id="mathematical-constants" class="subsection">
+6.7.4 Mathematical constants
+</h4>
+<p>
+<a href="" id="index-M_005fE"></a> <a href="" id="index-M_005fPI"></a>
+</p>
+<p>
+R has a set of commonly used mathematical constants encompassing constants defined by POSIX and usually<a href="concept-index.html#FOOT140" id="DOCF140"><sup>140</sup></a> found in math.h (but maybe not in the C++ header cmath) and contains further ones that are used in statistical computations. These are defined to (at least) 30 digits accuracy in Rmath.h. The following definitions use <code class="calibre2">ln(x)</code> for the natural logarithm (<code class="calibre2">log(x)</code> in R).
+</p>
+<blockquote>
+<table>
+<thead>
+<tr class="header">
+<th align="left">
+Name
+</th>
+<th align="left">
+Definition (<code class="calibre2">ln = log</code>)
+</th>
+<th align="left">
+round(<em>value</em>, 7)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">M_E</code>
+</td>
+<td align="left">
+<em>e</em>
+</td>
+<td align="left">
+2.7182818
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">M_LOG2E</code>
+</td>
+<td align="left">
+log2(<em>e</em>)
+</td>
+<td align="left">
+1.4426950
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">M_LOG10E</code>
+</td>
+<td align="left">
+log10(<em>e</em>)
+</td>
+<td align="left">
+0.4342945
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">M_LN2</code>
+</td>
+<td align="left">
+ln(2)
+</td>
+<td align="left">
+0.6931472
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">M_LN10</code>
+</td>
+<td align="left">
+ln(10)
+</td>
+<td align="left">
+2.3025851
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">M_PI</code>
+</td>
+<td align="left">
+pi
+</td>
+<td align="left">
+3.1415927
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">M_PI_2</code>
+</td>
+<td align="left">
+pi/2
+</td>
+<td align="left">
+1.5707963
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">M_PI_4</code>
+</td>
+<td align="left">
+pi/4
+</td>
+<td align="left">
+0.7853982
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">M_1_PI</code>
+</td>
+<td align="left">
+1/pi
+</td>
+<td align="left">
+0.3183099
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">M_2_PI</code>
+</td>
+<td align="left">
+2/pi
+</td>
+<td align="left">
+0.6366198
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">M_2_SQRTPI</code>
+</td>
+<td align="left">
+2/sqrt(pi)
+</td>
+<td align="left">
+1.1283792
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">M_SQRT2</code>
+</td>
+<td align="left">
+sqrt(2)
+</td>
+<td align="left">
+1.4142136
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">M_SQRT1_2</code>
+</td>
+<td align="left">
+1/sqrt(2)
+</td>
+<td align="left">
+0.7071068
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">M_SQRT_3</code>
+</td>
+<td align="left">
+sqrt(3)
+</td>
+<td align="left">
+1.7320508
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">M_SQRT_32</code>
+</td>
+<td align="left">
+sqrt(32)
+</td>
+<td align="left">
+5.6568542
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">M_LOG10_2</code>
+</td>
+<td align="left">
+log10(2)
+</td>
+<td align="left">
+0.3010300
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">M_2PI</code>
+</td>
+<td align="left">
+2*pi
+</td>
+<td align="left">
+6.2831853
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">M_SQRT_PI</code>
+</td>
+<td align="left">
+sqrt(pi)
+</td>
+<td align="left">
+1.7724539
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">M_1_SQRT_2PI</code>
+</td>
+<td align="left">
+1/sqrt(2*pi)
+</td>
+<td align="left">
+0.3989423
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">M_SQRT_2dPI</code>
+</td>
+<td align="left">
+sqrt(2/pi)
+</td>
+<td align="left">
+0.7978846
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">M_LN_SQRT_PI</code>
+</td>
+<td align="left">
+ln(sqrt(pi))
+</td>
+<td align="left">
+0.5723649
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code class="calibre2">M_LN_SQRT_2PI</code>
+</td>
+<td align="left">
+ln(sqrt(2*pi))
+</td>
+<td align="left">
+0.9189385
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code class="calibre2">M_LN_SQRT_PId2</code>
+</td>
+<td align="left">
+ln(sqrt(pi/2))
+</td>
+<td align="left">
+0.2257914
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+There are a set of constants (<code class="calibre2">PI</code>, <code class="calibre2">DOUBLE_EPS</code>) (and so on) defined (unless <code class="calibre2">STRICT_R_HEADERS</code> is defined) in the included header R_ext/Constants.h, mainly for compatibility with S.
+</p>
+<p>
+<a href="" id="index-TRUE"></a> <a href="" id="index-FALSE"></a>
+</p>
+<p>
+Further, the included header R_ext/Boolean.h has enumeration constants <code class="calibre2">TRUE</code> and <code class="calibre2">FALSE</code> of type <code class="calibre2">Rboolean</code> in order to provide a way of using “logical” variables in C consistently. This can conflict with other software: for example it conflicts with the headers in IJG’s <code class="calibre2">jpeg-9</code> (but not earlier versions).
+</p>
+<hr />
+<p>
+<a href="" id="Optimization"></a> <a href="" id="Optimization-1"></a>
+</p>
+<h3 id="optimization" class="section">
+6.8 Optimization
+</h3>
+<p>
+<a href="" id="index-optimization"></a>
+</p>
+<p>
+The C code underlying <code class="calibre2">optim</code> can be accessed directly. The user needs to supply a function to compute the function to be minimized, of the type
+</p>
+<div class="example">
+<pre class="example1"><code>typedef double optimfn(int n, double *par, void *ex);</code></pre>
+</div>
+<p>
+where the first argument is the number of parameters in the second argument. The third argument is a pointer passed down from the calling routine, normally used to carry auxiliary information.
+</p>
+<p>
+Some of the methods also require a gradient function
+</p>
+<div class="example">
+<pre class="example1"><code>typedef void optimgr(int n, double *par, double *gr, void *ex);</code></pre>
+</div>
+<p>
+which passes back the gradient in the <code class="calibre2">gr</code> argument. No function is provided for finite-differencing, nor for approximating the Hessian at the result.
+</p>
+<p>
+The interfaces (defined in header R_ext/Applic.h) are
+</p>
+<ul>
+<li>
+Nelder Mead: <a href="" id="index-nmmin"></a>
+<div class="example">
+<pre class="example1"><code>void nmmin(int n, double *xin, double *x, double *Fmin, optimfn fn,
+           int *fail, double abstol, double intol, void *ex,
+           double alpha, double beta, double gamma, int trace,
+           int *fncount, int maxit);</code></pre>
+</div>
+</li>
+<li>
+BFGS: <a href="" id="index-vmmin"></a>
+<div class="example">
+<pre class="example1"><code>void vmmin(int n, double *x, double *Fmin,
+           optimfn fn, optimgr gr, int maxit, int trace,
+           int *mask, double abstol, double reltol, int nREPORT,
+           void *ex, int *fncount, int *grcount, int *fail);</code></pre>
+</div>
+</li>
+<li>
+Conjugate gradients: <a href="" id="index-cgmin"></a>
+<div class="example">
+<pre class="example1"><code>void cgmin(int n, double *xin, double *x, double *Fmin,
+           optimfn fn, optimgr gr, int *fail, double abstol,
+           double intol, void *ex, int type, int trace,
+           int *fncount, int *grcount, int maxit);</code></pre>
+</div>
+</li>
+<li>
+Limited-memory BFGS with bounds: <a href="" id="index-lbfgsb"></a>
+<div class="example">
+<pre class="example1"><code>void lbfgsb(int n, int lmm, double *x, double *lower,
+            double *upper, int *nbd, double *Fmin, optimfn fn,
+            optimgr gr, int *fail, void *ex, double factr,
+            double pgtol, int *fncount, int *grcount,
+            int maxit, char *msg, int trace, int nREPORT);</code></pre>
+</div>
+</li>
+<li>
+Simulated annealing: <a href="" id="index-samin"></a>
+<div class="example">
+<pre class="example1"><code>void samin(int n, double *x, double *Fmin, optimfn fn, int maxit,
+           int tmax, double temp, int trace, void *ex);</code></pre>
+</div>
+</li>
+</ul>
+<p>
+Many of the arguments are common to the various methods. <code class="calibre2">n</code> is the number of parameters, <code class="calibre2">x</code> or <code class="calibre2">xin</code> is the starting parameters on entry and <code class="calibre2">x</code> the final parameters on exit, with final value returned in <code class="calibre2">Fmin</code>. Most of the other parameters can be found from the help page for <code class="calibre2">optim</code>: see the source code src/appl/lbfgsb.c for the values of <code class="calibre2">nbd</code>, which specifies which bounds are to be used.
+</p>
+<hr />
+<p>
+<a href="" id="Integration"></a> <a href="" id="Integration-1"></a>
+</p>
+<h3 id="integration" class="section">
+6.9 Integration
+</h3>
+<p>
+<a href="" id="index-integration"></a>
+</p>
+<p>
+The C code underlying <code class="calibre2">integrate</code> can be accessed directly. The user needs to supply a <em>vectorizing</em> C function to compute the function to be integrated, of the type
+</p>
+<div class="example">
+<pre class="example1"><code>typedef void integr_fn(double *x, int n, void *ex);</code></pre>
+</div>
+<p>
+where <code class="calibre2">x[]</code> is both input and output and has length <code class="calibre2">n</code>, i.e., a C function, say <code class="calibre2">fn</code>, of type <code class="calibre2">integr_fn</code> must basically do <code class="calibre2">for(i in 1:n) x[i] := f(x[i], ex)</code>. The vectorization requirement can be used to speed up the integrand instead of calling it <code class="calibre2">n</code> times. Note that in the current implementation built on QUADPACK, <code class="calibre2">n</code> will be either 15 or 21. The <code class="calibre2">ex</code> argument is a pointer passed down from the calling routine, normally used to carry auxiliary information.
+</p>
+<p>
+There are interfaces (defined in header R_ext/Applic.h) for integrals over finite and infinite intervals (or “ranges” or “integration boundaries”).
+</p>
+<ul>
+<li>
+Finite: <a href="" id="index-Rdqags"></a>
+<div class="example">
+<pre class="example1"><code>void Rdqags(integr_fn f, void *ex, double *a, double *b,
+            double *epsabs, double *epsrel,
+            double *result, double *abserr, int *neval, int *ier,
+            int *limit, int *lenw, int *last,
+            int *iwork, double *work);</code></pre>
+</div>
+</li>
+<li>
+Infinite: <a href="" id="index-Rdqagi"></a>
+<div class="example">
+<pre class="example1"><code>void Rdqagi(integr_fn f, void *ex, double *bound, int *inf,
+            double *epsabs, double *epsrel,
+            double *result, double *abserr, int *neval, int *ier,
+            int *limit, int *lenw, int *last,
+            int *iwork, double *work);</code></pre>
+</div>
+</li>
+</ul>
+<p>
+Only the 3rd and 4th argument differ for the two integrators; for the finite range integral using <code class="calibre2">Rdqags</code>, <code class="calibre2">a</code> and <code class="calibre2">b</code> are the integration interval bounds, whereas for an infinite range integral using <code class="calibre2">Rdqagi</code>, <code class="calibre2">bound</code> is the finite bound of the integration (if the integral is not doubly-infinite) and <code class="calibre2">inf</code> is a code indicating the kind of integration range,
+</p>
+<dl>
+<dt>
+<code class="calibre2">inf = 1</code>
+</dt>
+<dd>
+<p>
+corresponds to (bound, +Inf),
+</p>
+</dd>
+<dt>
+<code class="calibre2">inf = -1</code>
+</dt>
+<dd>
+<p>
+corresponds to (-Inf, bound),
+</p>
+</dd>
+<dt>
+<code class="calibre2">inf = 2</code>
+</dt>
+<dd>
+<p>
+corresponds to (-Inf, +Inf),
+</p>
+</dd>
+</dl>
+<p>
+<code class="calibre2">f</code> and <code class="calibre2">ex</code> define the integrand function, see above; <code class="calibre2">epsabs</code> and <code class="calibre2">epsrel</code> specify the absolute and relative accuracy requested, <code class="calibre2">result</code>, <code class="calibre2">abserr</code> and <code class="calibre2">last</code> are the output components <code class="calibre2">value</code>, <code class="calibre2">abs.err</code> and <code class="calibre2">subdivisions</code> of the R function integrate, where <code class="calibre2">neval</code> gives the number of integrand function evaluations, and the error code <code class="calibre2">ier</code> is translated to R’s <code class="calibre2">integrate() $ message</code>, look at that function definition. <code class="calibre2">limit</code> corresponds to <code class="calibre2">integrate(…, subdivisions = *)</code>. It seems you should always define the two work arrays and the length of the second one as
+</p>
+<div class="example">
+<pre class="example1"><code>    lenw = 4 * limit;
+    iwork =   (int *) R_alloc(limit, sizeof(int));
+    work = (double *) R_alloc(lenw,  sizeof(double));</code></pre>
+</div>
+<p>
+The comments in the source code in src/appl/integrate.c give more details, particularly about reasons for failure (<code class="calibre2">ier &gt;= 1</code>).
+</p>
+<hr />
+<p>
+<a href="" id="Utility-functions"></a> <a href="" id="Utility-functions-1"></a>
+</p>
+<h3 id="utility-functions" class="section">
+6.10 Utility functions
+</h3>
+<p>
+<a href="" id="index-Sort-functions-from-C"></a>
+</p>
+<p>
+R has a fairly comprehensive set of sort routines which are made available to users’ C code. The following is declared in header file Rinternals.h.
+</p>
+<dl>
+<dt>
+<a href="" id="index-R_005forderVector"></a>Function: <em>void</em> <strong>R_orderVector</strong> <em>(int* indx, int n, SEXP arglist, Rboolean nalast, Rboolean decreasing)</em><br /> <a href="" id="index-R_005forderVector1"></a>Function: <em>void</em> <strong>R_orderVector1</strong> <em>(int* indx, int n, SEXP x, Rboolean nalast, Rboolean decreasing)</em>
+</dt>
+<dd>
+<p>
+<code class="calibre2">R_orderVector()</code> corresponds to R’s <code class="calibre2">order(…, na.last, decreasing)</code>. More specifically, <code class="calibre2">indx &lt;- order(x, y, na.last, decreasing)</code> corresponds to <code class="calibre2">R_orderVector(indx, n, Rf_lang2(x, y), nalast, decreasing)</code> and for three vectors, <code class="calibre2">Rf_lang3(x,y,z)</code> is used as arglist.
+</p>
+<p>
+Both <code class="calibre2">R_orderVector</code> and <code class="calibre2">R_orderVector1</code> assume the vector <code class="calibre2">indx</code> to be allocated to length &gt;= n. On return, <code class="calibre2">indx[]</code> contains a permutation of <code class="calibre2">0:(n-1)</code>, i.e., 0-based C indices (and not 1-based R indices, as R’s <code class="calibre2">order()</code>).
+</p>
+<p>
+When ordering only one vector, <code class="calibre2">R_orderVector1</code> is faster and corresponds (but is 0-based) to R’s <code class="calibre2">indx &lt;- order(x, na.last, decreasing)</code>. It was added in R 3.3.0.
+</p>
+</dd>
+</dl>
+<p>
+All other sort routines are declared in header file R_ext/Utils.h (included by R.h) and include the following.
+</p>
+<dl>
+<dt>
+<a href="" id="index-R_005fisort"></a>Function: <em>void</em> <strong>R_isort</strong> <em>(int* x, int n)</em><br /> <a href="" id="index-R_005frsort"></a>Function: <em>void</em> <strong>R_rsort</strong> <em>(double* x, int n)</em><br /> <a href="" id="index-R_005fcsort"></a>Function: <em>void</em> <strong>R_csort</strong> <em>(Rcomplex* x, int n)</em><br /> <a href="" id="index-rsort_005fwith_005findex"></a>Function: <em>void</em> <strong>rsort_with_index</strong> <em>(double* x, int* index, int n)</em>
+</dt>
+<dd>
+<p>
+The first three sort integer, real (double) and complex data respectively. (Complex numbers are sorted by the real part first then the imaginary part.) <code class="calibre2">NA</code>s are sorted last.
+</p>
+<p>
+<code class="calibre2">rsort_with_index</code> sorts on x, and applies the same permutation to index. <code class="calibre2">NA</code>s are sorted last.
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-revsort"></a>Function: <em>void</em> <strong>revsort</strong> <em>(double* x, int* index, int n)</em>
+</dt>
+<dd>
+<p>
+Is similar to <code class="calibre2">rsort_with_index</code> but sorts into decreasing order, and <code class="calibre2">NA</code>s are not handled.
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-iPsort"></a>Function: <em>void</em> <strong>iPsort</strong> <em>(int* x, int n, int k)</em><br /> <a href="" id="index-rPsort"></a>Function: <em>void</em> <strong>rPsort</strong> <em>(double* x, int n, int k)</em><br /> <a href="" id="index-cPsort"></a>Function: <em>void</em> <strong>cPsort</strong> <em>(Rcomplex* x, int n, int k)</em>
+</dt>
+<dd>
+<p>
+These all provide (very) partial sorting: they permute x so that <code class="calibre2">x[k]</code> is in the correct place with smaller values to the left, larger ones to the right.
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-R_005fqsort"></a>Function: <em>void</em> <strong>R_qsort</strong> <em>(double <em>v, size_t i, size_t j)</em><br /> <a href="" id="index-R_005fqsort_005fI"></a>Function: <em>void</em> <strong>R_qsort_I</strong> <em>(double </em>v, int <em>I, int i, int j)</em><br /> <a href="" id="index-R_005fqsort_005fint"></a>Function: <em>void</em> <strong>R_qsort_int</strong> <em>(int </em>iv, size_t i, size_t j)</em><br /> <a href="" id="index-R_005fqsort_005fint_005fI"></a>Function: <em>void</em> <strong>R_qsort_int_I</strong> <em>(int <em>iv, int </em>I, int i, int j)</em>
+</dt>
+<dd>
+<p>
+These routines sort <code class="calibre2">v[i:j]</code> or <code class="calibre2">iv[i:j]</code> (using 1-indexing, i.e., <code class="calibre2">v[1]</code> is the first element) calling the quicksort algorithm as used by R’s <code class="calibre2">sort(v, method = “quick”)</code> and documented on the help page for the R function <code class="calibre2">sort</code>. The <code class="calibre2">…_I()</code> versions also return the <code class="calibre2">sort.index()</code> vector in <code class="calibre2">I</code>. Note that the ordering is <em>not</em> stable, so tied values may be permuted.
+</p>
+<p>
+Note that <code class="calibre2">NA</code>s are not handled (explicitly) and you should use different sorting functions if <code class="calibre2">NA</code>s can be present.
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-qsort4"></a>Function: <em>subroutine</em> <strong>qsort4</strong> <em>(double precision v, integer indx, integer ii, integer jj)</em><br /> <a href="" id="index-qsort3"></a>Function: <em>subroutine</em> <strong>qsort3</strong> <em>(double precision v, integer ii, integer jj)</em>
+</dt>
+<dd>
+<p>
+The FORTRAN interface routines for sorting double precision vectors are <code class="calibre2">qsort3</code> and <code class="calibre2">qsort4</code>, equivalent to <code class="calibre2">R_qsort</code> and <code class="calibre2">R_qsort_I</code>, respectively.
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-R_005fmax_005fcol"></a>Function: <em>void</em> <strong>R_max_col</strong> <em>(double* matrix, int* nr, int* nc, int* maxes, int* ties_meth)</em>
+</dt>
+<dd>
+<p>
+Given the nr by nc matrix <code class="calibre2">matrix</code> in column-major (“FORTRAN”) order, <code class="calibre2">R_max_col()</code> returns in <code class="calibre2">maxes[i-1]</code> the column number of the maximal element in the i-th row (the same as R’s <code class="calibre2">max.col()</code> function). In the case of ties (multiple maxima), <code class="calibre2">*ties_meth</code> is an integer code in <code class="calibre2">1:3</code> determining the method: 1 = “random”, 2 = “first” and 3 = “last”. See R’s help page <code class="calibre2">?max.col</code>.
+</p>
+</dd>
+</dl>
+<dl>
+<dt>
+<a href="" id="index-findInterval"></a>Function: <em>int</em> <strong>findInterval</strong> <em>(double* xt, int n, double x, Rboolean rightmost_closed, Rboolean all_inside, int ilo, int* mflag)</em><br /> <a href="" id="index-findInterval2_0028double_002a"></a>Function: <em>int</em> <strong>findInterval2(double<em></strong> <em>xt, int n, double x, Rboolean rightmost_closed, Rboolean all_inside, Rboolean left_open, int ilo, int</em> mflag)</em>
+</dt>
+<dd>
+<p>
+Given the ordered vector xt of length n, return the interval or index of x in <code class="calibre2">xt[]</code>, typically max(<em>i</em>; 1 &lt;= i &lt;= n &amp; <em>xt[i]</em> &lt;= x) where we use 1-indexing as in R and FORTRAN (but not C). If rightmost_closed is true, also returns <em>n-1</em> if x equals <em>xt[n]</em>. If all_inside is not 0, the result is coerced to lie in <code class="calibre2">1:(n-1)</code> even when x is outside the xt[] range. On return, <code class="calibre2">*mflag</code> equals <em>-1</em> if x &lt; xt[1], <em>+1</em> if x &gt;= xt[n], and 0 otherwise.
+</p>
+<p>
+The algorithm is particularly fast when ilo is set to the last result of <code class="calibre2">findInterval()</code> and x is a value of a sequence which is increasing or decreasing for subsequent calls.
+</p>
+<p>
+<code class="calibre2">findInterval2()</code> is a generalization of <code class="calibre2">findInterval()</code>, with an extra <code class="calibre2">Rboolean</code> argument left_open. Setting <code class="calibre2">left_open = TRUE</code> basically replaces all left-closed right-open intervals t) by left-open ones t], see the help page of R function <code class="calibre2">findInterval</code> for details.
+</p>
+<p>
+There is also an <code class="calibre2">F77_CALL(interv)()</code> version of <code class="calibre2">findInterval()</code> with the same arguments, but all pointers.
+</p>
+</dd>
+</dl>
+<p>
+A system-independent interface to produce the name of a temporary file is provided as
+</p>
+<dl>
+<dt>
+<a href="" id="index-R_005ftmpnam"></a>Function: <em>char <em></em> <strong>R_tmpnam</strong> <em>(const char </em>prefix, const char <em>tmpdir)</em><br /> <a href="" id="index-R_005ftmpnam2"></a>Function: <em>char </em></em> <strong>R_tmpnam2</strong> <em>(const char <em>prefix, const char </em>tmpdir, const char *fileext)</em>
+</dt>
+<dd>
+<p>
+Return a pathname for a temporary file with name beginning with prefix and ending with fileext in directory tmpdir. A <code class="calibre2">NULL</code> prefix or extension is replaced by <code class="calibre2">“”</code>. Note that the return value is <code class="calibre2">malloc</code>ed and should be <code class="calibre2">free</code>d when no longer needed (unlike the system call <code class="calibre2">tmpnam</code>).
+</p>
+</dd>
+</dl>
+<p>
+There is also the internal function used to expand file names in several R functions, and called directly by <code class="calibre2">path.expand</code>.
+</p>
+<dl>
+<dt>
+<a href="" id="index-R_005fExpandFileName"></a>Function: <em>const char <em></em> <strong>R_ExpandFileName</strong> <em>(const char </em>fn)</em>
+</dt>
+<dd>
+<p>
+Expand a path name fn by replacing a leading tilde by the user’s home directory (if defined). The precise meaning is platform-specific; it will usually be taken from the environment variable <code class="calibre2">HOME</code> if this is defined.
+</p>
+</dd>
+</dl>
+<p>
+For historical reasons there are FORTRAN interfaces to functions <code class="calibre2">D1MACH</code> and <code class="calibre2">I1MACH</code>. These can be called from C code as e.g. <code class="calibre2">F77_CALL(d1mach)(4)</code>. Note that these are emulations of the original functions by Fox, Hall and Schryer on NetLib at <a href="http://www.netlib.org/slatec/src/" class="uri">http://www.netlib.org/slatec/src/</a> for IEC 60559 arithmetic (required by R).
+</p>
+<hr />
+<p>
+<a href="" id="Re_002dencoding"></a> <a href="" id="Re_002dencoding-1"></a>
+</p>
+<h3 id="re-encoding" class="section">
+6.11 Re-encoding
+</h3>
+<p>
+R has its own C-level interface to the encoding conversion capabilities provided by <code class="calibre2">iconv</code> because there are incompatibilities between the declarations in different implementations of <code class="calibre2">iconv</code>.
+</p>
+<p>
+These are declared in header file R_ext/Riconv.h.
+</p>
+<p>
+<a href="" id="index-Riconv_005fopen"></a>Function: <em>void <em></em> <strong>Riconv_open</strong> <em>(const char </em>to, const char *from)</em>
+</p>
+<p>
+Set up a pointer to an encoding object to be used to convert between two encodings: <code class="calibre2">“”</code> indicates the current locale.
+</p>
+<p>
+<a href="" id="index-Riconv"></a>Function: <em>size_t</em> <strong>Riconv</strong> <em>(void *cd, const char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft)</em>
+</p>
+<p>
+Convert as much as possible of <code class="calibre2">inbuf</code> to <code class="calibre2">outbuf</code>. Initially the <code class="calibre2">int</code> variables indicate the number of bytes available in the buffers, and they are updated (and the <code class="calibre2">char</code> pointers are updated to point to the next free byte in the buffer). The return value is the number of characters converted, or <code class="calibre2">(size_t)-1</code> (beware: <code class="calibre2">size_t</code> is usually an unsigned type). It should be safe to assume that an error condition sets <code class="calibre2">errno</code> to one of <code class="calibre2">E2BIG</code> (the output buffer is full), <code class="calibre2">EILSEQ</code> (the input cannot be converted, and might be invalid in the encoding specified) or <code class="calibre2">EINVAL</code> (the input does not end with a complete multi-byte character).
+</p>
+<p>
+<a href="" id="index-Riconv_005fclose"></a>Function: <em>int</em> <strong>Riconv_close</strong> <em>(void * cd)</em>
+</p>
+<p>
+Free the resources of an encoding object.
+</p>
+<hr />
+<p>
+<a href="" id="Allowing-interrupts"></a> <a href="" id="Allowing-interrupts-1"></a>
+</p>
+<h3 id="allowing-interrupts" class="section">
+6.12 Allowing interrupts
+</h3>
+<p>
+<a href="" id="index-Interrupts"></a>
+</p>
+<p>
+No port of R can be interrupted whilst running long computations in compiled code, so programmers should make provision for the code to be interrupted at suitable points by calling from C
+</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;R_ext/Utils.h&gt;
+
+void R_CheckUserInterrupt(void);</code></pre>
+</div>
+<p>
+and from FORTRAN
+</p>
+<div class="example">
+<pre class="example1"><code>subroutine rchkusr()</code></pre>
+</div>
+<p>
+These check if the user has requested an interrupt, and if so branch to R’s error handling functions.
+</p>
+<p>
+Note that it is possible that the code behind one of the entry points defined here if called from your C or FORTRAN code could be interruptible or generate an error and so not return to your code.
+</p>
+<hr />
+<p>
+<a href="" id="Platform-and-version-information"></a> <a href="" id="Platform-and-version-information-1"></a>
+</p>
+<h3 id="platform-and-version-information" class="section">
+6.13 Platform and version information
+</h3>
+<p>
+<a href="" id="index-Version-information-from-C"></a> <a href="" id="index-OpenMP-1"></a> <a href="" id="index-R_005fVersion"></a>
+</p>
+<p>
+The header files define <code class="calibre2">USING_R</code>, which can be used to test if the code is indeed being used with R.
+</p>
+<p>
+Header file Rconfig.h (included by R.h) is used to define platform-specific macros that are mainly for use in other header files. The macro <code class="calibre2">WORDS_BIGENDIAN</code> is defined on big-endian<a href="concept-index.html#FOOT141" id="DOCF141"><sup>141</sup></a> systems (e.g. most OSes on Sparc and PowerPC hardware) and not on little-endian systems (nowadays all the commoner R platforms). It can be useful when manipulating binary files. NB: these macros apply only to the C compiler used to build R, not necessarily to another C or C++ compiler.
+</p>
+<p>
+Header file Rversion.h (<strong>not</strong> included by R.h) defines a macro <code class="calibre2">R_VERSION</code> giving the version number encoded as an integer, plus a macro <code class="calibre2">R_Version</code> to do the encoding. This can be used to test if the version of R is late enough, or to include back-compatibility features. For protection against very old versions of R which did not have this macro, use a construction such as
+</p>
+<div class="example">
+<pre class="example1"><code>#if defined(R_VERSION) &amp;&amp; R_VERSION &gt;= R_Version(3, 1, 0)
+  ...
+#endif</code></pre>
+</div>
+<p>
+More detailed information is available in the macros <code class="calibre2">R_MAJOR</code>, <code class="calibre2">R_MINOR</code>, <code class="calibre2">R_YEAR</code>, <code class="calibre2">R_MONTH</code> and <code class="calibre2">R_DAY</code>: see the header file Rversion.h for their format. Note that the minor version includes the patchlevel (as in ‘2.2’).
+</p>
+<p>
+Packages which use <code class="calibre2">alloca</code> need to ensure it is defined: as it is part of neither C nor POSIX there is no standard way to do so. One can use
+</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;Rconfig.h&gt; // for HAVE_ALLOCA_H
+#ifdef __GNUC__
+// this covers gcc, clang, icc
+# undef alloca
+# define alloca(x) __builtin_alloca((x))
+#elif defined(HAVE_ALLOCA_H)
+// needed for native compilers on Solaris and AIX
+# include &lt;alloca.h&gt;
+#endif</code></pre>
+</div>
+<p>
+(and this should be included before standard C headers such as stdlib.h, since on some platforms these include malloc.h which may have a conflicting definition), which suffices for known R platforms.
+</p>
+<hr />
+<p>
+<a href="" id="Inlining-C-functions"></a> <a href="" id="Inlining-C-functions-1"></a>
+</p>
+<h3 id="inlining-c-functions" class="section">
+6.14 Inlining C functions
+</h3>
+<p>
+<a href="" id="index-R_005fINLINE"></a>
+</p>
+<p>
+The C99 keyword <code class="calibre2">inline</code> should be recognized by all compilers nowadays used to build R. Portable code which might be used with earlier versions of R can be written using the macro <code class="calibre2">R_INLINE</code> (defined in file Rconfig.h included by R.h), as for example from package <a href="https://CRAN.R-project.org/package=cluster"><strong>cluster</strong></a>
+</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;R.h&gt;
+
+static R_INLINE int ind_2(int l, int j)
+{
+...
+}</code></pre>
+</div>
+<p>
+Be aware that using inlining with functions in more than one compilation unit is almost impossible to do portably, see <a href="http://www.greenend.org.uk/rjk/2003/03/inline.html" class="uri">http://www.greenend.org.uk/rjk/2003/03/inline.html</a>, so this usage is for <code class="calibre2">static</code> functions as in the example. All the R configure code has checked is that <code class="calibre2">R_INLINE</code> can be used in a single C file with the compiler used to build R. We recommend that packages making extensive use of inlining include their own configure code.
+</p>
+<hr />
+<p>
+<a href="" id="Controlling-visibility"></a> <a href="" id="Controlling-visibility-1"></a>
+</p>
+<h3 id="controlling-visibility" class="section">
+6.15 Controlling visibility
+</h3>
+<p>
+<a href="" id="index-Visibility"></a>
+</p>
+<p>
+Header R_ext/Visibility.h has some definitions for controlling the visibility of entry points. These are only effective when ‘HAVE_VISIBILITY_ATTRIBUTE’ is defined – this is checked when R is configured and recorded in header Rconfig.h (included by R_ext/Visibility.h). It is often defined on modern Unix-alikes with a recent compiler<a href="concept-index.html#FOOT142" id="DOCF142"><sup>142</sup></a>, but not supported on macOS nor Windows. Minimizing the visibility of symbols in a shared library will both speed up its loading (unlikely to be significant) and reduce the possibility of linking to other entry points of the same name.
+</p>
+<p>
+C/C++ entry points prefixed by <code class="calibre2">attribute_hidden</code> will not be visible in the shared object. There is no comparable mechanism for FORTRAN entry points, but there is a more comprehensive scheme used by, for example package <strong>stats</strong>. Most compilers which allow control of visibility will allow control of visibility for all symbols <em>via</em> a flag, and where known the flag is encapsulated in the macros ‘C_VISIBILITY’ and <code class="calibre2">F77_VISIBILITY</code> for C and FORTRAN compilers. These are defined in etc/Makeconf and so available for normal compilation of package code. For example, src/Makevars could include
+</p>
+<div class="example">
+<pre class="example1"><code>PKG_CFLAGS=$(C_VISIBILITY)
+PKG_FFLAGS=$(F77_VISIBILITY)</code></pre>
+</div>
+<p>
+This would end up with <strong>no</strong> visible entry points, which would be pointless. However, the effect of the flags can be overridden by using the <code class="calibre2">attribute_visible</code> prefix. A shared object which registers its entry points needs only for have one visible entry point, its initializer, so for example package <strong>stats</strong> has
+</p>
+<div class="example">
+<pre class="example1"><code>void attribute_visible R_init_stats(DllInfo *dll)
+{
+    R_registerRoutines(dll, CEntries, CallEntries, FortEntries, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+...
+}</code></pre>
+</div>
+<p>
+The visibility mechanism is not available on Windows, but there is an equally effective way to control which entry points are visible, by supplying a definitions file pkgnme/src/pkgname-win.def: only entry points listed in that file will be visible. Again using <strong>stats</strong> as an example, it has
+</p>
+<div class="example">
+<pre class="example1"><code>LIBRARY stats.dll
+EXPORTS
+ R_init_stats</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Standalone-Mathlib"></a> <a href="" id="Using-these-functions-in-your-own-C-code"></a>
+</p>
+<h3 id="using-these-functions-in-your-own-c-code" class="section">
+6.16 Using these functions in your own C code
+</h3>
+<p>
+It is possible to build <code class="calibre2">Mathlib</code>, the R set of mathematical functions documented in Rmath.h, as a standalone library libRmath under both Unix-alikes and Windows. (This includes the functions documented in <a href="the-r-api-entry-points-for-c-code.html#Numerical-analysis-subroutines">Numerical analysis subroutines</a> as from that header file.)
+</p>
+<p>
+The library is not built automatically when R is installed, but can be built in the directory src/nmath/standalone in the R sources: see the file README there. To use the code in your own C program include
+</p>
+<div class="example">
+<pre class="example1"><code>#define MATHLIB_STANDALONE
+#include &lt;Rmath.h&gt;</code></pre>
+</div>
+<p>
+and link against ‘-lRmath’ (and perhaps ‘-lm’). There is an example file test.c.
+</p>
+<p>
+A little care is needed to use the random-number routines. You will need to supply the uniform random number generator
+</p>
+<div class="example">
+<pre class="example1"><code>double unif_rand(void)</code></pre>
+</div>
+<p>
+or use the one supplied (and with a dynamic library or DLL you will have to use the one supplied, which is the Marsaglia-multicarry with an entry points
+</p>
+<div class="example">
+<pre class="example1"><code>set_seed(unsigned int, unsigned int)</code></pre>
+</div>
+<p>
+to set its seeds and
+</p>
+<div class="example">
+<pre class="example1"><code>get_seed(unsigned int *, unsigned int *)</code></pre>
+</div>
+<p>
+to read the seeds).
+</p>
+<hr />
+<p>
+<a href="" id="Organization-of-header-files"></a> <a href="" id="Organization-of-header-files-1"></a>
+</p>
+<h3 id="organization-of-header-files" class="section">
+6.17 Organization of header files
+</h3>
+<p>
+The header files which R installs are in directory R_INCLUDE_DIR (default R_HOME/include). This currently includes
+</p>
+<blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+R.h
+</td>
+<td align="left">
+includes many other files
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+S.h
+</td>
+<td align="left">
+different version for code ported from S
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+Rinternals.h
+</td>
+<td align="left">
+definitions for using R’s internal structures
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+Rdefines.h
+</td>
+<td align="left">
+macros for an S-like interface to the above (no longer maintained)
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+Rmath.h
+</td>
+<td align="left">
+standalone math library
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+Rversion.h
+</td>
+<td align="left">
+R version information
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+Rinterface.h
+</td>
+<td align="left">
+for add-on front-ends (Unix-alikes only)
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+Rembedded.h
+</td>
+<td align="left">
+for add-on front-ends
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+R_ext/Applic.h
+</td>
+<td align="left">
+optimization and integration
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+R_ext/BLAS.h
+</td>
+<td align="left">
+C definitions for BLAS routines
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+R_ext/Callbacks.h
+</td>
+<td align="left">
+C (and R function) top-level task handlers
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+R_ext/GetX11Image.h
+</td>
+<td align="left">
+X11Image interface used by package <strong>trkplot</strong>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+R_ext/Lapack.h
+</td>
+<td align="left">
+C definitions for some LAPACK routines
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+R_ext/Linpack.h
+</td>
+<td align="left">
+C definitions for some LINPACK routines, not all of which are included in R
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+R_ext/Parse.h
+</td>
+<td align="left">
+a small part of R’s parse interface: not part of the stable API.
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+R_ext/RStartup.h
+</td>
+<td align="left">
+for add-on front-ends
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+R_ext/Rdynload.h
+</td>
+<td align="left">
+needed to register compiled code in packages
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+R_ext/R-ftp-http.h
+</td>
+<td align="left">
+interface to internal method of <code class="calibre2">download.file</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+R_ext/Riconv.h
+</td>
+<td align="left">
+interface to <code class="calibre2">iconv</code>
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+R_ext/Visibility.h
+</td>
+<td align="left">
+definitions controlling visibility
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+R_ext/eventloop.h
+</td>
+<td align="left">
+for add-on front-ends and for packages that need to share in the R event loops (not Windows)
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+The following headers are included by R.h:
+</p>
+<blockquote>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Rconfig.h
+</td>
+<td align="left">
+configuration info that is made available
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+R_ext/Arith.h
+</td>
+<td align="left">
+handling for <code class="calibre2">NA</code>s, <code class="calibre2">NaN</code>s, <code class="calibre2">Inf</code>/<code class="calibre2">-Inf</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+R_ext/Boolean.h
+</td>
+<td align="left">
+<code class="calibre2">TRUE</code>/<code class="calibre2">FALSE</code> type
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+R_ext/Complex.h
+</td>
+<td align="left">
+C typedefs for R’s <code class="calibre2">complex</code>
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+R_ext/Constants.h
+</td>
+<td align="left">
+constants
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+R_ext/Error.h
+</td>
+<td align="left">
+error handling
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+R_ext/Memory.h
+</td>
+<td align="left">
+memory allocation
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+R_ext/Print.h
+</td>
+<td align="left">
+<code class="calibre2">Rprintf</code> and variations.
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+R_ext/RS.h
+</td>
+<td align="left">
+definitions common to R.h and S.h, including <code class="calibre2">F77_CALL</code> etc.
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+R_ext/Random.h
+</td>
+<td align="left">
+random number generation
+</td>
+</tr>
+<tr class="odd">
+<td align="left">
+R_ext/Utils.h
+</td>
+<td align="left">
+sorting and other utilities
+</td>
+</tr>
+<tr class="even">
+<td align="left">
+R_ext/libextern.h
+</td>
+<td align="left">
+definitions for exports from R.dll on Windows.
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+The graphics systems are exposed in headers R_ext/GraphicsEngine.h, R_ext/GraphicsDevice.h (which it includes) and R_ext/QuartzDevice.h. Facilities for defining custom connection implementations are provided in R_ext/Connections.h, but make sure you consult the file before use.
+</p>
+<p>
+Let us re-iterate the advice to include system headers before the R header files, especially Rinternals.h (included by Rdefines.h) and Rmath.h, which redefine names which may be used in system headers (fewer if ‘R_NO_REMAP’ is defined, or ‘R_NO_REMAP_RMATH’ for Rmath.h).
+</p>
+<hr />
+<p>
+<a href="" id="Generic-functions-and-methods"></a> <a href="" id="Generic-functions-and-methods-1"></a>
+</p>
+<div id="calibre_pb_16" class="calibre6">
+
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="system-and-foreign-language-interfaces.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="generic-functions-and-methods.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

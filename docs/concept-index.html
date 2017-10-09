@@ -1,0 +1,1866 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Writing R extensions</title>
+  <meta name="description" content="Writing R Extensions covers how to create your own packages, write R help files, and the foreign language interfaces.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Writing R extensions" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Writing R Extensions covers how to create your own packages, write R help files, and the foreign language interfaces." />
+  <meta name="github-repo" content="ColinFay/writing-r-extensions" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Writing R extensions" />
+  
+  <meta name="twitter:description" content="Writing R Extensions covers how to create your own packages, write R help files, and the foreign language interfaces." />
+  
+
+<meta name="author" content="R Development Core Team">
+
+
+<meta name="date" content="2017-10-09">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="function-and-variable-index.html">
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-1');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Writing R Extensions</a></li>
+<li class="chapter" data-level="" data-path="acknowledgements.html"><a href="acknowledgements.html"><i class="fa fa-check"></i>Acknowledgements</a></li>
+<li class="chapter" data-level="1" data-path="creating-r-packages.html"><a href="creating-r-packages.html"><i class="fa fa-check"></i><b>1</b> Creating R packages</a></li>
+<li class="chapter" data-level="2" data-path="writing-r-documentation-files.html"><a href="writing-r-documentation-files.html"><i class="fa fa-check"></i><b>2</b> Writing R documentation files</a></li>
+<li class="chapter" data-level="3" data-path="tidying-and-profiling-r-code.html"><a href="tidying-and-profiling-r-code.html"><i class="fa fa-check"></i><b>3</b> Tidying and profiling R code</a></li>
+<li class="chapter" data-level="4" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>4</b> Debugging</a></li>
+<li class="chapter" data-level="5" data-path="system-and-foreign-language-interfaces.html"><a href="system-and-foreign-language-interfaces.html"><i class="fa fa-check"></i><b>5</b> System and foreign language interfaces</a></li>
+<li class="chapter" data-level="6" data-path="the-r-api-entry-points-for-c-code.html"><a href="the-r-api-entry-points-for-c-code.html"><i class="fa fa-check"></i><b>6</b> The R API: entry points for C code</a></li>
+<li class="chapter" data-level="7" data-path="generic-functions-and-methods.html"><a href="generic-functions-and-methods.html"><i class="fa fa-check"></i><b>7</b> Generic functions and methods</a></li>
+<li class="chapter" data-level="8" data-path="linking-guis-and-other-front-ends-to-r.html"><a href="linking-guis-and-other-front-ends-to-r.html"><i class="fa fa-check"></i><b>8</b> Linking GUIs and other front-ends to R</a></li>
+<li class="chapter" data-level="9" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>9</b> Function and variable index</a></li>
+<li class="chapter" data-level="10" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>10</b> Concept index</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Writing R extensions</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="concept-index" class="section level1">
+<h1><span class="header-section-number">Chapter 10</span> Concept index</h1>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="concept-index.html#Concept-index_cp_symbol-1" class="summary-letter"><strong>.</strong></a>   <a href="concept-index.html#Concept-index_cp_symbol-2" class="summary-letter"><strong>\</strong></a>  <br /> <a href="concept-index.html#Concept-index_cp_letter-A" class="summary-letter"><strong>A</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-C" class="summary-letter"><strong>C</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-D" class="summary-letter"><strong>D</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-E" class="summary-letter"><strong>E</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-G" class="summary-letter"><strong>G</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-H" class="summary-letter"><strong>H</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-I" class="summary-letter"><strong>I</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-L" class="summary-letter"><strong>L</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-M" class="summary-letter"><strong>M</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-N" class="summary-letter"><strong>N</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-O" class="summary-letter"><strong>O</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-R" class="summary-letter"><strong>R</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-S" class="summary-letter"><strong>S</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-T" class="summary-letter"><strong>T</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-U" class="summary-letter"><strong>U</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-V" class="summary-letter"><strong>V</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-W" class="summary-letter"><strong>W</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-Z" class="summary-letter"><strong>Z</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+Index Entry
+</p>
+<p>
+ 
+</p>
+<p>
+Section
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_symbol-1">.</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-_002einstall_005fextras-file">.install_extras file</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Writing-package-vignettes">Writing package vignettes</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-_002eRbuildignore-file">.Rbuildignore file</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Building-package-tarballs">Building package tarballs</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-_002eRinstignore-file">.Rinstignore file</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Package-subdirectories">Package subdirectories</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_symbol-2">\</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-_005clinkS4class">\linkS4class</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Cross_002dreferences">Cross-references</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-A">A</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Allocating-storage">Allocating storage</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Allocating-storage">Allocating storage</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Attributes">Attributes</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Attributes">Attributes</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-B">B</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Bessel-functions">Bessel functions</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Beta-function">Beta function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-Building-binary-packages">Building binary packages</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Building-binary-packages">Building binary packages</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-Building-source-packages">Building source packages</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Building-package-tarballs">Building package tarballs</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-C">C</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-C_002b_002b-code_002c-interfacing">C++ code, interfacing</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Interfacing-C_002b_002b-code">Interfacing C++ code</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Calling-C-from-FORTRAN-and-vice-versa">Calling C from FORTRAN and vice versa</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Calling-C-from-FORTRAN-and-vice-versa">Calling C from FORTRAN and vice versa</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-Checking-packages">Checking packages</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Checking-packages">Checking packages</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-citation">citation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Package-subdirectories">Package subdirectories</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-citation-1">citation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Preparing-translations">Preparing translations</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Classes">Classes</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Classes">Classes</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-cleanup-file">cleanup file</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Package-structure">Package structure</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-conditionals">conditionals</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Conditional-text">Conditional text</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-configure-file">configure file</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Package-structure">Package structure</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Copying-objects">Copying objects</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Named-objects-and-copying">Named objects and copying</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-CRAN">CRAN</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="acknowledgements.html#Creating-R-packages">Creating R packages</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-Creating-packages">Creating packages</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="acknowledgements.html#Creating-R-packages">Creating R packages</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Creating-shared-objects">Creating shared objects</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Creating-shared-objects">Creating shared objects</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-Cross_002dreferences-in-documentation">Cross-references in documentation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Cross_002dreferences">Cross-references</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-cumulative-hazard">cumulative hazard</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Distribution-functions">Distribution functions</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-D">D</a>
+</p>
+<p>
+<a href="debugging.html#index-Debugging">Debugging</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="debugging.html#Debugging-compiled-code">Debugging compiled code</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-DESCRIPTION-file">DESCRIPTION file</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#The-DESCRIPTION-file">The DESCRIPTION file</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Details-of-R-types">Details of R types</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Details-of-R-types">Details of R types</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Distribution-functions-from-C">Distribution functions from C</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Distribution-functions">Distribution functions</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-Documentation_002c-writing">Documentation, writing</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Writing-R-documentation-files">Writing R documentation files</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Dynamic-loading">Dynamic loading</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#dyn_002eload-and-dyn_002eunload">dyn.load and dyn.unload</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-dynamic-pages">dynamic pages</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Dynamic-pages">Dynamic pages</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-E">E</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-Editing-Rd-files">Editing Rd files</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Editing-Rd-files">Editing Rd files</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-encoding">encoding</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Encoding">Encoding</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Error-handling-from-C">Error handling from C</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Error-handling">Error handling</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Error-handling-from-FORTRAN">Error handling from FORTRAN</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Error-handling-from-FORTRAN">Error handling from FORTRAN</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Evaluating-R-expressions-from-C">Evaluating R expressions from C</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Evaluating-R-expressions-from-C">Evaluating R expressions from C</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-external-pointer">external pointer</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#External-pointers-and-weak-references">External pointers and weak references</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-F">F</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-Figures-in-documentation">Figures in documentation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Figures">Figures</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-finalizer">finalizer</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#External-pointers-and-weak-references">External pointers and weak references</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Finding-variables">Finding variables</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Finding-and-setting-variables">Finding and setting variables</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-G">G</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Gamma-function">Gamma function</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Mathematical-functions">Mathematical functions</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Garbage-collection">Garbage collection</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Garbage-Collection">Garbage Collection</a>
+</p>
+<p>
+<a href="generic-functions-and-methods.html#index-Generic-functions">Generic functions</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Generic-functions-and-methods">Generic functions and methods</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-H">H</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-handling-character-data">handling character data</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Handling-character-data">Handling character data</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Handling-lists">Handling lists</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Handling-lists">Handling lists</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Handling-R-objects-in-C">Handling R objects in C</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Handling-R-objects-in-C">Handling R objects in C</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-I">I</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-IEEE-special-values">IEEE special values</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Missing-and-special-values">Missing and special values</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-IEEE-special-values-1">IEEE special values</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Missing-and-IEEE-values">Missing and IEEE values</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-INDEX-file">INDEX file</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#The-INDEX-file">The INDEX file</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-Indices">Indices</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Indices">Indices</a>
+</p>
+<p>
+<a href="debugging.html#index-Inspecting-R-objects-when-debugging">Inspecting R objects when debugging</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="debugging.html#Inspecting-R-objects">Inspecting R objects</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-integration">integration</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Integration">Integration</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Interfaces-to-compiled-code">Interfaces to compiled code</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Interface-functions-_002eC-and-_002eFortran">Interface functions .C and .Fortran</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Interfaces-to-compiled-code-1">Interfaces to compiled code</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Interface-functions-_002eCall-and-_002eExternal">Interface functions .Call and .External</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Interfacing-C_002b_002b-code">Interfacing C++ code</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Interfacing-C_002b_002b-code">Interfacing C++ code</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Interrupts">Interrupts</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Allowing-interrupts">Allowing interrupts</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-L">L</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-LICENCE-file">LICENCE file</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Licensing">Licensing</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-LICENSE-file">LICENSE file</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Licensing">Licensing</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-Lists-and-tables-in-documentation">Lists and tables in documentation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Lists-and-tables">Lists and tables</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-M">M</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-Marking-text-in-documentation">Marking text in documentation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Marking-text">Marking text</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-Mathematics-in-documentation">Mathematics in documentation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Mathematics">Mathematics</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Memory-allocation-from-C">Memory allocation from C</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Memory-allocation">Memory allocation</a>
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#index-Memory-use">Memory use</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#Profiling-R-code-for-memory-use">Profiling R code for memory use</a>
+</p>
+<p>
+<a href="generic-functions-and-methods.html#index-Method-functions">Method functions</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Generic-functions-and-methods">Generic functions and methods</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Missing-values">Missing values</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Missing-and-special-values">Missing and special values</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Missing-values-1">Missing values</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Missing-and-IEEE-values">Missing and IEEE values</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-N">N</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-namespaces">namespaces</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-package-vignettes.html#Package-namespaces">Package namespaces</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-news">news</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Package-subdirectories">Package subdirectories</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Numerical-analysis-subroutines-from-C">Numerical analysis subroutines from C</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Numerical-analysis-subroutines">Numerical analysis subroutines</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Numerical-derivatives">Numerical derivatives</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Calculating-numerical-derivatives">Calculating numerical derivatives</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-O">O</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-OpenMP">OpenMP</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#OpenMP-support">OpenMP support</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-OpenMP-1">OpenMP</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Platform-and-version-information">Platform and version information</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Operating-system-access">Operating system access</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Operating-system-access">Operating system access</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-optimization">optimization</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Optimization">Optimization</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-P">P</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-Package-builder">Package builder</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Building-package-tarballs">Building package tarballs</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-Package-structure">Package structure</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Package-structure">Package structure</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-Package-subdirectories">Package subdirectories</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Package-subdirectories">Package subdirectories</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-Packages">Packages</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="acknowledgements.html#Creating-R-packages">Creating R packages</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Parsing-R-code-from-C">Parsing R code from C</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Parsing-R-code-from-C">Parsing R code from C</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-Platform_002dspecific-documentation">Platform-specific documentation</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Platform_002dspecific-sections">Platform-specific sections</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Printing-from-C">Printing from C</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Printing">Printing</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Printing-from-FORTRAN">Printing from FORTRAN</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Printing-from-FORTRAN">Printing from FORTRAN</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-Processing-Rd-format">Processing Rd format</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#Processing-documentation-files">Processing documentation files</a>
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#index-Profiling">Profiling</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#Profiling-R-code-for-speed">Profiling R code for speed</a>
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#index-Profiling-1">Profiling</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#Profiling-R-code-for-memory-use">Profiling R code for memory use</a>
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#index-Profiling-2">Profiling</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#Profiling-compiled-code">Profiling compiled code</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-R">R</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Random-numbers-in-C">Random numbers in C</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Random-numbers">Random numbers</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Random-numbers-in-C-1">Random numbers in C</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Distribution-functions">Distribution functions</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Random-numbers-in-FORTRAN">Random numbers in FORTRAN</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Calling-C-from-FORTRAN-and-vice-versa">Calling C from FORTRAN and vice versa</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Registering-native-routines">Registering native routines</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Registering-native-routines">Registering native routines</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-S">S</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Setting-variables">Setting variables</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Finding-and-setting-variables">Finding and setting variables</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Sort-functions-from-C">Sort functions from C</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Utility-functions">Utility functions</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-Sweave">Sweave</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Writing-package-vignettes">Writing package vignettes</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-T">T</a>
+</p>
+<p>
+<a href="creating-r-packages.html#index-tarballs">tarballs</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Building-package-tarballs">Building package tarballs</a>
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#index-Tidying-R-code">Tidying R code</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="tidying-and-profiling-r-code.html#Tidying-R-code">Tidying R code</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-U">U</a>
+</p>
+<p>
+<a href="writing-r-documentation-files.html#index-user_002ddefined-macros">user-defined macros</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="writing-r-documentation-files.html#User_002ddefined-macros">User-defined macros</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-V">V</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Version-information-from-C">Version information from C</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Platform-and-version-information">Platform and version information</a>
+</p>
+<p>
+<a href="writing-package-vignettes.html#index-vignettes">vignettes</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="creating-r-packages.html#Writing-package-vignettes">Writing package vignettes</a>
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#index-Visibility">Visibility</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="the-r-api:-entry-points-for-c-code.html#Controlling-visibility">Controlling visibility</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-W">W</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-weak-reference">weak reference</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#External-pointers-and-weak-references">External pointers and weak references</a>
+</p>
+<hr />
+<p>
+<a href="" id="Concept-index_cp_letter-Z">Z</a>
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#index-Zero_002dfinding">Zero-finding</a>:
+</p>
+<p>
+ 
+</p>
+<p>
+<a href="system-and-foreign-language-interfaces.html#Zero_002dfinding">Zero-finding</a>
+</p>
+<hr />
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">
+Jump to:  
+</td>
+<td align="left">
+<a href="concept-index.html#Concept-index_cp_symbol-1" class="summary-letter"><strong>.</strong></a>   <a href="concept-index.html#Concept-index_cp_symbol-2" class="summary-letter"><strong>\</strong></a>  <br /> <a href="concept-index.html#Concept-index_cp_letter-A" class="summary-letter"><strong>A</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-B" class="summary-letter"><strong>B</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-C" class="summary-letter"><strong>C</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-D" class="summary-letter"><strong>D</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-E" class="summary-letter"><strong>E</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-F" class="summary-letter"><strong>F</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-G" class="summary-letter"><strong>G</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-H" class="summary-letter"><strong>H</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-I" class="summary-letter"><strong>I</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-L" class="summary-letter"><strong>L</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-M" class="summary-letter"><strong>M</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-N" class="summary-letter"><strong>N</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-O" class="summary-letter"><strong>O</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-P" class="summary-letter"><strong>P</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-R" class="summary-letter"><strong>R</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-S" class="summary-letter"><strong>S</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-T" class="summary-letter"><strong>T</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-U" class="summary-letter"><strong>U</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-V" class="summary-letter"><strong>V</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-W" class="summary-letter"><strong>W</strong></a>   <a href="concept-index.html#Concept-index_cp_letter-Z" class="summary-letter"><strong>Z</strong></a>  
+</td>
+</tr>
+</tbody>
+</table>
+<div class="contents">
+<hr />
+<h4 id="footnotes" class="subsection">
+Footnotes
+</h4>
+<h3 id="section" class="section">
+<a href="creating-r-packages.html#DOCF1" id="FOOT1" class="calibre21">(1)</a>
+</h3>
+<p>
+although this is a persistent mis-usage. It seems to stem from S, whose analogues of R’s packages were officially known as <em>library sections</em> and later as <em>chapters</em>, but almost always referred to as <em>libraries</em>.
+</p>
+<h3 id="section-1" class="section">
+<a href="creating-r-packages.html#DOCF2" id="FOOT2" class="calibre21">(2)</a>
+</h3>
+<p>
+This seems to be commonly used for a file in ‘markdown’ format. Be aware that most users of R will not know that, nor know how to view such a file: platforms such as macOS and Windows do not have a default viewer set in their file associations. The CRAN package web pages render such files in HTML: the converter used expects the file to be encoded in UTF-8.
+</p>
+<h3 id="section-2" class="section">
+<a href="creating-r-packages.html#DOCF3" id="FOOT3" class="calibre21">(3)</a>
+</h3>
+<p>
+currently, top-level files .Rbuildignore and .Rinstignore, and vignettes/.install_extras.
+</p>
+<h3 id="section-3" class="section">
+<a href="creating-r-packages.html#DOCF4" id="FOOT4" class="calibre21">(4)</a>
+</h3>
+<p>
+false positives are possible, but only a handful have been seen so far.
+</p>
+<h3 id="section-4" class="section">
+<a href="creating-r-packages.html#DOCF5" id="FOOT5" class="calibre21">(5)</a>
+</h3>
+<p>
+at least if this is done in a locale which matches the package encoding.
+</p>
+<h3 id="section-5" class="section">
+<a href="creating-r-packages.html#DOCF6" id="FOOT6" class="calibre21">(6)</a>
+</h3>
+<p>
+and required by CRAN, so checked by <code class="calibre2">R CMD check –as-cran</code>.
+</p>
+<h3 id="section-6" class="section">
+<a href="creating-r-packages.html#DOCF7" id="FOOT7" class="calibre21">(7)</a>
+</h3>
+<p>
+But it is checked for Open Source packages by <code class="calibre2">R CMD check –as-cran</code>.
+</p>
+<h3 id="section-7" class="section">
+<a href="creating-r-packages.html#DOCF8" id="FOOT8" class="calibre21">(8)</a>
+</h3>
+<p>
+Duplicate definitions may trigger a warning: see <a href="writing-r-documentation-files.html#User_002ddefined-macros">User-defined macros</a>.
+</p>
+<h3 id="section-8" class="section">
+<a href="creating-r-packages.html#DOCF9" id="FOOT9" class="calibre21">(9)</a>
+</h3>
+<p>
+As from R 3.4.0, <code class="calibre2">bug.report</code> will try to extract an email address from a <code class="calibre2">Contact</code> field if there is no <code class="calibre2">BugReports</code> field.
+</p>
+<h3 id="section-9" class="section">
+<a href="creating-r-packages.html#DOCF10" id="FOOT10" class="calibre21">(10)</a>
+</h3>
+<p>
+even one wrapped in <code class="calibre2">\donttest</code>.
+</p>
+<h3 id="section-10" class="section">
+<a href="creating-r-packages.html#DOCF11" id="FOOT11" class="calibre21">(11)</a>
+</h3>
+<p>
+This includes all packages directly called by <code class="calibre2">library</code> and <code class="calibre2">require</code> calls, as well as data obtained <em>via</em> <code class="calibre2">data(theirdata, package = “somepkg”)</code> calls: <code class="calibre2">R CMD check</code> will warn about all of these. But there are subtler uses which it will not detect: e.g. if package A uses package B and makes use of functionality in package B which uses package C which package B suggests or enhances, then package C needs to be in the ‘Suggests’ list for package A. Nor will undeclared uses in included files be reported, nor unconditional uses of packages listed under ‘Enhances’.
+</p>
+<h3 id="section-11" class="section">
+<a href="creating-r-packages.html#DOCF12" id="FOOT12" class="calibre21">(12)</a>
+</h3>
+<p>
+Extensions .S and .s arise from code originally written for S(-PLUS), but are commonly used for assembler code. Extension .q was used for S, which at one time was tentatively called QPE.
+</p>
+<h3 id="section-12" class="section">
+<a href="creating-r-packages.html#DOCF13" id="FOOT13" class="calibre21">(13)</a>
+</h3>
+<p>
+but they should be in the encoding declared in the DESCRIPTION file.
+</p>
+<h3 id="section-13" class="section">
+<a href="creating-r-packages.html#DOCF14" id="FOOT14" class="calibre21">(14)</a>
+</h3>
+<p>
+This is true for OSes which implement the ‘C’ locale: Windows’ idea of the ‘C’ locale uses the WinAnsi charset.
+</p>
+<h3 id="section-14" class="section">
+<a href="creating-r-packages.html#DOCF15" id="FOOT15" class="calibre21">(15)</a>
+</h3>
+<p>
+More precisely, they can contain the English alphanumeric characters and the symbols ‘$ - _ . + !’ ( ) , ;  = &amp;’.
+</p>
+<h3 id="section-15" class="section">
+<a href="creating-r-packages.html#DOCF16" id="FOOT16" class="calibre21">(16)</a>
+</h3>
+<p>
+Note that Ratfor is not supported. If you have Ratfor source code, you need to convert it to FORTRAN. Only FORTRAN 77 (which we write in upper case) is supported on all platforms, but most also support Fortran-95 (for which we use title case). If you want to ship Ratfor source files, please do so in a subdirectory of src and not in the main subdirectory.
+</p>
+<h3 id="section-16" class="section">
+<a href="creating-r-packages.html#DOCF17" id="FOOT17" class="calibre21">(17)</a>
+</h3>
+<p>
+either or both of which may not be supported on particular platforms
+</p>
+<h3 id="section-17" class="section">
+<a href="creating-r-packages.html#DOCF18" id="FOOT18" class="calibre21">(18)</a>
+</h3>
+<p>
+Using .hpp is not guaranteed to be portable.
+</p>
+<h3 id="section-18" class="section">
+<a href="creating-r-packages.html#DOCF19" id="FOOT19" class="calibre21">(19)</a>
+</h3>
+<p>
+There is also ‘<strong>APPLE_CC</strong>’, but that indicates a compiler with Apple-specific features, not the OS. It is used in Rinlinedfuns.h.
+</p>
+<h3 id="section-19" class="section">
+<a href="creating-r-packages.html#DOCF20" id="FOOT20" class="calibre21">(20)</a>
+</h3>
+<p>
+the POSIX terminology, called ‘make variables’ by GNU make.
+</p>
+<h3 id="section-20" class="section">
+<a href="creating-r-packages.html#DOCF21" id="FOOT21" class="calibre21">(21)</a>
+</h3>
+<p>
+The best way to generate such a file is to copy the .Rout from a successful run of <code class="calibre2">R CMD check</code>. If you want to generate it separately, do run R with options –vanilla –slave and with environment variable <code class="calibre2">LANGUAGE=en</code> set to get messages in English. Be careful not to use output with the option –timings (and note that –as-cran sets it).
+</p>
+<h3 id="section-21" class="section">
+<a href="creating-r-packages.html#DOCF22" id="FOOT22" class="calibre21">(22)</a>
+</h3>
+<p>
+e.g. <a href="https://tools.ietf.org/html/rfc4180" class="uri">https://tools.ietf.org/html/rfc4180</a>.
+</p>
+<h3 id="section-22" class="section">
+<a href="creating-r-packages.html#DOCF23" id="FOOT23" class="calibre21">(23)</a>
+</h3>
+<p>
+People who have trouble with case are advised to use .rda as a common error is to refer to abc.RData as abc.Rdata!
+</p>
+<h3 id="section-23" class="section">
+<a href="creating-r-packages.html#DOCF24" id="FOOT24" class="calibre21">(24)</a>
+</h3>
+<p>
+The script should only assume a POSIX-compliant <code class="calibre2">/bin/sh</code> – see <a href="http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html" class="uri">http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html</a>. In particular <code class="calibre2">bash</code> extensions must not be used, and not all R platforms have a <code class="calibre2">bash</code> command, let alone one at /bin/bash. All known shells used with R support the use of backticks, but not all support ‘<span class="math inline">\((cmd)’.&lt;/p&gt; &lt;h3 id=&quot;section-24&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF25&quot; id=&quot;FOOT25&quot; class=&quot;calibre21&quot;&gt;(25)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;in POSIX parlance: GNU &lt;code class=&quot;calibre2&quot;&gt;make&lt;/code&gt; calls these ‘make variables’.&lt;/p&gt; &lt;h3 id=&quot;section-25&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF26&quot; id=&quot;FOOT26&quot; class=&quot;calibre21&quot;&gt;(26)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;at least on Unix-alikes: the Windows build currently resolves such dependencies to a static FORTRAN library when Rblas.dll is built.&lt;/p&gt; &lt;h3 id=&quot;section-26&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF27&quot; id=&quot;FOOT27&quot; class=&quot;calibre21&quot;&gt;(27)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;&lt;a href=&quot;http://www.openmp.org/&quot; class=&quot;uri&quot;&gt;http://www.openmp.org/&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/OpenMP&quot; class=&quot;uri&quot;&gt;https://en.wikipedia.org/wiki/OpenMP&lt;/a&gt;, &lt;a href=&quot;https://computing.llnl.gov/tutorials/openMP/&quot; class=&quot;uri&quot;&gt;https://computing.llnl.gov/tutorials/openMP/&lt;/a&gt;&lt;/p&gt; &lt;h3 id=&quot;section-27&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF28&quot; id=&quot;FOOT28&quot; class=&quot;calibre21&quot;&gt;(28)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;Default builds of &lt;code class=&quot;calibre2&quot;&gt;clang&lt;/code&gt; 3.8.0 and later have support for OpenMP, but the &lt;code class=&quot;calibre2&quot;&gt;libomp&lt;/code&gt; run-time library may not be installed.&lt;/p&gt; &lt;h3 id=&quot;section-28&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF29&quot; id=&quot;FOOT29&quot; class=&quot;calibre21&quot;&gt;(29)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;In most implementations the &lt;code class=&quot;calibre2&quot;&gt;_OPENMP&lt;/code&gt; macro has value a date which can be mapped to an OpenMP version: for example, value &lt;code class=&quot;calibre2&quot;&gt;201307&lt;/code&gt; is the date of version 4.0 (July 2013). However this may be used to denote the latest version which is partially supported, not that which is fully implemented.&lt;/p&gt; &lt;h3 id=&quot;section-29&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF30&quot; id=&quot;FOOT30&quot; class=&quot;calibre21&quot;&gt;(30)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;GCC since 4.7, hence R builds for Windows since R 3.3.0, which also support OpenMP 4.0.&lt;/p&gt; &lt;h3 id=&quot;section-30&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF31&quot; id=&quot;FOOT31&quot; class=&quot;calibre21&quot;&gt;(31)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;People do use older versions of OSes such as Ubuntu 12.04LTS and Debian Wheezy LTS which have GCC 4.4.&lt;/p&gt; &lt;h3 id=&quot;section-31&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF32&quot; id=&quot;FOOT32&quot; class=&quot;calibre21&quot;&gt;(32)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;as did the GCC-based Apple implementation, but not the Intel/LLVM OpenMP runtime on macOS.&lt;/p&gt; &lt;h3 id=&quot;section-32&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF33&quot; id=&quot;FOOT33&quot; class=&quot;calibre21&quot;&gt;(33)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;Windows default, not MinGW-w64 default.&lt;/p&gt; &lt;h3 id=&quot;section-33&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF34&quot; id=&quot;FOOT34&quot; class=&quot;calibre21&quot;&gt;(34)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;Which it was at the time of writing with GCC, Oracle, Intel and Clang compilers.&lt;/p&gt; &lt;h3 id=&quot;section-34&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF35&quot; id=&quot;FOOT35&quot; class=&quot;calibre21&quot;&gt;(35)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;some Windows toolchains had the typo ‘_REENTRANCE’ instead.&lt;/p&gt; &lt;h3 id=&quot;section-35&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF36&quot; id=&quot;FOOT36&quot; class=&quot;calibre21&quot;&gt;(36)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;A few OSes (AIX, IRIX, Windows) do not need special flags for such code, but most do—although compilers will often generate PIC code when not asked to do so.&lt;/p&gt; &lt;h3 id=&quot;section-36&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF37&quot; id=&quot;FOOT37&quot; class=&quot;calibre21&quot;&gt;(37)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;Cygwin used &lt;code class=&quot;calibre2&quot;&gt;g77&lt;/code&gt; up to 2011, and some pre-built versions of R for Unix OSes still do.&lt;/p&gt; &lt;h3 id=&quot;section-37&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF38&quot; id=&quot;FOOT38&quot; class=&quot;calibre21&quot;&gt;(38)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;The changes are linked from &lt;a href=&quot;https://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations&quot; class=&quot;uri&quot;&gt;https://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations&lt;/a&gt;.&lt;/p&gt; &lt;h3 id=&quot;section-38&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF39&quot; id=&quot;FOOT39&quot; class=&quot;calibre21&quot;&gt;(39)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;Values &lt;code class=&quot;calibre2&quot;&gt;199711&lt;/code&gt;, &lt;code class=&quot;calibre2&quot;&gt;201103L&lt;/code&gt; and &lt;code class=&quot;calibre2&quot;&gt;201402L&lt;/code&gt; are most commonly used for C++98, C++11 and C++14 respectively, but some compilers set &lt;code class=&quot;calibre2&quot;&gt;1L&lt;/code&gt;.&lt;/p&gt; &lt;h3 id=&quot;section-39&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF40&quot; id=&quot;FOOT40&quot; class=&quot;calibre21&quot;&gt;(40)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;Some distributions, notably Debian, have supplied a build of &lt;code class=&quot;calibre2&quot;&gt;clang&lt;/code&gt; with &lt;code class=&quot;calibre2&quot;&gt;g++&lt;/code&gt;’s headers and library. Conversely, Apple’s command named &lt;code class=&quot;calibre2&quot;&gt;g++&lt;/code&gt; is based on &lt;code class=&quot;calibre2&quot;&gt;clang&lt;/code&gt; using &lt;code class=&quot;calibre2&quot;&gt;libc++&lt;/code&gt;.&lt;/p&gt; &lt;h3 id=&quot;section-40&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF41&quot; id=&quot;FOOT41&quot; class=&quot;calibre21&quot;&gt;(41)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;For details of these and related macros, see file config.site in the R sources.&lt;/p&gt; &lt;h3 id=&quot;section-41&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF42&quot; id=&quot;FOOT42&quot; class=&quot;calibre21&quot;&gt;(42)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;As from R 3.4.0, &lt;code class=&quot;calibre2&quot;&gt;configure&lt;/code&gt; attempts to supply a C++14 compiler only if explicitly requested. However, earlier versions of R will use the default C++14 mode of &lt;code class=&quot;calibre2&quot;&gt;g++&lt;/code&gt; 6 and later.&lt;/p&gt; &lt;h3 id=&quot;section-42&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF43&quot; id=&quot;FOOT43&quot; class=&quot;calibre21&quot;&gt;(43)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;&lt;a href=&quot;See%0Ahttps://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations&quot;&gt;See https://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations&lt;/a&gt; or &lt;a href=&quot;http://en.cppreference.com/w/cpp/experimental/feature_test&quot; class=&quot;uri&quot;&gt;http://en.cppreference.com/w/cpp/experimental/feature_test&lt;/a&gt;. It seems a reasonable assumption that any compiler promising some C++14 conformance will provide these—e.g. &lt;code class=&quot;calibre2&quot;&gt;g++&lt;/code&gt; 4.9.x did but 4.8.5 did not.&lt;/p&gt; &lt;h3 id=&quot;section-43&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF44&quot; id=&quot;FOOT44&quot; class=&quot;calibre21&quot;&gt;(44)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;On systems which use sub-architectures, architecture-specific versions such as ~/.R/check.Renviron.i386 take precedence.&lt;/p&gt; &lt;h3 id=&quot;section-44&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF45&quot; id=&quot;FOOT45&quot; class=&quot;calibre21&quot;&gt;(45)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;A suitable &lt;code class=&quot;calibre2&quot;&gt;file.exe&lt;/code&gt; is part of the Windows toolset: it checks for &lt;code class=&quot;calibre2&quot;&gt;gfile&lt;/code&gt; if a suitable &lt;code class=&quot;calibre2&quot;&gt;file&lt;/code&gt; is not found: the latter is available in the OpenCSW collection for Solaris at &lt;a href=&quot;http://www.opencsw.org&quot; class=&quot;uri&quot;&gt;http://www.opencsw.org&lt;/a&gt;. The source repository is &lt;a href=&quot;ftp://ftp.astron.com/pub/file/&quot; class=&quot;uri&quot;&gt;ftp://ftp.astron.com/pub/file/&lt;/a&gt;.&lt;/p&gt; &lt;h3 id=&quot;section-45&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF46&quot; id=&quot;FOOT46&quot; class=&quot;calibre21&quot;&gt;(46)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;An exception is made for subdirectories with names starting ‘win’ or ‘Win’.&lt;/p&gt; &lt;h3 id=&quot;section-46&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF47&quot; id=&quot;FOOT47&quot; class=&quot;calibre21&quot;&gt;(47)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;on most other platforms such runtime libraries are dynamic, but static libraries are currently used on Windows because the toolchain is not a standard part of the OS.&lt;/p&gt; &lt;h3 id=&quot;section-47&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF48&quot; id=&quot;FOOT48&quot; class=&quot;calibre21&quot;&gt;(48)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;or if option --use-valgrind is used or environment variable &lt;code class=&quot;calibre2&quot;&gt;_R_CHECK_ALWAYS_LOG_VIGNETTE_OUTPUT_&lt;/code&gt; is set to a true value or if there are differences from a target output file&lt;/p&gt; &lt;h3 id=&quot;section-48&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF49&quot; id=&quot;FOOT49&quot; class=&quot;calibre21&quot;&gt;(49)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;For example, in early 2014 &lt;a href=&quot;https://CRAN.R-project.org/package=gdata&quot;&gt;&lt;strong&gt;gdata&lt;/strong&gt;&lt;/a&gt; declared ‘Imports: gtools’ and &lt;a href=&quot;https://CRAN.R-project.org/package=gtools&quot;&gt;&lt;strong&gt;gtools&lt;/strong&gt;&lt;/a&gt; declared ‘Imports: gdata’.&lt;/p&gt; &lt;h3 id=&quot;section-49&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF50&quot; id=&quot;FOOT50&quot; class=&quot;calibre21&quot;&gt;(50)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;loading, examples, tests, running vignette code&lt;/p&gt; &lt;h3 id=&quot;section-50&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF51&quot; id=&quot;FOOT51&quot; class=&quot;calibre21&quot;&gt;(51)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;called CVS or .svn or .arch-ids or .bzr or .git (but not files called .git) or .hg.&lt;/p&gt; &lt;h3 id=&quot;section-51&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF52&quot; id=&quot;FOOT52&quot; class=&quot;calibre21&quot;&gt;(52)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;called .metadata.&lt;/p&gt; &lt;h3 id=&quot;section-52&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF53&quot; id=&quot;FOOT53&quot; class=&quot;calibre21&quot;&gt;(53)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;which is an error: GNU make uses GNUmakefile.&lt;/p&gt; &lt;h3 id=&quot;section-53&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF54&quot; id=&quot;FOOT54&quot; class=&quot;calibre21&quot;&gt;(54)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;and to avoid problems with case-insensitive file systems, lower-case versions of all these extensions.&lt;/p&gt; &lt;h3 id=&quot;section-54&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF55&quot; id=&quot;FOOT55&quot; class=&quot;calibre21&quot;&gt;(55)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;unless inhibited by using ‘BuildVignettes: no’ in the DESCRIPTION file.&lt;/p&gt; &lt;h3 id=&quot;section-55&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF56&quot; id=&quot;FOOT56&quot; class=&quot;calibre21&quot;&gt;(56)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;provided the conditions of the package’s license are met: many, including CRAN, see the omission of source components as incompatible with an Open Source license.&lt;/p&gt; &lt;h3 id=&quot;section-56&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF57&quot; id=&quot;FOOT57&quot; class=&quot;calibre21&quot;&gt;(57)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;&lt;code class=&quot;calibre2&quot;&gt;R_HOME/bin&lt;/code&gt; is prepended to the &lt;code class=&quot;calibre2&quot;&gt;PATH&lt;/code&gt; so that references to &lt;code class=&quot;calibre2&quot;&gt;R&lt;/code&gt; or &lt;code class=&quot;calibre2&quot;&gt;Rscript&lt;/code&gt; in the Makefile do make use of the currently running version of R.&lt;/p&gt; &lt;h3 id=&quot;section-57&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF58&quot; id=&quot;FOOT58&quot; class=&quot;calibre21&quot;&gt;(58)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;Note that lazy-loaded datasets are &lt;em&gt;not&lt;/em&gt; in the package’s namespace so need to be accessed &lt;em&gt;via&lt;/em&gt; &lt;code class=&quot;calibre2&quot;&gt;::&lt;/code&gt;, e.g. &lt;code class=&quot;calibre2&quot;&gt;survival::survexp.us&lt;/code&gt;.&lt;/p&gt; &lt;h3 id=&quot;section-58&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF59&quot; id=&quot;FOOT59&quot; class=&quot;calibre21&quot;&gt;(59)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;they will be called with two unnamed arguments, in that order.&lt;/p&gt; &lt;h3 id=&quot;section-59&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF60&quot; id=&quot;FOOT60&quot; class=&quot;calibre21&quot;&gt;(60)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;NB: this will only be read in all versions of R if the package contains R code in a R directory.&lt;/p&gt; &lt;h3 id=&quot;section-60&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF61&quot; id=&quot;FOOT61&quot; class=&quot;calibre21&quot;&gt;(61)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;Note that this is the basename of the shared object, and the appropriate extension (.so or .dll) will be added.&lt;/p&gt; &lt;h3 id=&quot;section-61&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF62&quot; id=&quot;FOOT62&quot; class=&quot;calibre21&quot;&gt;(62)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;This was necessary at least prior to R 3.0.2 as the &lt;strong&gt;methods&lt;/strong&gt; package looked for its own R code on the search path.&lt;/p&gt; &lt;h3 id=&quot;section-62&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF63&quot; id=&quot;FOOT63&quot; class=&quot;calibre21&quot;&gt;(63)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;This defaults to the same pattern as &lt;code class=&quot;calibre2&quot;&gt;exportPattern&lt;/code&gt;: use something like &lt;code class=&quot;calibre2&quot;&gt;exportClassPattern(&amp;quot;^\)</span>“)</code> to override this.
+</p>
+<h3 id="section-63" class="section">
+<a href="writing-package-vignettes.html#DOCF64" id="FOOT64" class="calibre21">(64)</a>
+</h3>
+<p>
+if it does, there will be opaque warnings about replacing imports if the classes/methods are also imported.
+</p>
+<h3 id="section-64" class="section">
+<a href="writing-package-vignettes.html#DOCF65" id="FOOT65" class="calibre21">(65)</a>
+</h3>
+<p>
+People use <code class="calibre2">dev.new()</code> to open a device at a particular size: that is not portable but using <code class="calibre2">dev.new(noRStudioGD = TRUE)</code> helps.
+</p>
+<h3 id="section-65" class="section">
+<a href="writing-package-vignettes.html#DOCF66" id="FOOT66" class="calibre21">(66)</a>
+</h3>
+<p>
+Solaris <code class="calibre2">make</code> does not accept CRLF-terminated Makefiles; Solaris warns about and some other <code class="calibre2">make</code>s ignore incomplete final lines.
+</p>
+<h3 id="section-66" class="section">
+<a href="writing-package-vignettes.html#DOCF67" id="FOOT67" class="calibre21">(67)</a>
+</h3>
+<p>
+This was apparently introduced in SunOS 4, and is available elsewhere <em>provided</em> it is surrounded by spaces.
+</p>
+<h3 id="section-67" class="section">
+<a href="writing-package-vignettes.html#DOCF68" id="FOOT68" class="calibre21">(68)</a>
+</h3>
+<p>
+GNU make, BSD make formerly in FreeBSD and macOS, AT&amp;T make as implemented on Solaris, <code class="calibre2">pmake</code> in FreeBSD, ‘Distributed Make’ (<code class="calibre2">dmake</code>), part of Oracle Studio and available in other versions.
+</p>
+<h3 id="section-68" class="section">
+<a href="writing-package-vignettes.html#DOCF69" id="FOOT69" class="calibre21">(69)</a>
+</h3>
+<p>
+For example, <code class="calibre2">test</code> options -a and -e are not portable, and not supported in the AT&amp;T Bourne shell used on Solaris 10/11, even though they are in the 2008 POSIX standard. Nor does Solaris support ‘$(cmd)’.
+</p>
+<h3 id="section-69" class="section">
+<a href="writing-package-vignettes.html#DOCF70" id="FOOT70" class="calibre21">(70)</a>
+</h3>
+<p>
+<a href="http://fortranwiki.org/fortran/show/Modernizing+Old+Fortran" class="uri">http://fortranwiki.org/fortran/show/Modernizing+Old+Fortran</a> may help explain some of the warnings from <code class="calibre2">gfortran -Wall -pedantic</code>.
+</p>
+<h3 id="section-70" class="section">
+<a href="writing-package-vignettes.html#DOCF71" id="FOOT71" class="calibre21">(71)</a>
+</h3>
+<p>
+See <a href="http://people.ds.cam.ac.uk/nmm1/fortran/paper_07.pdf" class="uri">http://people.ds.cam.ac.uk/nmm1/fortran/paper_07.pdf</a>.
+</p>
+<h3 id="section-71" class="section">
+<a href="writing-package-vignettes.html#DOCF72" id="FOOT72" class="calibre21">(72)</a>
+</h3>
+<p>
+but note that <code class="calibre2">long long</code> is not a standard C++98 type, and C++ compilers set up for strict checking will reject it.
+</p>
+<h3 id="section-72" class="section">
+<a href="writing-package-vignettes.html#DOCF73" id="FOOT73" class="calibre21">(73)</a>
+</h3>
+<p>
+or where supported the variants <code class="calibre2">_Exit</code> and <code class="calibre2">_exit</code>.
+</p>
+<h3 id="section-73" class="section">
+<a href="writing-package-vignettes.html#DOCF74" id="FOOT74" class="calibre21">(74)</a>
+</h3>
+<p>
+This and <code class="calibre2">srandom</code> are in any case not portable. They are in POSIX but not in the C99 standard, and not available on Windows.
+</p>
+<h3 id="section-74" class="section">
+<a href="writing-package-vignettes.html#DOCF75" id="FOOT75" class="calibre21">(75)</a>
+</h3>
+<p>
+in libselinux.
+</p>
+<h3 id="section-75" class="section">
+<a href="writing-package-vignettes.html#DOCF76" id="FOOT76" class="calibre21">(76)</a>
+</h3>
+<p>
+At least Linux and Windows, but not macOS.
+</p>
+<h3 id="section-76" class="section">
+<a href="writing-package-vignettes.html#DOCF77" id="FOOT77" class="calibre21">(77)</a>
+</h3>
+<p>
+except perhaps the simplest kind as used by <code class="calibre2">download.file()</code> in non-interactive use.
+</p>
+<h3 id="section-77" class="section">
+<a href="writing-package-vignettes.html#DOCF78" id="FOOT78" class="calibre21">(78)</a>
+</h3>
+<p>
+Whereas the GNU linker reorders so -L options are processed first, the Solaris one does not.
+</p>
+<h3 id="section-78" class="section">
+<a href="writing-package-vignettes.html#DOCF79" id="FOOT79" class="calibre21">(79)</a>
+</h3>
+<p>
+some versions of macOS did not.
+</p>
+<h3 id="section-79" class="section">
+<a href="writing-package-vignettes.html#DOCF80" id="FOOT80" class="calibre21">(80)</a>
+</h3>
+<p>
+For example, the ability to handle ‘<a href="https://" class="uri">https://</a>’ URLs, which even the build in some major Linux distributions in 2017 did not possess.
+</p>
+<h3 id="section-80" class="section">
+<a href="writing-package-vignettes.html#DOCF81" id="FOOT81" class="calibre21">(81)</a>
+</h3>
+<p>
+Not doing so is the default on Windows, overridden for the R executables. It is also the default on some Solaris compilers.
+</p>
+<h3 id="section-81" class="section">
+<a href="writing-package-vignettes.html#DOCF82" id="FOOT82" class="calibre21">(82)</a>
+</h3>
+<p>
+These are not needed for the default compiler settings on ‘x86_64’ but are likely to be needed on ‘ix86’.
+</p>
+<h3 id="section-82" class="section">
+<a href="writing-package-vignettes.html#DOCF83" id="FOOT83" class="calibre21">(83)</a>
+</h3>
+<p>
+Select ‘Save as’, and select ‘Reduce file size’ from the ‘Quartz filter’ menu’: this can be accessed in other ways, for example by Automator.
+</p>
+<h3 id="section-83" class="section">
+<a href="writing-package-vignettes.html#DOCF84" id="FOOT84" class="calibre21">(84)</a>
+</h3>
+<p>
+except perhaps some special characters such as backslash and hash which may be taken over for currency symbols.
+</p>
+<h3 id="section-84" class="section">
+<a href="writing-package-vignettes.html#DOCF85" id="FOOT85" class="calibre21">(85)</a>
+</h3>
+<p>
+Typically on a Unix-alike this is done by telling <code class="calibre2">fontconfig</code> where to find suitable fonts to select glyphs from.
+</p>
+<h3 id="section-85" class="section">
+<a href="writing-package-vignettes.html#DOCF86" id="FOOT86" class="calibre21">(86)</a>
+</h3>
+<p>
+This is seen on Linux, Solaris and FreeBSD, although each has other ways to turn on all extensions, e.g. defining <code class="calibre2">_GNU_SOURCE</code>, <code class="calibre2"><strong>EXTENSIONS</strong></code> or <code class="calibre2">_BSD_SOURCE</code>: the GCC compilers by default define <code class="calibre2">_GNU_SOURCE</code> unless a strict standard such as -std=c99 is used. On macOS extensions are declared unless one of these macros is given too small a value.
+</p>
+<h3 id="section-86" class="section">
+<a href="writing-package-vignettes.html#DOCF87" id="FOOT87" class="calibre21">(87)</a>
+</h3>
+<p>
+Solaris 10 does not recognize this value of <code class="calibre2">_POSIX_C_SOURCE</code>, nor values of <code class="calibre2">_XOPEN_SOURCE</code> beyond 600.
+</p>
+<h3 id="section-87" class="section">
+<a href="writing-package-vignettes.html#DOCF88" id="FOOT88" class="calibre21">(88)</a>
+</h3>
+<p>
+E.g. <code class="calibre2">gcc 5.3</code> in C++11 mode.
+</p>
+<h3 id="section-88" class="section">
+<a href="writing-package-vignettes.html#DOCF89" id="FOOT89" class="calibre21">(89)</a>
+</h3>
+<p>
+There is a portable way to do this in Fortran 2003 (<code class="calibre2">ieee_is_nan()</code> in module <code class="calibre2">ieee_arithmetic</code>), but ironically that is not supported in the commonly-used versions 4.x of GNU Fortran. A pretty robust alternative is to test <code class="calibre2">if(my_var /= my_var)</code>.
+</p>
+<h3 id="section-89" class="section">
+<a href="writing-package-vignettes.html#DOCF90" id="FOOT90" class="calibre21">(90)</a>
+</h3>
+<p>
+which often is the same as the header included by the C compiler, but some compilers have wrappers for some of the C headers.
+</p>
+<h3 id="section-90" class="section">
+<a href="writing-r-documentation-files.html#DOCF91" id="FOOT91" class="calibre21">(91)</a>
+</h3>
+<p>
+e.g. <code class="calibre2">\alias</code>, <code class="calibre2">\keyword</code> and <code class="calibre2">\note</code> sections.
+</p>
+<h3 id="section-91" class="section">
+<a href="writing-r-documentation-files.html#DOCF92" id="FOOT92" class="calibre21">(92)</a>
+</h3>
+<p>
+There can be exceptions: for example Rd files are not allowed to start with a dot, and have to be uniquely named on a case-insensitive file system.
+</p>
+<h3 id="section-92" class="section">
+<a href="writing-r-documentation-files.html#DOCF93" id="FOOT93" class="calibre21">(93)</a>
+</h3>
+<p>
+in the current locale, and with special treatment for LaTeX special characters and with any ‘pkgname-package’ topic moved to the top of the list.
+</p>
+<h3 id="section-93" class="section">
+<a href="writing-r-documentation-files.html#DOCF94" id="FOOT94" class="calibre21">(94)</a>
+</h3>
+<p>
+Text between or after list items is discouraged.
+</p>
+<h3 id="section-94" class="section">
+<a href="writing-r-documentation-files.html#DOCF95" id="FOOT95" class="calibre21">(95)</a>
+</h3>
+<p>
+as defined by the R function <code class="calibre2">trimws</code>.
+</p>
+<h3 id="section-95" class="section">
+<a href="writing-r-documentation-files.html#DOCF96" id="FOOT96" class="calibre21">(96)</a>
+</h3>
+<p>
+Currently it is rendered differently only in HTML conversions, and LaTeX conversion outside ‘\usage’ and ‘\examples’ environments.
+</p>
+<h3 id="section-96" class="section">
+<a href="writing-r-documentation-files.html#DOCF97" id="FOOT97" class="calibre21">(97)</a>
+</h3>
+<p>
+a common example in CRAN packages is <code class="calibre2">\link[mgcv]{gam}</code>.
+</p>
+<h3 id="section-97" class="section">
+<a href="writing-r-documentation-files.html#DOCF98" id="FOOT98" class="calibre21">(98)</a>
+</h3>
+<p>
+There is only a fine distinction between <code class="calibre2">\dots</code> and <code class="calibre2">\ldots</code>. It is technically incorrect to use <code class="calibre2">\ldots</code> in code blocks and <code class="calibre2">tools::checkRd</code> will warn about this—on the other hand the current converters treat them the same way in code blocks, and elsewhere apart from the small distinction between the two in LaTeX.
+</p>
+<h3 id="section-98" class="section">
+<a href="writing-r-documentation-files.html#DOCF99" id="FOOT99" class="calibre21">(99)</a>
+</h3>
+<p>
+See the examples section in the file Paren.Rd for an example.
+</p>
+<h3 id="section-99" class="section">
+<a href="writing-r-documentation-files.html#DOCF100" id="FOOT100" class="calibre21">(100)</a>
+</h3>
+<p>
+R 2.9.0 added support for UTF-8 Cyrillic characters in LaTeX, but on some OSes this will need Cyrillic support added to LaTeX, so environment variable <code class="calibre2"><em>R_CYRILLIC_TEX</em></code> may need to be set to a non-empty value to enable this.
+</p>
+<h3 id="section-100" class="section">
+<a href="tidying-and-profiling-r-code.html#DOCF101" id="FOOT101" class="calibre21">(101)</a>
+</h3>
+<p>
+R has to be built to enable this, but the option –enable-R-profiling is the default.
+</p>
+<h3 id="section-101" class="section">
+<a href="tidying-and-profiling-r-code.html#DOCF102" id="FOOT102" class="calibre21">(102)</a>
+</h3>
+<p>
+For Unix-alikes these are intervals of CPU time, and for Windows of elapsed time.
+</p>
+<h3 id="section-102" class="section">
+<a href="debugging.html#DOCF103" id="FOOT103" class="calibre21">(103)</a>
+</h3>
+<p>
+With the exceptions of the commands listed below: an object of such a name can be printed <em>via</em> an explicit call to <code class="calibre2">print</code>.
+</p>
+<h3 id="section-103" class="section">
+<a href="debugging.html#DOCF104" id="FOOT104" class="calibre21">(104)</a>
+</h3>
+<p>
+at the time of writing mainly for 10.9 with some support for 10.8, none for the current 10.10.
+</p>
+<h3 id="section-104" class="section">
+<a href="debugging.html#DOCF105" id="FOOT105" class="calibre21">(105)</a>
+</h3>
+<p>
+Those in some numeric, logical, integer, raw, complex vectors and in memory allocated by <code class="calibre2">R_alloc</code>.
+</p>
+<h3 id="section-105" class="section">
+<a href="debugging.html#DOCF106" id="FOOT106" class="calibre21">(106)</a>
+</h3>
+<p>
+including using the data sections of R vectors after they are freed.
+</p>
+<h3 id="section-106" class="section">
+<a href="debugging.html#DOCF107" id="FOOT107" class="calibre21">(107)</a>
+</h3>
+<p>
+small fixed-size arrays by default in <code class="calibre2">gfortran</code>, for example.
+</p>
+<h3 id="section-107" class="section">
+<a href="debugging.html#DOCF108" id="FOOT108" class="calibre21">(108)</a>
+</h3>
+<p>
+currently on Linux and macOS (including the builds from Xcode 7 and later), with some support for Solaris. On some platforms the runtime library, <strong>libasan</strong>, needs to be installed separately, and for checking C++ you may also need <strong>libubsan</strong>.
+</p>
+<h3 id="section-108" class="section">
+<a href="debugging.html#DOCF109" id="FOOT109" class="calibre21">(109)</a>
+</h3>
+<p>
+see <a href="http://llvm.org/devmtg/2014-04/PDFs/LightningTalks/EuroLLVM%202014%20--%20container%20overflow.pdf">http://llvm.org/devmtg/2014-04/PDFs/LightningTalks/EuroLLVM%202014%20–%20container%20overflow.pdf</a>.
+</p>
+<h3 id="section-109" class="section">
+<a href="debugging.html#DOCF110" id="FOOT110" class="calibre21">(110)</a>
+</h3>
+<p>
+part of the LLVM project and in distributed in <code class="calibre2">llvm</code> RPMs and <code class="calibre2">.deb</code>s on Linux. It is not currently shipped by Apple.
+</p>
+<h3 id="section-110" class="section">
+<a href="debugging.html#DOCF111" id="FOOT111" class="calibre21">(111)</a>
+</h3>
+<p>
+as Ubuntu is said to do.
+</p>
+<h3 id="section-111" class="section">
+<a href="debugging.html#DOCF112" id="FOOT112" class="calibre21">(112)</a>
+</h3>
+<p>
+installed on some Linux systems as <code class="calibre2">asan_symbolize</code>, and obtainable from <a href="https://llvm.org/svn/llvm-project/compiler-rt/trunk/lib/asan/scripts/asan_symbolize.py" class="uri">https://llvm.org/svn/llvm-project/compiler-rt/trunk/lib/asan/scripts/asan_symbolize.py</a>: it makes use of <code class="calibre2">llvm-symbolizer</code> if available.
+</p>
+<h3 id="section-112" class="section">
+<a href="debugging.html#DOCF113" id="FOOT113" class="calibre21">(113)</a>
+</h3>
+<p>
+including <code class="calibre2">gcc</code> 7.1 and <code class="calibre2">clang</code> 4.0.0: for <code class="calibre2">gcc</code> it is implied by -fsanitize=address.
+</p>
+<h3 id="section-113" class="section">
+<a href="debugging.html#DOCF114" id="FOOT114" class="calibre21">(114)</a>
+</h3>
+<p>
+On some platforms the runtime library, <strong>libubsan</strong>, needs to be installed separately.
+</p>
+<h3 id="section-114" class="section">
+<a href="debugging.html#DOCF115" id="FOOT115" class="calibre21">(115)</a>
+</h3>
+<p>
+or the user manual for your version of <code class="calibre2">clang</code>, e.g. (the paths have differed for some versions) <a href="http://llvm.org/releases/4.0.0/tools/clang/docs/UsersManual.html" class="uri">http://llvm.org/releases/4.0.0/tools/clang/docs/UsersManual.html</a>.
+</p>
+<h3 id="section-115" class="section">
+<a href="debugging.html#DOCF116" id="FOOT116" class="calibre21">(116)</a>
+</h3>
+<p>
+but works better if inlining and frame pointer optimizations are disabled.
+</p>
+<h3 id="section-116" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF117" id="FOOT117" class="calibre21">(117)</a>
+</h3>
+<p>
+possibly after some platform-specific translation, e.g. adding leading or trailing underscores.
+</p>
+<h3 id="section-117" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF118" id="FOOT118" class="calibre21">(118)</a>
+</h3>
+<p>
+Note that this is then not checked for over-runs by option <code class="calibre2">CBoundsCheck = TRUE</code>.
+</p>
+<h3 id="section-118" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF119" id="FOOT119" class="calibre21">(119)</a>
+</h3>
+<p>
+Strictly this is OS-specific, but no exceptions have been seen for many years.
+</p>
+<h3 id="section-119" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF120" id="FOOT120" class="calibre21">(120)</a>
+</h3>
+<p>
+For calls from within a namespace the search is confined to the DLL loaded for that package.
+</p>
+<h3 id="section-120" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF121" id="FOOT121" class="calibre21">(121)</a>
+</h3>
+<p>
+For unregistered entry points the OS’s <code class="calibre2">dlsym</code> routine is used to find addresses. Its performance varies considerably by OS and even in the best case it will need to search a much larger symbol table than, say, the table of <code class="calibre2">.Call</code> entry points.
+</p>
+<h3 id="section-121" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF122" id="FOOT122" class="calibre21">(122)</a>
+</h3>
+<p>
+Because it is a standard package, one would need to rename it before attempting to reproduce the account here.
+</p>
+<h3 id="section-122" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF123" id="FOOT123" class="calibre21">(123)</a>
+</h3>
+<p>
+whether or not ‘LinkingTo’ is used.
+</p>
+<h3 id="section-123" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF124" id="FOOT124" class="calibre21">(124)</a>
+</h3>
+<p>
+so there needs to be a corresponding <code class="calibre2">import</code> or <code class="calibre2">importFrom</code> entry in the NAMESPACE file.
+</p>
+<h3 id="section-124" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF125" id="FOOT125" class="calibre21">(125)</a>
+</h3>
+<p>
+Even including C system headers in such a block has caused compilation errors.
+</p>
+<h3 id="section-125" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF126" id="FOOT126" class="calibre21">(126)</a>
+</h3>
+<p>
+with an exception for the Solaris C++ compiler, removed in R 3.4.0.
+</p>
+<h3 id="section-126" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF127" id="FOOT127" class="calibre21">(127)</a>
+</h3>
+<p>
+<a href="https://en.wikipedia.org/wiki/Application_binary_interface" class="uri">https://en.wikipedia.org/wiki/Application_binary_interface</a>.
+</p>
+<h3 id="section-127" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF128" id="FOOT128" class="calibre21">(128)</a>
+</h3>
+<p>
+For example, ‘_GLIBCXX_USE_CXX11_ABI’ in <code class="calibre2">g++</code> 5.1 and later: <a href="https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html" class="uri">https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html</a>.
+</p>
+<h3 id="section-128" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF129" id="FOOT129" class="calibre21">(129)</a>
+</h3>
+<p>
+<code class="calibre2">dyld</code> on macOS, and <code class="calibre2">DYLD_LIBRARY_PATHS</code> below.
+</p>
+<h3 id="section-129" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF130" id="FOOT130" class="calibre21">(130)</a>
+</h3>
+<p>
+That is, similar to those defined in S version 4 from the 1990s: these are not kept up to date and are not recommended for new projects. Prior to R 3.3.0 it was not compatible with defining <code class="calibre2">R_NO_REMAP</code>.
+</p>
+<h3 id="section-130" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF131" id="FOOT131" class="calibre21">(131)</a>
+</h3>
+<p>
+see <a href="system-and-foreign-language-interfaces.html#The-R-API">The R API</a>: note that these are not all part of the API.
+</p>
+<h3 id="section-131" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF132" id="FOOT132" class="calibre21">(132)</a>
+</h3>
+<p>
+SEXP is an acronym for <em>S</em>imple <em>EXP</em>ression, common in LISP-like language syntaxes.
+</p>
+<h3 id="section-132" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF133" id="FOOT133" class="calibre21">(133)</a>
+</h3>
+<p>
+If no coercion was required, <code class="calibre2">coerceVector</code> would have passed the old object through unchanged.
+</p>
+<h3 id="section-133" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF134" id="FOOT134" class="calibre21">(134)</a>
+</h3>
+<p>
+You can assign a <em>copy</em> of the object in the environment frame <code class="calibre2">rho</code> using <code class="calibre2">defineVar(symbol, duplicate(value), rho)</code>).
+</p>
+<h3 id="section-134" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF135" id="FOOT135" class="calibre21">(135)</a>
+</h3>
+<p>
+see <a href="system-and-foreign-language-interfaces.html#Character-encoding-issues">Character encoding issues</a> for why this might not be what is required.
+</p>
+<h3 id="section-135" class="section">
+<a href="system-and-foreign-language-interfaces.html#DOCF136" id="FOOT136" class="calibre21">(136)</a>
+</h3>
+<p>
+This is only guaranteed to show the current interface: it is liable to change.
+</p>
+<h3 id="section-136" class="section">
+<a href="the-r-api:-entry-points-for-c-code.html#DOCF137" id="FOOT137" class="calibre21">(137)</a>
+</h3>
+<p>
+Known problems are redefining <code class="calibre2">LENGTH</code>, <code class="calibre2">error</code>, <code class="calibre2">length</code>, <code class="calibre2">vector</code> and <code class="calibre2">warning</code>
+</p>
+<h3 id="section-137" class="section">
+<a href="the-r-api:-entry-points-for-c-code.html#DOCF138" id="FOOT138" class="calibre21">(138)</a>
+</h3>
+<p>
+also part of C++11.
+</p>
+<h3 id="section-138" class="section">
+<a href="the-r-api:-entry-points-for-c-code.html#DOCF139" id="FOOT139" class="calibre21">(139)</a>
+</h3>
+<p>
+It is an optional C11 extension.
+</p>
+<h3 id="section-139" class="section">
+<a href="the-r-api:-entry-points-for-c-code.html#DOCF140" id="FOOT140" class="calibre21">(140)</a>
+</h3>
+<p>
+but see the second paragraph of see <a href="writing-package-vignettes.html#Portable-C-and-C_002b_002b-code">Portable C and C++ code</a>.
+</p>
+<h3 id="section-140" class="section">
+<a href="the-r-api:-entry-points-for-c-code.html#DOCF141" id="FOOT141" class="calibre21">(141)</a>
+</h3>
+<p>
+<a href="https://en.wikipedia.org/wiki/Endianness" class="uri">https://en.wikipedia.org/wiki/Endianness</a>.
+</p>
+<h3 id="section-141" class="section">
+<a href="the-r-api:-entry-points-for-c-code.html#DOCF142" id="FOOT142" class="calibre21">(142)</a>
+</h3>
+<p>
+It is defined by the Intel compilers, but also hides unsatisfied references and so cannot be used with R. It is not supported by the AIX nor Solaris compilers.
+</p>
+<h3 id="section-142" class="section">
+<a href="linking-guis-and-other-front-ends-to-r.html#DOCF143" id="FOOT143" class="calibre21">(143)</a>
+</h3>
+<p>
+In the parlance of macOS this is a <em>dynamic</em> library, and is the normal way to build R on that platform.
+</p>
+<h3 id="section-143" class="section">
+<a href="linking-guis-and-other-front-ends-to-r.html#DOCF144" id="FOOT144" class="calibre21">(144)</a>
+</h3>
+<p>
+but these are not part of the automated test procedures and so little tested.
+</p>
+<h3 id="section-144" class="section">
+<a href="linking-guis-and-other-front-ends-to-r.html#DOCF145" id="FOOT145" class="calibre21">(145)</a>
+</h3>
+<p>
+At least according to POSIX 2004 and later. Earlier standards prescribed sys/time.h and HP-UX continued to use that: R_ext/eventloop.h will include it from R 3.4.0 if <code class="calibre2">HAVE_SYS_TIME_H</code> is defined.
+</p>
+<h3 id="section-145" class="section">
+<a href="linking-guis-and-other-front-ends-to-r.html#DOCF146" id="FOOT146" class="calibre21">(146)</a>
+</h3>
+<p>
+at least on platforms where the values are available, that is having <code class="calibre2">getrlimit</code> and on Linux or having <code class="calibre2">sysctl</code> supporting <code class="calibre2">KERN_USRSTACK</code>, including FreeBSD and OS X.
+</p>
+<h3 id="section-146" class="section">
+<a href="linking-guis-and-other-front-ends-to-r.html#DOCF147" id="FOOT147" class="calibre21">(147)</a>
+</h3>
+<p>
+An attempt to use only threads in the late 1990s failed to work correctly under Windows 95, the predominant version of Windows at that time.
+</p>
+</div>
+<hr />
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="function-and-variable-index.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Writing R extensions</title>
+  <meta name="description" content="Writing R Extensions covers how to create your own packages, write R help files, and the foreign language interfaces.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Writing R extensions" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Writing R Extensions covers how to create your own packages, write R help files, and the foreign language interfaces." />
+  <meta name="github-repo" content="ColinFay/writing-r-extensions" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Writing R extensions" />
+  
+  <meta name="twitter:description" content="Writing R Extensions covers how to create your own packages, write R help files, and the foreign language interfaces." />
+  
+
+<meta name="author" content="R Development Core Team">
+
+
+<meta name="date" content="2017-10-09">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="creating-r-packages-1.html">
+<link rel="next" href="tidying-and-profiling-r-code-1.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-65307055-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-65307055-1');
+</script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Writing R Extensions</a></li>
+<li class="chapter" data-level="" data-path="acknowledgements.html"><a href="acknowledgements.html"><i class="fa fa-check"></i>Acknowledgements</a></li>
+<li class="chapter" data-level="1" data-path="creating-r-packages.html"><a href="creating-r-packages.html"><i class="fa fa-check"></i><b>1</b> Creating R packages</a></li>
+<li class="chapter" data-level="2" data-path="writing-r-documentation-files.html"><a href="writing-r-documentation-files.html"><i class="fa fa-check"></i><b>2</b> Writing R documentation files</a></li>
+<li class="chapter" data-level="3" data-path="tidying-and-profiling-r-code.html"><a href="tidying-and-profiling-r-code.html"><i class="fa fa-check"></i><b>3</b> Tidying and profiling R code</a></li>
+<li class="chapter" data-level="4" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>4</b> Debugging</a></li>
+<li class="chapter" data-level="5" data-path="system-and-foreign-language-interfaces.html"><a href="system-and-foreign-language-interfaces.html"><i class="fa fa-check"></i><b>5</b> System and foreign language interfaces</a></li>
+<li class="chapter" data-level="6" data-path="the-r-api-entry-points-for-c-code.html"><a href="the-r-api-entry-points-for-c-code.html"><i class="fa fa-check"></i><b>6</b> The R API: entry points for C code</a></li>
+<li class="chapter" data-level="7" data-path="generic-functions-and-methods.html"><a href="generic-functions-and-methods.html"><i class="fa fa-check"></i><b>7</b> Generic functions and methods</a></li>
+<li class="chapter" data-level="8" data-path="linking-guis-and-other-front-ends-to-r.html"><a href="linking-guis-and-other-front-ends-to-r.html"><i class="fa fa-check"></i><b>8</b> Linking GUIs and other front-ends to R</a></li>
+<li class="chapter" data-level="9" data-path="function-and-variable-index.html"><a href="function-and-variable-index.html"><i class="fa fa-check"></i><b>9</b> Function and variable index</a></li>
+<li class="chapter" data-level="10" data-path="concept-index.html"><a href="concept-index.html"><i class="fa fa-check"></i><b>10</b> Concept index</a></li>
+<li class="chapter" data-level="11" data-path="creating-r-packages-1.html"><a href="creating-r-packages-1.html"><i class="fa fa-check"></i><b>11</b> Creating R packages</a></li>
+<li class="chapter" data-level="12" data-path="writing-r-documentation-files-1.html"><a href="writing-r-documentation-files-1.html"><i class="fa fa-check"></i><b>12</b> Writing R documentation files</a></li>
+<li class="chapter" data-level="13" data-path="tidying-and-profiling-r-code-1.html"><a href="tidying-and-profiling-r-code-1.html"><i class="fa fa-check"></i><b>13</b> Tidying and profiling R code</a></li>
+<li class="chapter" data-level="14" data-path="debugging-1.html"><a href="debugging-1.html"><i class="fa fa-check"></i><b>14</b> Debugging</a></li>
+<li class="chapter" data-level="15" data-path="system-and-foreign-language-interfaces-1.html"><a href="system-and-foreign-language-interfaces-1.html"><i class="fa fa-check"></i><b>15</b> System and foreign language interfaces</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Writing R extensions</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="writing-r-documentation-files-1" class="section level1">
+<h1><span class="header-section-number">Chapter 12</span> Writing R documentation files</h1>
+<p>
+<a href="" id="index-Documentation_002c-writing"></a>
+</p>
+<hr />
+<p>
+<a href="" id="Rd-format"></a> <a href="" id="Rd-format-1"></a>
+</p>
+<h3 id="rd-format" class="section">
+2.1 Rd format
+</h3>
+<p>
+R objects are documented in files written in “R documentation” (Rd) format, a simple markup language much of which closely resembles (La)TeX, which can be processed into a variety of formats, including LaTeX, HTML and plain text. The translation is carried out by functions in the <strong>tools</strong> package called by the script <code class="calibre2">Rdconv</code> in R_HOME/bin and by the installation scripts for packages.
+</p>
+<p>
+The R distribution contains more than 1300 such files which can be found in the src/library/pkg/man directories of the R source tree, where pkg stands for one of the standard packages which are included in the R distribution.
+</p>
+<p>
+As an example, let us look at a simplified version of src/library/base/man/load.Rd which documents the R function <code class="calibre2">load</code>.
+</p>
+<blockquote>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left">
+<div class="example">
+<pre class="smallexample"><code>% File src/library/base/man/load.Rd
+\name{load}
+\alias{load}
+\title{Reload Saved Datasets}
+\description{
+  Reload the datasets written to a file with the function
+  \code{save}.
+}
+\usage{
+load(file, envir = parent.frame())
+}
+\arguments{
+  \item{file}{a connection or a character string giving the
+    name of the file to load.}
+  \item{envir}{the environment where the data should be
+    loaded.}
+}
+\seealso{
+  \code{\link{save}}.
+}
+\examples{
+## save all data
+save(list = ls(), file= &quot;all.RData&quot;)
+
+## restore the saved values to the current environment
+load(&quot;all.RData&quot;)
+
+## restore the saved values to the workspace
+load(&quot;all.RData&quot;, .GlobalEnv)
+}
+\keyword{file}</code></pre>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+An Rd file consists of three parts. The header gives basic information about the name of the file, the topics documented, a title, a short textual description and R usage information for the objects documented. The body gives further information (for example, on the function’s arguments and return value, as in the above example). Finally, there is an optional footer with keyword information. The header is mandatory.
+</p>
+<p>
+Information is given within a series of <em>sections</em> with standard names (and user-defined sections are also allowed). Unless otherwise specified<a href="R-exts_split_014.html#FOOT91" id="DOCF91"><sup>91</sup></a> these should occur only once in an Rd file (in any order), and the processing software will retain only the first occurrence of a standard section in the file, with a warning.
+</p>
+<p>
+See <a href="https://developer.r-project.org/Rds.html">“Guidelines for Rd files”</a> for guidelines for writing documentation in Rd format which should be useful for package writers. <a href="" id="index-prompt"></a> The R generic function <code class="calibre2">prompt</code> is used to construct a bare-bones Rd file ready for manual editing. Methods are defined for documenting functions (which fill in the proper function and argument names) and data frames. There are also functions <code class="calibre2">promptData</code>, <code class="calibre2">promptPackage</code>, <code class="calibre2">promptClass</code>, and <code class="calibre2">promptMethods</code> for other types of Rd file.
+</p>
+<p>
+The general syntax of Rd files is summarized below. For a detailed technical discussion of current Rd syntax, see <a href="https://developer.r-project.org/parseRd.pdf">“Parsing Rd files”</a>.
+</p>
+<p>
+Rd files consist of four types of text input. The most common is LaTeX-like, with the backslash used as a prefix on markup (e.g. <code class="calibre2">), and braces used to indicate arguments (e.g. <code class="calibre2">{load}</code>). The least common type of text is ‘verbatim’ text, where no markup other than the comment marker (<code class="calibre2">%</code>) is processed. There is also a rare variant of ‘verbatim’ text (used in <code class="calibre2">, <code class="calibre2">, <code class="calibre2">, and <code class="calibre2"></code>) where comment markers need not be escaped. The final type is R-like, intended for R code, but allowing some embedded macros. Quoted strings within R-like text are handled specially: regular character escapes such as <code class="calibre2"> may be entered as-is. Only markup starting with <code class="calibre2"></code> (e.g. <code class="calibre2">) or <code class="calibre2">/code&gt; (e.g. <code class="calibre2">) will be recognized within quoted strings. The rarely used vertical tab <code class="calibre2">/code&gt; must be entered as <code class="calibre2">\v</code>.
+</p>
+<p>
+Each macro defines the input type for its argument. For example, the file initially uses LaTeX-like syntax, and this is also used in the <code class="calibre2"> section, but the <code class="calibre2"> section uses R-like syntax, and the <code class="calibre2"> macro uses ‘verbatim’ syntax. Comments run from a percent symbol <code class="calibre2">%</code> to the end of the line in all types of text except the rare ‘verbatim’ variant (as on the first line of the <code class="calibre2">load</code> example).
+</p>
+<p>
+Because backslashes, braces and percent symbols have special meaning, to enter them into text sometimes requires escapes using a backslash. In general balanced braces do not need to be escaped, but percent symbols always do, except in the ‘verbatim’ variant. For the complete list of macros and rules for escapes, see <a href="https://developer.r-project.org/parseRd.pdf">“Parsing Rd files”</a>.
+</p>
+<hr />
+<p>
+<a href="" id="Documenting-functions"></a> <a href="" id="Documenting-functions-1"></a>
+</p>
+<h4 id="documenting-functions" class="subsection">
+2.1.1 Documenting functions
+</h4>
+<p>
+The basic markup commands used for documenting R objects (in particular, functions) are given in this subsection.
+</p>
+<dl>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cname"></a>
+</p>
+<p>
+name typically<a href="R-exts_split_014.html#FOOT92" id="DOCF92"><sup>92</sup></a> is the basename of the Rd file containing the documentation. It is the “name” of the Rd object represented by the file and has to be unique in a package. To avoid problems with indexing the package manual, it may not contain ‘!’ ‘|’ nor ‘@’, and to avoid possible problems with the HTML help system it should not contain ‘/’ nor a space. (LaTeX special characters are allowed, but may not be collated correctly in the index.) There can only be one <code class="calibre2"> entry in a file, and it must not contain any markup. Entries in the package manual will be in alphabetic<a href="R-exts_split_014.html#FOOT93" id="DOCF93"><sup>93</sup></a> order of the <code class="calibre2"> entries.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005calias"></a>
+</p>
+<p>
+The <code class="calibre2"> sections specify all “topics” the file documents. This information is collected into index data bases for lookup by the on-line (plain text and HTML) help systems. The topic can contain spaces, but (for historical reasons) leading and trailing spaces will be stripped. Percent and left brace need to be escaped by a backslash.
+</p>
+<p>
+There may be several <code class="calibre2"> entries. Quite often it is convenient to document several R objects in one file. For example, file Normal.Rd documents the density, distribution function, quantile function and generation of random variates for the normal distribution, and hence starts with
+</p>
+<div class="example">
+<pre class="example1"><code>\name{Normal}
+\alias{Normal}
+\alias{dnorm}
+\alias{pnorm}
+\alias{qnorm}
+\alias{rnorm}</code></pre>
+</div>
+<p>
+Also, it is often convenient to have several different ways to refer to an R object, and an <code class="calibre2"> does not need to be the name of an object.
+</p>
+<p>
+Note that the <code class="calibre2"> is not necessarily a topic documented, and if so desired it needs to have an explicit <code class="calibre2"> entry (as in this example).
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005ctitle"></a>
+</p>
+<p>
+Title information for the Rd file. This should be capitalized and not end in a period; try to limit its length to at most 65 characters for widest compatibility.
+</p>
+<p>
+Markup is supported in the text, but use of characters other than English text and punctuation (e.g., ‘&lt;’) may limit portability.
+</p>
+<p>
+There must be one (and only one) <code class="calibre2">\title</code> section in a help file.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cdescription"></a>
+</p>
+<p>
+A short description of what the function(s) do(es) (one paragraph, a few lines only). (If a description is too long and cannot easily be shortened, the file probably tries to document too much at once.) This is mandatory except for package-overview files.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cusage"></a>
+</p>
+<p>
+One or more lines showing the synopsis of the function(s) and variables documented in the file. These are set in typewriter font. This is an R-like command.
+</p>
+<p>
+The usage information specified should match the function definition <em>exactly</em> (such that automatic checking for consistency between code and documentation is possible).
+</p>
+<p>
+It is no longer advisable to use <code class="calibre2"> for the actual synopsis and show modified synopses in the <code class="calibre2">. Support for <code class="calibre2"> will be removed in 3.1.0. To indicate that a function can be used in several different ways, depending on the named arguments specified, use section <code class="calibre2">. E.g., abline.Rd contains
+</p>
+<div class="example">
+<pre class="example1"><code>\details{
+  Typical usages are
+\preformatted{abline(a, b, untf = FALSE, \dots)
+......
+}</code></pre>
+</div>
+<p>
+<a href="" id="index-_005cmethod"></a>
+</p>
+<p>
+Use <code class="calibre2"></code> to indicate the name of an S3 method for the generic function generic for objects inheriting from class <code class="calibre2">“class”</code>. In the printed versions, this will come out as generic (reflecting the understanding that methods should not be invoked directly but <em>via</em> method dispatch), but <code class="calibre2">codoc()</code> and other QC tools always have access to the full name.
+</p>
+<p>
+For example, print.ts.Rd contains
+</p>
+<div class="example">
+<pre class="example1"><code>\usage{
+\method{print}{ts}(x, calendar, \dots)
+}</code></pre>
+</div>
+<p>
+which will print as
+</p>
+<div class="example">
+<pre class="example1"><code>Usage:
+
+     ## S3 method for class ‘ts’:
+     print(x, calendar, ...)</code></pre>
+</div>
+<p>
+Usage for replacement functions should be given in the style of <code class="calibre2">dim(x) &lt;- value</code> rather than explicitly indicating the name of the replacement function (<code class="calibre2">“dim&lt;-”</code> in the above). Similarly, one can use <code class="calibre2">(arglist) &lt;- value</code> to indicate the usage of an S3 replacement method for the generic replacement function <code class="calibre2">“generic&lt;-”</code> for objects inheriting from class <code class="calibre2">“class”</code>.
+</p>
+<p>
+Usage for S3 methods for extracting or replacing parts of an object, S3 methods for members of the Ops group, and S3 methods for user-defined (binary) infix operators (‘%xxx%’) follows the above rules, using the appropriate function names. E.g., Extract.factor.Rd contains
+</p>
+<div class="example">
+<pre class="example1"><code>\usage{
+\method{[}{factor}(x, \dots, drop = FALSE)
+\method{[[}{factor}(x, \dots)
+\method{[}{factor}(x, \dots) &lt;- value
+}</code></pre>
+</div>
+<p>
+which will print as
+</p>
+<div class="example">
+<pre class="example1"><code>Usage:
+
+     ## S3 method for class ‘factor’:
+     x[..., drop = FALSE]
+     ## S3 method for class ‘factor’:
+     x[[...]]
+     ## S3 replacement method for class ‘factor’:
+     x[...] &lt;- value</code></pre>
+</div>
+<p>
+<a href="" id="index-_005cS3method"></a>
+</p>
+<p>
+<code class="calibre2">3method</code> is accepted as an alternative to <code class="calibre2">.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005carguments"></a>
+</p>
+<p>
+Description of the function’s arguments, using an entry of the form
+</p>
+<div class="example">
+<pre class="example1"><code>\item{arg_i}{Description of arg_i.}</code></pre>
+</div>
+<p>
+for each element of the argument list. (Note that there is no whitespace between the three parts of the entry.) There may be optional text outside the <code class="calibre2"></code> entries, for example to give general information about groups of parameters.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cdetails"></a>
+</p>
+<p>
+A detailed if possible precise description of the functionality provided, extending the basic information in the <code class="calibre2"> slot.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cvalue"></a>
+</p>
+<p>
+Description of the function’s return value.
+</p>
+<p>
+If a list with multiple values is returned, you can use entries of the form
+</p>
+<div class="example">
+<pre class="example1"><code>\item{comp_i}{Description of comp_i.}</code></pre>
+</div>
+<p>
+for each component of the list returned. Optional text may precede<a href="R-exts_split_014.html#FOOT94" id="DOCF94"><sup>94</sup></a> this list (see for example the help for <code class="calibre2">rle</code>). Note that <code class="calibre2"> is implicitly a <code class="calibre2"> environment, so that environment should not be used for listing components, just individual <code class="calibre2">{}{}</code> entries.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005creferences"></a>
+</p>
+<p>
+A section with references to the literature. Use <code class="calibre2"></code> or <code class="calibre2"></code> for web pointers.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cnote"></a>
+</p>
+<p>
+Use this for a special note you want to have pointed out. Multiple <code class="calibre2"> sections are allowed, but might be confusing to the end users.
+</p>
+<p>
+For example, pie.Rd contains
+</p>
+<div class="example">
+<pre class="example1"><code>\note{
+  Pie charts are a very bad way of displaying information.
+  The eye is good at judging linear measures and bad at
+  judging relative areas.
+  ......
+}</code></pre>
+</div>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cauthor"></a>
+</p>
+<p>
+Information about the author(s) of the Rd file. Use <code class="calibre2"></code> without extra delimiters (such as ‘( )’ or ‘&lt; &gt;’) to specify email addresses, or <code class="calibre2"></code> or <code class="calibre2"></code> for web pointers.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cseealso"></a>
+</p>
+<p>
+Pointers to related R objects, using <code class="calibre2"></code> to refer to them (<code class="calibre2"> is the correct markup for R object names, and <code class="calibre2"> produces hyperlinks in output formats which support this. See <a href="writing-r-documentation-files.html#Marking-text">Marking text</a>, and <a href="writing-r-documentation-files.html#Cross_002dreferences">Cross-references</a>).
+</p>
+<p>
+<a href="" id="index-_005cexamples"></a>
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+Examples of how to use the function. Code in this section is set in typewriter font without reformatting and is run by <code class="calibre2">example()</code> unless marked otherwise (see below).
+</p>
+<p>
+Examples are not only useful for documentation purposes, but also provide test code used for diagnostic checking of R code. By default, text inside <code class="calibre2"></code> will be displayed in the output of the help page and run by <code class="calibre2">example()</code> and by <code class="calibre2">R CMD check</code>. You can use <code class="calibre2"></code> <a href="" id="index-_005cdontrun"></a> for text that should only be shown, but not run, and <code class="calibre2"></code> <a href="" id="index-_005cdontshow"></a> for extra commands for testing that should not be shown to users, but will be run by <code class="calibre2">example()</code>. (Previously this was called <code class="calibre2">, and that is still accepted.)
+</p>
+<p>
+Text inside <code class="calibre2"></code> is ‘verbatim’, but the other parts of the <code class="calibre2"> section are R-like text.
+</p>
+<p>
+For example,
+</p>
+<div class="example">
+<pre class="example1"><code>x &lt;- runif(10)       # Shown and run.
+\dontrun{plot(x)}    # Only shown.
+\dontshow{log(x)}    # Only run.</code></pre>
+</div>
+<p>
+Thus, example code not included in <code class="calibre2"> must be executable! In addition, it should not use any system-specific features or require special facilities (such as Internet access or write permission to specific directories). Text included in <code class="calibre2"> is indicated by comments in the processed help files: it need not be valid R code but the escapes must still be used for <code class="calibre2">%</code>, <code class="calibre2">&lt;/code&gt; and unpaired braces as in other ‘verbatim’ text.
+</p>
+<p>
+Example code must be capable of being run by <code class="calibre2">example</code>, which uses <code class="calibre2">source</code>. This means that it should not access stdin, e.g. to <code class="calibre2">scan()</code> data from the example file.
+</p>
+<p>
+Data needed for making the examples executable can be obtained by random number generation (for example, <code class="calibre2">x &lt;- rnorm(100)</code>), or by using standard data sets listed by <code class="calibre2">data()</code> (see <code class="calibre2">?data</code> for more info).
+</p>
+<p>
+Finally, there is <code class="calibre2">, used (at the beginning of a separate line) to mark code that should be run by <code class="calibre2">example()</code> but not by <code class="calibre2">R CMD check</code> (by default: the option –run-donttest can be used). This should be needed only occasionally but can be used for code which might fail in circumstances that are hard to test for, for example in some locales. (Use e.g. <code class="calibre2">capabilities()</code> or <code class="calibre2">nzchar(Sys.which(“someprogram”))</code> to test for features needed in the examples wherever possible, and you can also use <code class="calibre2">try()</code> or <code class="calibre2">tryCatch()</code>. Use <code class="calibre2">interactive()</code> to condition examples which need someone to interact with.) Note that code included in <code class="calibre2"> must be correct R code, and any packages used should be declared in the DESCRIPTION file. It is good practice to include a comment in the <code class="calibre2"> section explaining why it is needed.
+</p>
+<p>
+As from R 3.4.0, output from code between comments
+</p>
+<div class="example">
+<pre class="example1"><code>## IGNORE_RDIFF_BEGIN
+## IGNORE_RDIFF_END</code></pre>
+</div>
+<p>
+is ignored when comparing check output to reference output (a -Ex.Rout.save file).
+</p>
+<p>
+<a href="" id="index-_005ckeyword"></a>
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+There can be zero or more <code class="calibre2"> sections per file. Each <code class="calibre2"> section should specify a single keyword, preferably one of the standard keywords as listed in file KEYWORDS in the R documentation directory (default R_HOME/doc). Use e.g. <code class="calibre2">RShowDoc(“KEYWORDS”)</code> to inspect the standard keywords from within R. There can be more than one <code class="calibre2"> entry if the R object being documented falls into more than one category, or none.
+</p>
+<p>
+Do strongly consider using <code class="calibre2"> (see <a href="writing-r-documentation-files.html#Indices">Indices</a>) instead of <code class="calibre2"> if you are about to use more than very few non-standard keywords.
+</p>
+<p>
+The special keyword ‘internal’ marks a page of internal objects that are not part of the package’s API. If the help page for object <code class="calibre2">foo</code> has keyword ‘internal’, then <code class="calibre2">help(foo)</code> gives this help page, but <code class="calibre2">foo</code> is excluded from several object indices, including the alphabetical list of objects in the HTML help system.
+</p>
+<p>
+<code class="calibre2">help.search()</code> can search by keyword, including user-defined values: however the ‘Search Engine &amp; Keywords’ HTML page accessed <em>via</em> <code class="calibre2">help.start()</code> provides single-click access only to a pre-defined list of keywords.
+</p>
+</dd>
+</dl>
+<hr />
+<p>
+<a href="" id="Documenting-data-sets"></a> <a href="" id="Documenting-data-sets-1"></a>
+</p>
+<h4 id="documenting-data-sets" class="subsection">
+2.1.2 Documenting data sets
+</h4>
+<p>
+The structure of Rd files which document R data sets is slightly different. Sections such as <code class="calibre2"> and <code class="calibre2"> are not needed but the format and source of the data should be explained.
+</p>
+<p>
+As an example, let us look at src/library/datasets/man/rivers.Rd which documents the standard R data set <code class="calibre2">rivers</code>.
+</p>
+<blockquote>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left">
+<div class="example">
+<pre class="smallexample"><code>\name{rivers}
+\docType{data}
+\alias{rivers}
+\title{Lengths of Major North American Rivers}
+\description{
+  This data set gives the lengths (in miles) of 141 \dQuote{major}
+  rivers in North America, as compiled by the US Geological
+  Survey.
+}
+\usage{rivers}
+\format{A vector containing 141 observations.}
+\source{World Almanac and Book of Facts, 1975, page 406.}
+\references{
+  McNeil, D. R. (1977) \emph{Interactive Data Analysis}.
+  New York: Wiley.
+}
+\keyword{datasets}</code></pre>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+This uses the following additional markup commands.
+</p>
+<dl>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+Indicates the “type” of the documentation object. Always ‘data’ for data sets, and ‘package’ for pkg-package.Rd overview files. Documentation for S4 methods and classes uses ‘methods’ (from <code class="calibre2">promptMethods()</code>) and ‘class’ (from <code class="calibre2">promptClass()</code>).
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cformat"></a>
+</p>
+<p>
+A description of the format of the data set (as a vector, matrix, data frame, time series, …). For matrices and data frames this should give a description of each column, preferably as a list or table. See <a href="writing-r-documentation-files.html#Lists-and-tables">Lists and tables</a>, for more information.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005csource"></a>
+</p>
+<p>
+Details of the original source (a reference or URL, see <a href="R-exts_split_004.html#Specifying-URLs">Specifying URLs</a>). In addition, section <code class="calibre2"> could give secondary sources and usages.
+</p>
+</dd>
+</dl>
+<p>
+Note also that when documenting data set bar,
+</p>
+<ul>
+<li>
+The <code class="calibre2"> entry is always <code class="calibre2">bar</code> or (for packages which do not use lazy-loading of data) <code class="calibre2">data(bar)</code>. (In particular, only document a <em>single</em> data object per Rd file.)
+</li>
+<li>
+The <code class="calibre2"> entry should always be ‘datasets’.
+</li>
+</ul>
+<p>
+If <code class="calibre2">bar</code> is a data frame, documenting it as a data set can be initiated <em>via</em> <code class="calibre2">prompt(bar)</code>. Otherwise, the <code class="calibre2">promptData</code> function may be used.
+</p>
+<hr />
+<p>
+<a href="" id="Documenting-S4-classes-and-methods"></a> <a href="" id="Documenting-S4-classes-and-methods-1"></a>
+</p>
+<h4 id="documenting-s4-classes-and-methods" class="subsection">
+2.1.3 Documenting S4 classes and methods
+</h4>
+<p>
+There are special ways to use the ‘?’ operator, namely ‘class?topic’ and ‘methods?topic’, to access documentation for S4 classes and methods, respectively. This mechanism depends on conventions for the topic names used in <code class="calibre2"> entries. The topic names for S4 classes and methods respectively are of the form
+</p>
+<div class="example">
+<pre class="example1"><code>class-class
+generic,signature_list-method</code></pre>
+</div>
+<p>
+where signature_list contains the names of the classes in the signature of the method (without quotes) separated by ‘,’ (without whitespace), with ‘ANY’ used for arguments without an explicit specification. E.g., ‘genericFunction-class’ is the topic name for documentation for the S4 class <code class="calibre2">“genericFunction”</code>, and ‘coerce,ANY,NULL-method’ is the topic name for documentation for the S4 method for <code class="calibre2">coerce</code> for signature <code class="calibre2">c(“ANY”, “NULL”)</code>.
+</p>
+<p>
+Skeletons of documentation for S4 classes and methods can be generated by using the functions <code class="calibre2">promptClass()</code> and <code class="calibre2">promptMethods()</code> from package <strong>methods</strong>. If it is necessary or desired to provide an explicit function declaration (in a <code class="calibre2"> section) for an S4 method (e.g., if it has “surprising arguments” to be mentioned explicitly), one can use the special markup
+</p>
+<div class="example">
+<pre class="example1"><code>\S4method{generic}{signature_list}(argument_list)</code></pre>
+</div>
+<p>
+(e.g., ‘4method{coerce}{ANY,NULL}(from, to)’).
+</p>
+<p>
+To make full use of the potential of the on-line documentation system, all user-visible S4 classes and methods in a package should at least have a suitable <code class="calibre2"> entry in one of the package’s Rd files. If a package has methods for a function defined originally somewhere else, and does not change the underlying default method for the function, the package is responsible for documenting the methods it creates, but not for the function itself or the default method.
+</p>
+<p>
+An S4 replacement method is documented in the same way as an S3 one: see the description of <code class="calibre2"> in <a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>.
+</p>
+<p>
+See help(“Documentation”, package = “methods”) for more information on using and creating on-line documentation for S4 classes and methods.
+</p>
+<hr />
+<p>
+<a href="" id="Documenting-packages"></a> <a href="" id="Documenting-packages-1"></a>
+</p>
+<h4 id="documenting-packages" class="subsection">
+2.1.4 Documenting packages
+</h4>
+<p>
+Packages may have an overview help page with an <code class="calibre2"> <code class="calibre2">pkgname-package</code>, e.g. ‘utils-package’ for the <strong>utils</strong> package, when <code class="calibre2">package?pkgname</code> will open that help page. If a topic named <code class="calibre2">pkgname</code> does not exist in another Rd file, it is helpful to use this as an additional <code class="calibre2">.
+</p>
+<p>
+Skeletons of documentation for a package can be generated using the function <code class="calibre2">promptPackage()</code>. If the <code class="calibre2">final = LIBS</code> argument is used, then the Rd file will be generated in final form, containing the information that would be produced up to <code class="calibre2">library(help = pkgname)</code>. Otherwise (the default) comments will be inserted giving suggestions for content.
+</p>
+<p>
+Apart from the mandatory <code class="calibre2"> and <code class="calibre2">\title</code> and the <code class="calibre2">pkgname-package</code> alias, the only requirement for the package overview page is that it include a <code class="calibre2"></code> statement. All other content is optional. We suggest that it should be a short overview, to give a reader unfamiliar with the package enough information to get started. More extensive documentation is better placed into a package vignette (see <a href="R-exts_split_004.html#Writing-package-vignettes">Writing package vignettes</a>) and referenced from this page, or into individual man pages for the functions, datasets, or classes.
+</p>
+<hr />
+<p>
+<a href="" id="Sectioning"></a> <a href="" id="Sectioning-1"></a>
+</p>
+<h3 id="sectioning" class="section">
+2.2 Sectioning
+</h3>
+<p>
+To begin a new paragraph or leave a blank line in an example, just insert an empty line (as in (La)TeX). To break a line, use <code class="calibre2">. <a href="" id="index-_005ccr"></a>
+</p>
+<p>
+In addition to the predefined sections (such as <code class="calibre2"></code>, <code class="calibre2"></code>, etc.), you can “define” arbitrary ones by <code class="calibre2">{…}</code>. <a href="" id="index-_005csection"></a> For example
+</p>
+<div class="example">
+<pre class="example1"><code>\section{Warning}{
+  You must not call this function unless …
+}</code></pre>
+</div>
+<p>
+For consistency with the pre-assigned sections, the section name (the first argument to <code class="calibre2">\section</code>) should be capitalized (but not all upper case). Whitespace between the first and second braced expressions is not allowed. Markup (e.g. <code class="calibre2">) within the section title may cause problems with the latex conversion (depending on the version of macro packages such as ‘hyperref’) and so should be avoided.
+</p>
+<p>
+The <code class="calibre2">\subsection</code> macro takes arguments in the same format as <code class="calibre2">\section</code>, but is used within a section, so it may be used to nest subsections within sections or other subsections. There is no predefined limit on the nesting level, but formatting is not designed for more than 3 levels (i.e. subsections within subsections within sections).
+</p>
+<p>
+Note that additional named sections are always inserted at a fixed position in the output (before <code class="calibre2">, <code class="calibre2"> and the examples), no matter where they appear in the input (but in the same order amongst themselves as in the input).
+</p>
+<hr />
+<p>
+<a href="" id="Marking-text"></a> <a href="" id="Marking-text-1"></a>
+</p>
+<h3 id="marking-text" class="section">
+2.3 Marking text
+</h3>
+<p>
+<a href="" id="index-Marking-text-in-documentation"></a>
+</p>
+<p>
+The following logical markup commands are available for emphasizing or quoting text.
+</p>
+<dl>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<a href="" id="index-_005cemph"></a>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cstrong"></a>
+</p>
+<p>
+Emphasize text using <em>italic</em> and <strong>bold</strong> font if possible; <code class="calibre2"> is regarded as stronger (more emphatic).
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cbold"></a>
+</p>
+<p>
+Set text in <strong>bold</strong> font where possible.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<a href="" id="index-_005csQuote"></a>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cdQuote"></a>
+</p>
+<p>
+Portably single or double quote text (without hard-wiring the characters used for quotation marks).
+</p>
+</dd>
+</dl>
+<p>
+Each of the above commands takes LaTeX-like input, so other macros may be used within text.
+</p>
+<p>
+The following logical markup commands are available for indicating specific kinds of text. Except as noted, these take ‘verbatim’ text input, and so other macros may not be used within them. Some characters will need to be escaped (see <a href="writing-r-documentation-files.html#Insertions">Insertions</a>).
+</p>
+<dl>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005ccode"></a>
+</p>
+<p>
+Indicate text that is a literal example of a piece of an R program, e.g., a fragment of R code or the name of an R object. Text is entered in R-like syntax, and displayed using <code class="calibre2">typewriter</code> font where possible. Macros <code class="calibre2"> and <code class="calibre2"> are interpreted within text.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cpreformatted"></a>
+</p>
+<p>
+Indicate text that is a literal example of a piece of a program. Text is displayed using <code class="calibre2">typewriter</code> font where possible. Formatting, e.g. line breaks, is preserved. (Note that this includes a line break after the initial {, so typically text should start on the same line as the command.)
+</p>
+<p>
+Due to limitations in LaTeX as of this writing, this macro may not be nested within other markup macros other than <code class="calibre2"> and <code class="calibre2">, as errors or bad formatting may result.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005ckbd"></a>
+</p>
+<p>
+Indicate keyboard input, using slanted typewriter font if possible, so users can distinguish the characters they are supposed to type from computer output. Text is entered ‘verbatim’.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005csamp"></a>
+</p>
+<p>
+Indicate text that is a literal example of a sequence of characters, entered ‘verbatim’. No wrapping or reformatting will occur. Displayed using <code class="calibre2">typewriter</code> font where possible.
+</p>
+</dd>
+<dt>
+<code class="calibre2">\verb{text}</code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cverb"></a>
+</p>
+<p>
+Indicate text that is a literal example of a sequence of characters, with no interpretation of e.g. <code class="calibre2">, but which will be included within word-wrapped text. Displayed using <code class="calibre2">typewriter</code> font if possible.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cpkg"></a>
+</p>
+<p>
+Indicate the name of an R package. LaTeX-like.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cfile"></a>
+</p>
+<p>
+Indicate the name of a file. Text is LaTeX-like, so backslash needs to be escaped. Displayed using a distinct font where possible.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cemail"></a>
+</p>
+<p>
+Indicate an electronic mail address. LaTeX-like, will be rendered as a hyperlink in HTML and PDF conversion. Displayed using <code class="calibre2">typewriter</code> font where possible.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005curl"></a>
+</p>
+<p>
+Indicate a uniform resource locator (URL) for the World Wide Web. The argument is handled as ‘verbatim’ text (with percent and braces escaped by backslash), and rendered as a hyperlink in HTML and PDF conversion. Linefeeds are removed, and leading and trailing whitespace<a href="R-exts_split_014.html#FOOT95" id="DOCF95"><sup>95</sup></a> is removed. See <a href="R-exts_split_004.html#Specifying-URLs">Specifying URLs</a>.
+</p>
+<p>
+Displayed using <code class="calibre2">typewriter</code> font where possible.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005chref"></a>
+</p>
+<p>
+Indicate a hyperlink to the World Wide Web. The first argument is handled as ‘verbatim’ text (with percent and braces escaped by backslash) and is used as the URL in the hyperlink, with the second argument of LaTeX-like text displayed to the user. Linefeeds are removed from the first argument, and leading and trailing whitespace is removed.
+</p>
+<p>
+Note that RFC3986-encoded URLs (e.g. using ‘%28VS.85%29’ in place of ‘(VS.85)’) may not work correctly in versions of R before 3.1.3 and are best avoided—use <code class="calibre2">URLdecode()</code> to decode them.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cvar"></a>
+</p>
+<p>
+Indicate a metasyntactic variable. In some cases this will be rendered distinctly, e.g. in italic, but not in all<a href="R-exts_split_014.html#FOOT96" id="DOCF96"><sup>96</sup></a>. LaTeX-like.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cenv"></a>
+</p>
+<p>
+Indicate an environment variable. ‘Verbatim’. Displayed using <code class="calibre2">typewriter</code> font where possible
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005coption"></a>
+</p>
+<p>
+Indicate a command-line option. ‘Verbatim’. Displayed using <code class="calibre2">typewriter</code> font where possible.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005ccommand"></a>
+</p>
+<p>
+Indicate the name of a command. LaTeX-like, so <code class="calibre2"> is interpreted. Displayed using <code class="calibre2">typewriter</code> font where possible.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cdfn"></a>
+</p>
+<p>
+Indicate the introductory or defining use of a term. LaTeX-like.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005ccite"></a>
+</p>
+<p>
+Indicate a reference without a direct cross-reference <em>via</em> <code class="calibre2"> (see <a href="writing-r-documentation-files.html#Cross_002dreferences">Cross-references</a>), such as the name of a book. LaTeX-like.
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code>
+</dt>
+<dd>
+<p>
+<a href="" id="index-_005cacronym"></a>
+</p>
+<p>
+Indicate an acronym (an abbreviation written in all capital letters), such as GNU. LaTeX-like.
+</p>
+</dd>
+</dl>
+<hr />
+<p>
+<a href="" id="Lists-and-tables"></a> <a href="" id="Lists-and-tables-1"></a>
+</p>
+<h3 id="lists-and-tables" class="section">
+2.4 Lists and tables
+</h3>
+<p>
+<a href="" id="index-Lists-and-tables-in-documentation"></a> <a href="" id="index-_005citemize"></a> <a href="" id="index-_005cenumerate"></a>
+</p>
+<p>
+The <code class="calibre2"> and <code class="calibre2"> commands take a single argument, within which there may be one or more <code class="calibre2"></code> commands. The text following each <code class="calibre2"></code> is formatted as one or more paragraphs, suitably indented and with the first paragraph marked with a bullet point (<code class="calibre2">) or a number (<code class="calibre2">).
+</p>
+<p>
+Note that unlike argument lists, <code class="calibre2"></code> in these formats is followed by a space and the text (not enclosed in braces). For example
+</p>
+<div class="example">
+<pre class="example1"><code>  \enumerate{
+    \item A database consists of one or more records, each with one or
+    more named fields.
+    \item Regular lines start with a non-whitespace character.
+    \item Records are separated by one or more empty lines.
+  }</code></pre>
+</div>
+<p>
+<code class="calibre2"> and <code class="calibre2"> commands may be nested.
+</p>
+<p>
+<a href="" id="index-_005cdescribe"></a>
+</p>
+<p>
+The <code class="calibre2"> command is similar to <code class="calibre2"> but allows initial labels to be specified. Each <code class="calibre2"></code> takes two arguments, the label and the body of the item, in exactly the same way as an argument or value <code class="calibre2"></code>. <code class="calibre2"> commands are mapped to <code class="calibre2">&lt;DL&gt;</code> lists in HTML and <code class="calibre2"> lists in LaTeX.
+</p>
+<p>
+<a href="" id="index-_005ctabular"></a>
+</p>
+<p>
+The <code class="calibre2"> command takes two arguments. The first gives for each of the columns the required alignment (‘l’ for left-justification, ‘r’ for right-justification or ‘c’ for centring.) The second argument consists of an arbitrary number of lines separated by <code class="calibre2">, and with fields separated by <code class="calibre2">. For example:
+</p>
+<div class="example">
+<pre class="example1"><code>  \tabular{rlll}{
+    [,1] \tab Ozone   \tab numeric \tab Ozone (ppb)\cr
+    [,2] \tab Solar.R \tab numeric \tab Solar R (lang)\cr
+    [,3] \tab Wind    \tab numeric \tab Wind (mph)\cr
+    [,4] \tab Temp    \tab numeric \tab Temperature (degrees F)\cr
+    [,5] \tab Month   \tab numeric \tab Month (1--12)\cr
+    [,6] \tab Day     \tab numeric \tab Day of month (1--31)
+  }</code></pre>
+</div>
+<p>
+There must be the same number of fields on each line as there are alignments in the first argument, and they must be non-empty (but can contain only spaces). (There is no whitespace between <code class="calibre2"> and the first argument, nor between the two arguments.)
+</p>
+<hr />
+<p>
+<a href="" id="Cross_002dreferences"></a> <a href="" id="Cross_002dreferences-1"></a>
+</p>
+<h3 id="cross-references" class="section">
+2.5 Cross-references
+</h3>
+<p>
+<a href="" id="index-Cross_002dreferences-in-documentation"></a> <a href="" id="index-_005clink"></a>
+</p>
+<p>
+The markup <code class="calibre2"></code> (usually in the combination <code class="calibre2"></code>) produces a hyperlink to the help for foo. Here foo is a <em>topic</em>, that is the argument of <code class="calibre2"> markup in another Rd file (possibly in another package). Hyperlinks are supported in some of the formats to which Rd files are converted, for example HTML and PDF, but ignored in others, e.g. the text format.
+</p>
+<p>
+One main usage of <code class="calibre2"> is in the <code class="calibre2"> section of the help page, see <a href="writing-r-documentation-files.html#Rd-format">Rd format</a>.
+</p>
+<p>
+Note that whereas leading and trailing spaces are stripped when extracting a topic from a <code class="calibre2">, they are not stripped when looking up the topic of a <code class="calibre2">.
+</p>
+<p>
+<a href="" id="index-_005clinkS4class"></a>
+</p>
+<p>
+You can specify a link to a different topic than its name by <code class="calibre2"></code> which links to topic dest with name name. This can be used to refer to the documentation for S3/4 classes, for example <code class="calibre2"></code> would be a way to refer to the documentation of an S4 class <code class="calibre2">“abc”</code> defined in your package, and <code class="calibre2"></code> to the S3 <code class="calibre2">“terms”</code> class (in package <strong>stats</strong>). To make these easy to read in the source file, <code class="calibre2"></code> expands to the form given above.
+</p>
+<p>
+There are two other forms of optional argument specified as <code class="calibre2"></code> and <code class="calibre2"></code> to link to the package <strong>pkg</strong>, to <em>files</em> foo.html and bar.html respectively. These are rarely needed, perhaps to refer to not-yet-installed packages (but there the HTML help system will resolve the link at run time) or in the normally undesirable event that more than one package offers help on a topic<a href="R-exts_split_014.html#FOOT97" id="DOCF97"><sup>97</sup></a> (in which case the present package has precedence so this is only needed to refer to other packages). They are currently only used in HTML help (and ignored for hyperlinks in LaTeX conversions of help pages), and link to the file rather than the topic (since there is no way to know which topics are in which files in an uninstalled package). The <strong>only</strong> reason to use these forms for base and recommended packages is to force a reference to a package that might be further down the search path. Because they have been frequently misused, the HTML help system looks for topic <code class="calibre2">foo</code> in package <strong>pkg</strong> if it does not find file foo.html.
+</p>
+<hr />
+<p>
+<a href="" id="Mathematics"></a> <a href="" id="Mathematics-1"></a>
+</p>
+<h3 id="mathematics" class="section">
+2.6 Mathematics
+</h3>
+<p>
+<a href="" id="index-Mathematics-in-documentation"></a> <a href="" id="index-_005ceqn"></a> <a href="" id="index-_005cdeqn"></a>
+</p>
+<p>
+Mathematical formulae should be set beautifully for printed documentation yet we still want something useful for text and HTML online help. To this end, the two commands <code class="calibre2"></code> and <code class="calibre2"></code> are used. Whereas <code class="calibre2"> is used for “inline” formulae (corresponding to TeX’s <code class="calibre2"><span class="math inline">\(…\)</span></code>), <code class="calibre2"> gives “displayed equations” (as in LaTeX’s <code class="calibre2">displaymath</code> environment, or TeX’s <code class="calibre2"><span class="math display">\[…\]</span></code>). Both arguments are treated as ‘verbatim’ text.
+</p>
+<p>
+Both commands can also be used as <code class="calibre2"></code> (only <em>one</em> argument) which then is used for both latex and ascii. No whitespace is allowed between command and the first argument, nor between the first and second arguments.
+</p>
+<p>
+The following example is from Poisson.Rd:
+</p>
+<div class="example">
+<pre class="example1"><code>  \deqn{p(x) = \frac{\lambda^x e^{-\lambda}}{x!}}{%
+        p(x) = \lambda^x exp(-\lambda)/x!}
+  for \eqn{x = 0, 1, 2, \ldots}.</code></pre>
+</div>
+<p>
+For text on-line help we get
+</p>
+<blockquote>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left">
+<div class="example">
+<pre class="example1"><code>    p(x) = lambda^x exp(-lambda)/x!
+
+for x = 0, 1, 2, ....</code></pre>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+Greek letters (both cases) will be rendered in HTML if preceded by a backslash, <code class="calibre2"></code> and <code class="calibre2"></code> will be rendered as ellipses and <code class="calibre2">, <code class="calibre2"> and <code class="calibre2"> as mathematical symbols.
+</p>
+<p>
+Note that only basic LaTeX can be used, there being no provision to specify LaTeX style files such as the AMS extensions.
+</p>
+<hr />
+<p>
+<a href="" id="Figures"></a> <a href="" id="Figures-1"></a>
+</p>
+<h3 id="figures" class="section">
+2.7 Figures
+</h3>
+<p>
+<a href="" id="index-Figures-in-documentation"></a> <a href="" id="index-_005cfigure"></a>
+</p>
+<p>
+To include figures in help pages, use the <code class="calibre2"> markup. There are three forms.
+</p>
+<p>
+The two commonly used simple forms are <code class="calibre2"></code> and <code class="calibre2"></code>. This will include a copy of the figure in either HTML or LaTeX output. In text output, the alternate text will be displayed instead. (When the second argument is omitted, the filename will be used.) Both the filename and the alternate text will be parsed verbatim, and should not include special characters that are significant in HTML or LaTeX.
+</p>
+<p>
+The expert form is <code class="calibre2"></code>. (The word ‘options:’ must be typed exactly as shown and followed by at least one space.) In this form, the string is copied into the HTML <code class="calibre2">img</code> tag as attributes following the <code class="calibre2">src</code> attribute, or into the second argument of the <code class="calibre2"> macro in LaTeX, which by default is used as options to an <code class="calibre2"> call. As it is unlikely that any single string would suffice for both display modes, the expert form would normally be wrapped in conditionals. It is up to the author to make sure that legal HTML/LaTeX is used. For example, to include a logo in both HTML (using the simple form) and LaTeX (using the expert form), the following could be used:
+</p>
+<div class="example">
+<pre class="example1"><code>\if{html}{\figure{Rlogo.svg}{options: width=100 alt=&quot;R logo&quot;}}
+\if{latex}{\figure{Rlogo.pdf}{options: width=0.5in}}</code></pre>
+</div>
+<p>
+The files containing the figures should be stored in the directory man/figures. Files with extensions .jpg, .jpeg, .pdf, .png and .svg from that directory will be copied to the help/figures directory at install time. (Figures in PDF format will not display in most HTML browsers, but might be the best choice in reference manuals.) Specify the filename relative to man/figures in the <code class="calibre2"> directive.
+</p>
+<hr />
+<p>
+<a href="" id="Insertions"></a> <a href="" id="Insertions-1"></a>
+</p>
+<h3 id="insertions" class="section">
+2.8 Insertions
+</h3>
+<p>
+<a href="" id="index-_005cR"></a>
+</p>
+<p>
+Use <code class="calibre2"> for the R system itself. Use <code class="calibre2"></code> <a href="" id="index-_005cdots"></a> for the dots in function argument lists ‘…’, and <code class="calibre2"></code> <a href="" id="index-_005cldots"></a> for ellipsis dots in ordinary text.<a href="R-exts_split_014.html#FOOT98" id="DOCF98"><sup>98</sup></a> These can be followed by <code class="calibre2">{}</code>, and should be unless followed by whitespace.
+</p>
+<p>
+After an unescaped ‘%’, you can put your own comments regarding the help text. The rest of the line (but not the newline at the end) will be completely disregarded. Therefore, you can also use it to make part of the “help” invisible.
+</p>
+<p>
+You can produce a backslash (‘’) by escaping it by another backslash. (Note that <code class="calibre2"> is used for generating line breaks.)
+</p>
+<p>
+The “comment” character ‘%’ and unpaired braces<a href="R-exts_split_014.html#FOOT99" id="DOCF99"><sup>99</sup></a> <em>almost always</em> need to be escaped by ‘’, and ‘\’ can be used for backslash and needs to be when there are two or more adjacent backslashes. In R-like code quoted strings are handled slightly differently; see <a href="https://developer.r-project.org/parseRd.pdf">“Parsing Rd files”</a> for details – in particular braces should not be escaped in quoted strings.
+</p>
+<p>
+All of ‘% { } ’ should be escaped in LaTeX-like text.
+</p>
+<p>
+<a href="" id="index-_005cenc"></a>
+</p>
+<p>
+Text which might need to be represented differently in different encodings should be marked by <code class="calibre2">, e.g. <code class="calibre2"></code> (with no whitespace between the braces) where the first argument will be used where encodings are allowed and the second should be ASCII (and is used for e.g. the text conversion in locales that cannot represent the encoded form). (This is intended to be used for individual words, not whole sentences or paragraphs.)
+</p>
+<hr />
+<p>
+<a href="" id="Indices"></a> <a href="" id="Indices-1"></a>
+</p>
+<h3 id="indices" class="section">
+2.9 Indices
+</h3>
+<p>
+<a href="" id="index-Indices"></a>
+</p>
+<p>
+The <code class="calibre2"> command (see <a href="writing-r-documentation-files.html#Documenting-functions">Documenting functions</a>) is used to specify the “topics” documented, which should include <em>all</em> R objects in a package such as functions and variables, data sets, and S4 classes and methods (see <a href="writing-r-documentation-files.html#Documenting-S4-classes-and-methods">Documenting S4 classes and methods</a>). The on-line help system searches the index data base consisting of all alias topics.
+</p>
+<p>
+<a href="" id="index-_005cconcept"></a>
+</p>
+<p>
+In addition, it is possible to provide “concept index entries” using <code class="calibre2">, which can be used for <code class="calibre2">help.search()</code> lookups. E.g., file cor.test.Rd in the standard package <strong>stats</strong> contains
+</p>
+<div class="example">
+<pre class="example1"><code>\concept{Kendall correlation coefficient}
+\concept{Pearson correlation coefficient}
+\concept{Spearman correlation coefficient}</code></pre>
+</div>
+<p>
+so that e.g. ??Spearman will succeed in finding the help page for the test for association between paired samples using Spearman’s rho.
+</p>
+<p>
+(Note that <code class="calibre2">help.search()</code> only uses “sections” of documentation objects with no additional markup.)
+</p>
+<p>
+If you want to cross reference such items from other help files <em>via</em> <code class="calibre2">, you need to use <code class="calibre2"> and not <code class="calibre2">.
+</p>
+<hr />
+<p>
+<a href="" id="Platform_002dspecific-sections"></a> <a href="" id="Platform_002dspecific-documentation"></a>
+</p>
+<h3 id="platform-specific-documentation" class="section">
+2.10 Platform-specific documentation
+</h3>
+<p>
+<a href="" id="index-Platform_002dspecific-documentation"></a>
+</p>
+<p>
+Sometimes the documentation needs to differ by platform. Currently two OS-specific options are available, ‘unix’ and ‘windows’, and lines in the help source file can be enclosed in
+</p>
+<div class="example">
+<pre class="example1"><code>#ifdef OS
+   ...
+#endif</code></pre>
+</div>
+<p>
+or
+</p>
+<div class="example">
+<pre class="example1"><code>#ifndef OS
+   ...
+#endif</code></pre>
+</div>
+<p>
+for OS-specific inclusion or exclusion. Such blocks should not be nested, and should be entirely within a block (that, is between the opening and closing brace of a section or item), or at top-level contain one or more complete sections.
+</p>
+<p>
+If the differences between platforms are extensive or the R objects documented are only relevant to one platform, platform-specific Rd files can be put in a unix or windows subdirectory.
+</p>
+<hr />
+<p>
+<a href="" id="Conditional-text"></a> <a href="" id="Conditional-text-1"></a>
+</p>
+<h3 id="conditional-text" class="section">
+2.11 Conditional text
+</h3>
+<p>
+<a href="" id="index-conditionals"></a> <a href="" id="index-_005cif"></a> <a href="" id="index-_005cifelse"></a> <a href="" id="index-_005cout"></a>
+</p>
+<p>
+Occasionally the best content for one output format is different from the best content for another. For this situation, the <code class="calibre2"></code> or <code class="calibre2"></code> markup is used. Here format is a comma separated list of formats in which the text should be rendered. The alternate will be rendered if the format does not match. Both text and alternate may be any sequence of text and markup.
+</p>
+<p>
+Currently the following formats are recognized: <code class="calibre2">example</code>, <code class="calibre2">html</code>, <code class="calibre2">latex</code> and <code class="calibre2">text</code>. These select output for the corresponding targets. (Note that <code class="calibre2">example</code> refers to extracted example code rather than the displayed example in some other format.) Also accepted are <code class="calibre2">TRUE</code> (matching all formats) and <code class="calibre2">FALSE</code> (matching no formats). These could be the output of the <code class="calibre2"> macro (see <a href="writing-r-documentation-files.html#Dynamic-pages">Dynamic pages</a>).
+</p>
+<p>
+The <code class="calibre2"></code> macro would usually be used within the text part of <code class="calibre2"></code>. It causes the renderer to output the literal text exactly, with no attempt to escape special characters. For example, use the following to output the markup necessary to display the Greek letter in LaTeX or HTML, and the text string <code class="calibre2">alpha</code> in other formats:
+</p>
+<div class="example">
+<pre class="example1"><code>\ifelse{latex}{\out{$\alpha$}}{\ifelse{html}{\out{&amp;alpha;}}{alpha}}</code></pre>
+</div>
+<hr />
+<p>
+<a href="" id="Dynamic-pages"></a> <a href="" id="Dynamic-pages-1"></a>
+</p>
+<h3 id="dynamic-pages" class="section">
+2.12 Dynamic pages
+</h3>
+<p>
+<a href="" id="index-dynamic-pages"></a> <a href="" id="index-_005cSexpr"></a> <a href="" id="index-_005cRdOpts"></a>
+</p>
+<p>
+Two macros supporting dynamically generated man pages are <code class="calibre2"> and <code class="calibre2">. These are modelled after Sweave, and are intended to contain executable R expressions in the Rd file.
+</p>
+<p>
+The main argument to <code class="calibre2"> must be valid R code that can be executed. It may also take options in square brackets before the main argument. Depending on the options, the code may be executed at package build time, package install time, or man page rendering time.
+</p>
+<p>
+The options follow the same format as in Sweave, but different options are supported. Currently the allowed options and their defaults are:
+</p>
+<ul>
+<li>
+<code class="calibre2">eval=TRUE</code> Whether the R code should be evaluated.
+</li>
+<li>
+<code class="calibre2">echo=FALSE</code> Whether the R code should be echoed. If <code class="calibre2">TRUE</code>, a display will be given in a preformatted block. For example, <code class="calibre2"></code> will be displayed as
+<div class="example">
+<pre class="example1"><code>&gt; x &lt;- 1</code></pre>
+</div>
+</li>
+<li>
+<code class="calibre2">keep.source=TRUE</code> Whether to keep the author’s formatting when displaying the code, or throw it away and use a deparsed version.
+</li>
+<li>
+<code class="calibre2">results=text</code> How should the results be displayed? The possibilities are:
+<ul>
+<li>
+<ul>
+<li><code class="calibre2">results=text</code> Apply <code class="calibre2">as.character()</code> to the result of the code, and insert it as a text element.
+</li>
+<li>
+<ul>
+<li><code class="calibre2">results=verbatim</code> Print the results of the code just as if it was executed at the console, and include the printed results verbatim. (Invisible results will not print.)
+</li>
+<li>
+<ul>
+<li><code class="calibre2">results=rd</code> The result is assumed to be a character vector containing markup to be passed to <code class="calibre2">parse_Rd()</code>, with the result inserted in place. This could be used to insert computed aliases, for instance. <code class="calibre2">parse_Rd()</code> is called first with <code class="calibre2">fragment = FALSE</code> to allow a single Rd section macro to be inserted. If that fails, it is called again with <code class="calibre2">fragment = TRUE</code>, the older behavior.
+</li>
+<li>
+<ul>
+<li><code class="calibre2">results=hide</code> Insert no output.
+</li>
+</ul>
+</li>
+<li>
+<code class="calibre2">strip.white=TRUE</code> Remove leading and trailing white space from each line of output if <code class="calibre2">strip.white=TRUE</code>. With <code class="calibre2">strip.white=all</code>, also remove blank lines.
+</li>
+<li>
+<p>
+<code class="calibre2">stage=install</code> Control when this macro is run. Possible values are
+</p>
+<ul>
+<li>
+<ul>
+<li><code class="calibre2">stage=build</code> The macro is run when building a source tarball.
+</li>
+<li>
+<ul>
+<li><code class="calibre2">stage=install</code> The macro is run when installing from source.
+</li>
+<li>
+<ul>
+<li><code class="calibre2">stage=render</code> The macro is run when displaying the help page.
+</li>
+</ul>
+<p>
+Conditionals such as <code class="calibre2">#ifdef</code> (see <a href="writing-r-documentation-files.html#Platform_002dspecific-sections">Platform-specific sections</a>) are applied after the <code class="calibre2">build</code> macros but before the <code class="calibre2">install</code> macros. In some situations (e.g. installing directly from a source directory without a tarball, or building a binary package) the above description is not literally accurate, but authors can rely on the sequence being <code class="calibre2">build</code>, <code class="calibre2">#ifdef</code>, <code class="calibre2">install</code>, <code class="calibre2">render</code>, with all stages executed.
+</p>
+<p>
+Code is only run once in each stage, so a <code class="calibre2"></code> macro can output an <code class="calibre2"> macro designed for a later stage, but not for the current one or any earlier stage.
+</p>
+</li>
+<li>
+<code class="calibre2">width, height, fig</code> These options are currently allowed but ignored.
+</li>
+</ul>
+<p>
+The <code class="calibre2"> macro is used to set new defaults for options to apply to following uses of <code class="calibre2">.
+</p>
+<p>
+For more details, see the online document <a href="https://developer.r-project.org/parseRd.pdf">“Parsing Rd files”</a>.
+</p>
+<hr />
+<p>
+<a href="" id="User_002ddefined-macros"></a> <a href="" id="User_002ddefined-macros-1"></a>
+</p>
+<h3 id="user-defined-macros" class="section">
+2.13 User-defined macros
+</h3>
+<p>
+<a href="" id="index-user_002ddefined-macros"></a> <a href="" id="index-_005cnewcommand"></a> <a href="" id="index-_005crenewcommand"></a>
+</p>
+<p>
+The <code class="calibre2"></code> and <code class="calibre2"></code> macros allow new macros to be defined within an Rd file. These are similar but not identical to the same-named LaTeX macros.
+</p>
+<p>
+They each take two arguments which are parsed verbatim. The first is the name of the new macro including the initial backslash, and the second is the macro definition. As in LaTeX, <code class="calibre2"></code> requires that the new macro not have been previously defined, whereas <code class="calibre2"></code> allows existing macros (including all built-in ones) to be replaced. (As from version 3.2.0, this test is disabled by default, but may be enabled by setting the environment variable <code class="calibre2"><em>WARN_DUPLICATE_RD_MACROS</em></code> to a true value.)
+</p>
+<p>
+Also as in LaTeX, the new macro may be defined to take arguments, and numeric placeholders such as <code class="calibre2">#1</code> are used in the macro definition. However, unlike LaTeX, the number of arguments is determined automatically from the highest placeholder number seen in the macro definition. For example, a macro definition containing <code class="calibre2">#1</code> and <code class="calibre2">#3</code> (but no other placeholders) will define a three argument macro (whose second argument will be ignored). As in LaTeX, at most 9 arguments may be defined. If the <code class="calibre2">#</code> character is followed by a non-digit it will have no special significance. All arguments to user-defined macros will be parsed as verbatim text, and simple text-substitution will be used to replace the place-holders, after which the replacement text will be parsed.
+</p>
+<p>
+As of R version 3.2.0, a number of macros are defined in the file share/Rd/macros/system.Rd of the R source or home directory, and these will normally be available in all .Rd files. For example, that file contains the definition
+</p>
+<div class="example">
+<pre class="example1"><code>\newcommand{\PR}{\Sexpr[results=rd]{tools:::Rd_expr_PR(#1)}}</code></pre>
+</div>
+<p>
+which defines <code class="calibre2"> to be a single argument macro; then code (typically used in the NEWS.Rd file) like
+</p>
+<div class="example">
+<pre class="example1"><code>\PR{1234}</code></pre>
+</div>
+<p>
+will expand to
+</p>
+<div class="example">
+<pre class="example1"><code>\Sexpr[results=rd]{tools:::Rd_expr_PR(1234)}</code></pre>
+</div>
+<p>
+when parsed.
+</p>
+<p>
+Some macros that might be of general use are:
+</p>
+<dl>
+<dt>
+<code class="calibre2"></code> <a href="" id="index-_005cCRANpkg_007bpkg_007d"></a>
+</dt>
+<dd>
+<p>
+A package on CRAN
+</p>
+</dd>
+<dt>
+<code class="calibre2"> <a href="" id="index-_005csspace"></a>
+</dt>
+<dd>
+<p>
+A single space (used after a period that does not end a sentence).
+</p>
+</dd>
+<dt>
+<code class="calibre2"></code> <a href="" id="index-_005cdoi_007bnumbers_007d"></a>
+</dt>
+<dd>
+<p>
+A digital object identifier (DOI).
+</p>
+</dd>
+</dl>
+<p>
+See the system.Rd file in share/Rd/macros for more details and macro definitions, including macros <code class="calibre2">, <code class="calibre2">, <code class="calibre2">, <code class="calibre2">, <code class="calibre2"> and <code class="calibre2">. <a href="" id="index-_005cpackageTitle"></a> <a href="" id="index-_005cpackageDescription"></a> <a href="" id="index-_005cpackageAuthor"></a> <a href="" id="index-_005cpackageMaintainer"></a> <a href="" id="index-_005cpackageDESCRIPTION"></a> <a href="" id="index-_005cpackageIndices"></a>
+</p>
+<p>
+Packages may also define their own common macros; these would be stored in an .Rd file in man/macros in the package source and will be installed into help/macros when the package is installed. A package may also use the macros from a different package by listing the other package in the ‘RdMacros’ field in the DESCRIPTION file.
+</p>
+<hr />
+<p>
+<a href="" id="Encoding"></a> <a href="" id="Encoding-1"></a>
+</p>
+<h3 id="encoding" class="section">
+2.14 Encoding
+</h3>
+<p>
+<a href="" id="index-encoding"></a>
+</p>
+<p>
+Rd files are text files and so it is impossible to deduce the encoding they are written in unless ASCII: files with 8-bit characters could be UTF-8, Latin-1, Latin-9, KOI8-R, EUC-JP, <em>etc</em>. So an <code class="calibre2"></code> section must be used to specify the encoding if it is not ASCII. (The <code class="calibre2"></code> section must be on a line by itself, and in particular one containing no non-ASCII characters. The encoding declared in the DESCRIPTION file will be used if none is declared in the file.) The Rd files are converted to UTF-8 before parsing and so the preferred encoding for the files themselves is now UTF-8.
+</p>
+<p>
+Wherever possible, avoid non-ASCII chars in Rd files, and even symbols such as ‘&lt;’, ‘&gt;’, ‘$’, ‘^’, ‘&amp;’, ‘|’, ‘@’, ‘~’, and ‘*’ outside ‘verbatim’ environments (since they may disappear in fonts designed to render text). (Function <code class="calibre2">showNonASCIIfile</code> in package <strong>tools</strong> can help in finding non-ASCII bytes in the files.)
+</p>
+<p>
+For convenience, encoding names ‘latin1’ and ‘latin2’ are always recognized: these and ‘UTF-8’ are likely to work fairly widely. However, this does not mean that all characters in UTF-8 will be recognized, and the coverage of non-Latin characters<a href="R-exts_split_014.html#FOOT100" id="DOCF100"><sup>100</sup></a> is fairly low. Using LaTeX <code class="calibre2">inputenx</code> (see <code class="calibre2">?Rd2pdf</code> in R) will give greater coverage of UTF-8.
+</p>
+<p>
+The <code class="calibre2"> command (see <a href="writing-r-documentation-files.html#Insertions">Insertions</a>) can be used to provide transliterations which will be used in conversions that do not support the declared encoding.
+</p>
+<p>
+The LaTeX conversion converts the file to UTF-8 from the declared encoding, and includes a
+</p>
+<div class="example">
+<pre class="example1"><code>\inputencoding{utf8}</code></pre>
+</div>
+<p>
+command, and this needs to be matched by a suitable invocation of the <code class="calibre2"></code> command. The R utility <code class="calibre2">R CMD Rd2pdf</code> looks at the converted code and includes the encodings used: it might for example use
+</p>
+<div class="example">
+<pre class="example1"><code>\usepackage[utf8]{inputenc}</code></pre>
+</div>
+<p>
+(Use of <code class="calibre2">utf8</code> as an encoding requires LaTeX dated 2003/12/01 or later. Also, the use of Cyrillic characters in ‘UTF-8’ appears to also need ‘’, and <code class="calibre2">R CMD Rd2pdf</code> includes this conditionally on the file t2aenc.def being present and environment variable <code class="calibre2"><em>R_CYRILLIC_TEX</em></code> being set.)
+</p>
+<p>
+Note that this mechanism works best with Latin letters: the coverage of UTF-8 in LaTeX is quite low.
+</p>
+<hr />
+<p>
+<a href="" id="Processing-documentation-files"></a> <a href="" id="Processing-documentation-files-1"></a>
+</p>
+<h3 id="processing-documentation-files" class="section">
+2.15 Processing documentation files
+</h3>
+<p>
+<a href="" id="index-Processing-Rd-format"></a>
+</p>
+<p>
+There are several commands to process Rd files from the system command line.
+</p>
+<p>
+<a href="" id="index-R-CMD-Rdconv"></a>
+</p>
+<p>
+Using <code class="calibre2">R CMD Rdconv</code> one can convert R documentation format to other formats, or extract the executable examples for run-time testing. The currently supported conversions are to plain text, HTML and LaTeX as well as extraction of the examples.
+</p>
+<p>
+<a href="" id="index-R-CMD-Rd2pdf"></a>
+</p>
+<p>
+<code class="calibre2">R CMD Rd2pdf</code> generates PDF output from documentation in Rd files, which can be specified either explicitly or by the path to a directory with the sources of a package. In the latter case, a reference manual for all documented objects in the package is created, including the information in the DESCRIPTION files.
+</p>
+<p>
+<a href="" id="index-R-CMD-Sweave"></a> <a href="" id="index-R-CMD-Stangle"></a>
+</p>
+<p>
+<code class="calibre2">R CMD Sweave</code> and <code class="calibre2">R CMD Stangle</code> process vignette-like documentation files (e.g. Sweave vignettes with extension ‘.Snw’ or ‘.Rnw’, or other non-Sweave vignettes). <code class="calibre2">R CMD Stangle</code> is used to extract the R code fragments.
+</p>
+<p>
+The exact usage and a detailed list of available options for all of these commands can be obtained by running <code class="calibre2">R CMD command –help</code>, e.g., R CMD Rdconv –help. All available commands can be listed using R –help (or Rcmd –help under Windows).
+</p>
+<p>
+All of these work under Windows. You may need to have installed the the tools to build packages from source as described in the “R Installation and Administration” manual, although typically all that is needed is a LaTeX installation.
+</p>
+<hr />
+<p>
+<a href="" id="Editing-Rd-files"></a> <a href="" id="Editing-Rd-files-1"></a>
+</p>
+<h3 id="editing-rd-files" class="section">
+2.16 Editing Rd files
+</h3>
+<p>
+<a href="" id="index-Editing-Rd-files"></a>
+</p>
+<p>
+It can be very helpful to prepare .Rd files using a editor which knows about their syntax and will highlight commands, indent to show the structure and detect mis-matched braces, and so on.
+</p>
+<p>
+The system most commonly used for this is some version of <code class="calibre2">Emacs</code> (including <code class="calibre2">XEmacs</code>) with the ESS package (<a href="https://ESS.R-project.org/" class="uri">https://ESS.R-project.org/</a>: it is often is installed with <code class="calibre2">Emacs</code> but may need to be loaded, or even installed, separately).
+</p>
+<p>
+Another is the Eclipse IDE with the Stat-ET plugin (<a href="http://www.walware.de/goto/statet" class="uri">http://www.walware.de/goto/statet</a>), and (on Windows only) Tinn-R (<a href="http://sourceforge.net/projects/tinn-r/" class="uri">http://sourceforge.net/projects/tinn-r/</a>).
+</p>
+<p>
+People have also used LaTeX mode in a editor, as .Rd files are rather similar to LaTeX files.
+</p>
+<p>
+Some R front-ends provide editing support for .Rd files, for example RStudio (<a href="https://rstudio.org/" class="uri">https://rstudio.org/</a>).
+</p>
+<hr />
+<p>
+<a href="" id="Tidying-and-profiling-R-code"></a> <a href="" id="Tidying-and-profiling-R-code-1"></a>
+</p>
+<div id="calibre_pb_8" class="calibre6">
+</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="creating-r-packages-1.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="tidying-and-profiling-r-code-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

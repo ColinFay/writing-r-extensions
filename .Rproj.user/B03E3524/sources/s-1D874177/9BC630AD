@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1507577961122.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "9BC630AD",
+    "lastKnownWriteTime" : 1507579650,
+    "last_content_update" : 1507579650,
+    "path" : "~/R/writing-r-extensions/04-R-exts.Rmd",
+    "project_path" : "04-R-exts.Rmd",
+    "properties" : {
+        "cursorPosition" : "0,0",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

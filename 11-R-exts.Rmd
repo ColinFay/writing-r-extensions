@@ -1,0 +1,70 @@
+#  Generic functions and methods
+<p><a href="" id="index-Generic-functions"></a> <a href="" id="index-Method-functions"></a></p>
+<p>R programmers will often want to add methods for existing generic functions, and may want to add new generic functions or make existing functions generic. In this chapter we give guidelines for doing so, with examples of the problems caused by not adhering to them.</p>
+<p>This chapter only covers the ‘informal’ class system copied from S3, and not with the S4 (formal) methods of package <strong>methods</strong>.</p>
+<p>First, a <em>caveat</em>: a function named <code class="calibre2">gen.cl</code> will be invoked by the generic <code class="calibre2">gen</code> for class <code class="calibre2">cl</code>, so do not name functions in this style unless they are intended to be methods.</p>
+<p>The key function for methods is <code class="calibre2">NextMethod</code>, which dispatches the next method. It is quite typical for a method function to make a few changes to its arguments, dispatch to the next method, receive the results and modify them a little. An example is</p>
+<div class="example">
+<pre class="example1"><code>t.data.frame &lt;- function(x)
+{
+    x &lt;- as.matrix(x)
+    NextMethod(&quot;t&quot;)
+}</code></pre>
+</div>
+<p>Note that the example above works because there is a <em>next</em> method, the default method, not that a new method is selected when the class is changed.</p>
+<p><em>Any</em> method a programmer writes may be invoked from another method by <code class="calibre2">NextMethod</code>, <em>with the arguments appropriate to the previous method</em>. Further, the programmer cannot predict which method <code class="calibre2">NextMethod</code> will pick (it might be one not yet dreamt of), and the end user calling the generic needs to be able to pass arguments to the next method. For this to work</p>
+<blockquote>
+<p><em>A method must have all the arguments of the generic, including <code class="calibre2">…</code> if the generic does.</em></p>
+</blockquote>
+<p>It is a grave misunderstanding to think that a method needs only to accept the arguments it needs. The original S version of <code class="calibre2">predict.lm</code> did not have a <code class="calibre2">…</code> argument, although <code class="calibre2">predict</code> did. It soon became clear that <code class="calibre2">predict.glm</code> needed an argument <code class="calibre2">dispersion</code> to handle over-dispersion. As <code class="calibre2">predict.lm</code> had neither a <code class="calibre2">dispersion</code> nor a <code class="calibre2">…</code> argument, <code class="calibre2">NextMethod</code> could no longer be used. (The legacy, two direct calls to <code class="calibre2">predict.lm</code>, lives on in <code class="calibre2">predict.glm</code> in R, which is based on the workaround for S3 written by Venables &amp; Ripley.)</p>
+<p>Further, the user is entitled to use positional matching when calling the generic, and the arguments to a method called by <code class="calibre2">UseMethod</code> are those of the call to the generic. Thus</p>
+<blockquote>
+<p><em>A method must have arguments in exactly the same order as the generic.</em></p>
+</blockquote>
+<p>To see the scale of this problem, consider the generic function <code class="calibre2">scale</code>, defined as</p>
+<div class="example">
+<pre class="example1"><code>scale &lt;- function (x, center = TRUE, scale = TRUE)
+    UseMethod(&quot;scale&quot;)</code></pre>
+</div>
+<p>Suppose an unthinking package writer created methods such as</p>
+<div class="example">
+<pre class="example1"><code>scale.foo &lt;- function(x, scale = FALSE, ...) { }</code></pre>
+</div>
+<p>Then for <code class="calibre2">x</code> of class <code class="calibre2">&quot;foo&quot;</code> the calls</p>
+<div class="example">
+<pre class="example1"><code>scale(x, , TRUE)
+scale(x, scale = TRUE)</code></pre>
+</div>
+<p>would do most likely do different things, to the justifiable consternation of the end user.</p>
+<p>To add a further twist, which default is used when a user calls <code class="calibre2">scale(x)</code> in our example? What if</p>
+<div class="example">
+<pre class="example1"><code>scale.bar &lt;- function(x, center, scale = TRUE) NextMethod(&quot;scale&quot;)</code></pre>
+</div>
+<p>and <code class="calibre2">x</code> has class <code class="calibre2">c(&quot;bar&quot;, &quot;foo&quot;)</code>? It is the default specified in the method that is used, but the default specified in the generic may be the one the user sees. This leads to the recommendation:</p>
+<blockquote>
+<p><em>If the generic specifies defaults, all methods should use the same defaults.</em></p>
+</blockquote>
+<p>An easy way to follow these recommendations is to always keep generics simple, e.g.</p>
+<div class="example">
+<pre class="example1"><code>scale &lt;- function(x, ...) UseMethod(&quot;scale&quot;)</code></pre>
+</div>
+<p>Only add parameters and defaults to the generic if they make sense in all possible methods implementing it.</p>
+<hr />
+<p><a href="" id="Adding-new-generics"></a> <a href="" id="Adding-new-generics-1"></a></p>
+<h3 id="adding-new-generics" class="section">7.1 Adding new generics</h3>
+<p>When creating a new generic function, bear in mind that its argument list will be the maximal set of arguments for methods, including those written elsewhere years later. So choosing a good set of arguments may well be an important design issue, and there need to be good arguments <em>not</em> to include a <code class="calibre2">…</code> argument.</p>
+<p>If a <code class="calibre2">…</code> argument is supplied, some thought should be given to its position in the argument sequence. Arguments which follow <code class="calibre2">…</code> must be named in calls to the function, and they must be named in full (partial matching is suppressed after <code class="calibre2">…</code>). Formal arguments before <code class="calibre2">…</code> can be partially matched, and so may ‘swallow’ actual arguments intended for <code class="calibre2">…</code>. Although it is commonplace to make the <code class="calibre2">…</code> argument the last one, that is not always the right choice.</p>
+<p>Sometimes package writers want to make generic a function in the base package, and request a change in R. This may be justifiable, but making a function generic with the old definition as the default method does have a small performance cost. It is never necessary, as a package can take over a function in the base package and make it generic by something like</p>
+<div class="example">
+<pre class="example1"><code>foo &lt;- function(object, ...) UseMethod(&quot;foo&quot;)
+foo.default &lt;- function(object, ...) base::foo(object)</code></pre>
+</div>
+<p>Earlier versions of this manual suggested assigning <code class="calibre2">foo.default &lt;- base::foo</code>. This is <strong>not</strong> a good idea, as it captures the base function at the time of installation and it might be changed as R is patched or updated.</p>
+<p>The same idea can be applied for functions in other packages with namespaces.</p>
+<hr />
+<p><a href="" id="Linking-GUIs-and-other-front_002dends-to-R"></a> <a href="" id="Linking-GUIs-and-other-front_002dends-to-R-1"></a></p>
+<div id="calibre_pb_18" class="calibre6">
+
+</div>
+
+

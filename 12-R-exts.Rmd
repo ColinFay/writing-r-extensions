@@ -1,0 +1,483 @@
+#  Linking GUIs and other front-ends to R
+<p>There are a number of ways to build front-ends to R: we take this to mean a GUI or other application that has the ability to submit commands to R and perhaps to receive results back (not necessarily in a text format). There are other routes besides those described here, for example the package <a href="https://CRAN.R-project.org/package=Rserve"><strong>Rserve</strong></a> (from CRAN, see also <a href="https://www.rforge.net/Rserve/" class="uri">https://www.rforge.net/Rserve/</a>) and connections to Java in ‘JRI’ (part of the <a href="https://CRAN.R-project.org/package=rJava"><strong>rJava</strong></a> package on CRAN) and the Omegahat/Bioconductor package ‘SJava’.</p>
+<p>Note that the APIs described in this chapter are only intended to be used in an alternative front-end: they are not part of the API made available for R packages and can be dangerous to use in a conventional package (although packages may contain alternative front-ends). Conversely some of the functions from the API (such as <code class="calibre2">R_alloc</code>) should not be used in front-ends.</p>
+<hr />
+<p><a href="" id="Embedding-R-under-Unix_002dalikes"></a> <a href="" id="Embedding-R-under-Unix_002dalikes-1"></a></p>
+<h3 id="embedding-r-under-unix-alikes" class="section">8.1 Embedding R under Unix-alikes</h3>
+<p>R can be built as a shared library<a href="concept-index.html#FOOT143" id="DOCF143"><sup>143</sup></a> if configured with --enable-R-shlib. This shared library can be used to run R from alternative front-end programs. We will assume this has been done for the rest of this section. Also, it can be built as a static library if configured with --enable-R-static-lib, and that can be used in a very similar way (at least on Linux: on other platforms one needs to ensure that all the symbols exported by libR.a are linked into the front-end).</p>
+<p>The command-line R front-end, R_HOME/bin/exec/R, is one such example, and the former GNOME (see package <strong>gnomeGUI</strong> on CRAN’s ‘Archive’ area) and macOS consoles are others. The source for R_HOME/bin/exec/R is in file src/main/Rmain.c and is very simple</p>
+<div class="example">
+<pre class="example1"><code>int Rf_initialize_R(int ac, char **av); /* in ../unix/system.c */
+void Rf_mainloop();                     /* in main.c */
+
+extern int R_running_as_main_program;   /* in ../unix/system.c */
+
+int main(int ac, char **av)
+{
+    R_running_as_main_program = 1;
+    Rf_initialize_R(ac, av);
+    Rf_mainloop(); /* does not return */
+    return 0;
+}</code></pre>
+</div>
+<p>indeed, misleadingly simple. Remember that R_HOME/bin/exec/R is run from a shell script R_HOME/bin/R which sets up the environment for the executable, and this is used for</p>
+<ul>
+<li>Setting <code class="calibre2">R_HOME</code> and checking it is valid, as well as the path <code class="calibre2">R_SHARE_DIR</code> and <code class="calibre2">R_DOC_DIR</code> to the installed share and doc directory trees. Also setting <code class="calibre2">R_ARCH</code> if needed.</li>
+<li>Setting <code class="calibre2">LD_LIBRARY_PATH</code> to include the directories used in linking R. This is recorded as the default setting of <code class="calibre2">R_LD_LIBRARY_PATH</code> in the shell script R_HOME/etcR_ARCH/ldpaths.</li>
+<li>Processing some of the arguments, for example to run R under a debugger and to launch alternative front-ends to provide GUIs.</li>
+</ul>
+<p>The first two of these can be achieved for your front-end by running it <em>via</em> <code class="calibre2">R CMD</code>. So, for example</p>
+<div class="example">
+<pre class="example1"><code>R CMD /usr/local/lib/R/bin/exec/R
+R CMD exec/R</code></pre>
+</div>
+<p>will both work in a standard R installation. (<code class="calibre2">R CMD</code> looks first for executables in R_HOME/bin. These command-lines need modification if a sub-architecture is in use.) If you do not want to run your front-end in this way, you need to ensure that <code class="calibre2">R_HOME</code> is set and <code class="calibre2">LD_LIBRARY_PATH</code> is suitable. (The latter might well be, but modern Unix/Linux systems do not normally include /usr/local/lib (/usr/local/lib64 on some architectures), and R does look there for system components.)</p>
+<p>The other senses in which this example is too simple are that all the internal defaults are used and that control is handed over to the R main loop. There are a number of small examples<a href="concept-index.html#FOOT144" id="DOCF144"><sup>144</sup></a> in the tests/Embedding directory. These make use of <code class="calibre2">Rf_initEmbeddedR</code> in src/main/Rembedded.c, and essentially use</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;Rembedded.h&gt;
+
+int main(int ac, char **av)
+{
+    /* do some setup */
+    Rf_initEmbeddedR(argc, argv);
+    /* do some more setup */
+
+    /* submit some code to R, which is done interactively via
+        run_Rmainloop();
+
+        A possible substitute for a pseudo-console is
+
+        R_ReplDLLinit();
+        while(R_ReplDLLdo1() &gt; 0) {
+        /* add user actions here if desired */
+       }
+
+     */
+    Rf_endEmbeddedR(0);
+    /* final tidying up after R is shutdown */
+    return 0;
+}</code></pre>
+</div>
+<p>If you do not want to pass R arguments, you can fake an <code class="calibre2">argv</code> array, for example by</p>
+<div class="example">
+<pre class="example1"><code>    char *argv[]= {&quot;REmbeddedPostgres&quot;, &quot;--silent&quot;};
+    Rf_initEmbeddedR(sizeof(argv)/sizeof(argv[0]), argv);</code></pre>
+</div>
+<p>However, to make a GUI we usually do want to run <code class="calibre2">run_Rmainloop</code> after setting up various parts of R to talk to our GUI, and arranging for our GUI callbacks to be called during the R mainloop.</p>
+<p>One issue to watch is that on some platforms <code class="calibre2">Rf_initEmbeddedR</code> and <code class="calibre2">Rf_endEmbeddedR</code> change the settings of the FPU (e.g. to allow errors to be trapped and to make use of extended precision registers).</p>
+<p>The standard code sets up a session temporary directory in the usual way, <em>unless</em> <code class="calibre2">R_TempDir</code> is set to a non-NULL value before <code class="calibre2">Rf_initEmbeddedR</code> is called. In that case the value is assumed to contain an existing writable directory (no check is done), and it is not cleaned up when R is shut down.</p>
+<p><code class="calibre2">Rf_initEmbeddedR</code> sets R to be in interactive mode: you can set <code class="calibre2">R_Interactive</code> (defined in Rinterface.h) subsequently to change this.</p>
+<p>Note that R expects to be run with the locale category ‘LC_NUMERIC’ set to its default value of <code class="calibre2">C</code>, and so should not be embedded into an application which changes that.</p>
+<p>It is the user’s responsibility to attempt to initialize only once. To protect the R interpreter, <code class="calibre2">Rf_initialize_R</code> will exit the process if re-initialization is attempted.</p>
+<hr />
+<p><a href="" id="Compiling-against-the-R-library"></a> <a href="" id="Compiling-against-the-R-library-1"></a></p>
+<h4 id="compiling-against-the-r-library" class="subsection">8.1.1 Compiling against the R library</h4>
+<p>Suitable flags to compile and link against the R (shared or static) library can be found by</p>
+<div class="example">
+<pre class="example1"><code>R CMD config --cppflags
+R CMD config --ldflags</code></pre>
+</div>
+<p>(These apply only to an uninstalled copy or a standard install.)</p>
+<p>If R is installed, <code class="calibre2">pkg-config</code> is available and neither sub-architectures nor a macOS framework have been used, alternatives for a shared R library are</p>
+<div class="example">
+<pre class="example1"><code>pkg-config --cflags libR
+pkg-config --libs libR</code></pre>
+</div>
+<p>and for a static R library</p>
+<div class="example">
+<pre class="example1"><code>pkg-config --cflags libR
+pkg-config --libs --static libR</code></pre>
+</div>
+<p>(This may work for an installed OS framework if <code class="calibre2">pkg-config</code> is taught where to look for libR.pc: it is installed inside the framework.)</p>
+<p>However, a more comprehensive way is to set up a Makefile to compile the front-end. Suppose file myfe.c is to be compiled to myfe. A suitable Makefile might be</p>
+<div class="example">
+<pre class="example1"><code>include ${R_HOME}/etc${R_ARCH}/Makeconf
+all: myfe
+
+## The following is not needed, but avoids PIC flags.
+myfe.o: myfe.c
+        $(CC) $(ALL_CPPFLAGS) $(CFLAGS) -c myfe.c -o $@
+
+## replace $(LIBR) $(LIBS) by $(STATIC_LIBR) if R was build with a static libR
+myfe: myfe.o
+        $(MAIN_LINK) -o $@ myfe.o $(LIBR) $(LIBS)</code></pre>
+</div>
+<p>invoked as</p>
+<div class="example">
+<pre class="example1"><code>R CMD make
+R CMD myfe</code></pre>
+</div>
+<p>Additional flags which <code class="calibre2">$(MAIN_LINK)</code> includes are, amongst others, those to select OpenMP and --export-dynamic for the GNU linker on some platforms. In principle <code class="calibre2">$(LIBS)</code> is not needed when using a shared R library as libR is linked against those libraries, but some platforms need the executable also linked against them.</p>
+<hr />
+<p><a href="" id="Setting-R-callbacks"></a> <a href="" id="Setting-R-callbacks-1"></a></p>
+<h4 id="setting-r-callbacks" class="subsection">8.1.2 Setting R callbacks</h4>
+<p>For Unix-alikes there is a public header file Rinterface.h that makes it possible to change the standard callbacks used by R in a documented way. This defines pointers (if <code class="calibre2">R_INTERFACE_PTRS</code> is defined)</p>
+<div class="example">
+<pre class="example1"><code>extern void (*ptr_R_Suicide)(const char *);
+extern void (*ptr_R_ShowMessage)(const char *);
+extern int  (*ptr_R_ReadConsole)(const char *, unsigned char *, int, int);
+extern void (*ptr_R_WriteConsole)(const char *, int);
+extern void (*ptr_R_WriteConsoleEx)(const char *, int, int);
+extern void (*ptr_R_ResetConsole)();
+extern void (*ptr_R_FlushConsole)();
+extern void (*ptr_R_ClearerrConsole)();
+extern void (*ptr_R_Busy)(int);
+extern void (*ptr_R_CleanUp)(SA_TYPE, int, int);
+extern int  (*ptr_R_ShowFiles)(int, const char **, const char **,
+                               const char *, Rboolean, const char *);
+extern int  (*ptr_R_ChooseFile)(int, char *, int);
+extern int  (*ptr_R_EditFile)(const char *);
+extern void (*ptr_R_loadhistory)(SEXP, SEXP, SEXP, SEXP);
+extern void (*ptr_R_savehistory)(SEXP, SEXP, SEXP, SEXP);
+extern void (*ptr_R_addhistory)(SEXP, SEXP, SEXP, SEXP);
+// added in R 3.0.0
+extern int  (*ptr_R_EditFiles)(int, const char **, const char **, const char *);
+extern SEXP (*ptr_do_selectlist)(SEXP, SEXP, SEXP, SEXP);
+extern SEXP (*ptr_do_dataentry)(SEXP, SEXP, SEXP, SEXP);
+extern SEXP (*ptr_do_dataviewer)(SEXP, SEXP, SEXP, SEXP);
+extern void (*ptr_R_ProcessEvents)();</code></pre>
+</div>
+<p>which allow standard R callbacks to be redirected to your GUI. What these do is generally documented in the file src/unix/system.txt.</p>
+<dl>
+<dt><a href="" id="index-R_005fShowMessage"></a>Function: <em>void</em> <strong>R_ShowMessage</strong> <em>(char *message)</em></dt>
+<dd><p>This should display the message, which may have multiple lines: it should be brought to the user’s attention immediately.</p>
+</dd>
+</dl>
+<dl>
+<dt><a href="" id="index-R_005fBusy"></a>Function: <em>void</em> <strong>R_Busy</strong> <em>(int which)</em></dt>
+<dd><p>This function invokes actions (such as change of cursor) when R embarks on an extended computation (<code class="calibre2">which=1</code>) and when such a state terminates (<code class="calibre2">which=0</code>).</p>
+</dd>
+</dl>
+<dl>
+<dt><a href="" id="index-R_005fReadConsole"></a>Function: <em>int</em> <strong>R_ReadConsole</strong> <em>(const char *prompt, unsigned char *buf, int buflen, int hist)</em><br />
+<a href="" id="index-R_005fWriteConsole"></a>Function: <em>void</em> <strong>R_WriteConsole</strong> <em>(const char *buf, int buflen)</em><br />
+<a href="" id="index-R_005fWriteConsoleEx"></a>Function: <em>void</em> <strong>R_WriteConsoleEx</strong> <em>(const char *buf, int buflen, int otype)</em><br />
+<a href="" id="index-R_005fResetConsole"></a>Function: <em>void</em> <strong>R_ResetConsole</strong> <em>()</em><br />
+<a href="" id="index-R_005fFlushConsole"></a>Function: <em>void</em> <strong>R_FlushConsole</strong> <em>()</em><br />
+<a href="" id="index-R_005fClearErrConsole"></a>Function: <em>void</em> <strong>R_ClearErrConsole</strong> <em>()</em></dt>
+<dd><p>These functions interact with a console.</p>
+<p><code class="calibre2">R_ReadConsole</code> prints the given prompt at the console and then does a <code class="calibre2">fgets(3)</code>–like operation, transferring up to buflen characters into the buffer buf. The last two bytes should be set to ‘&quot;&#92;n&#92;0&quot;’ to preserve sanity. If hist is non-zero, then the line should be added to any command history which is being maintained. The return value is 0 is no input is available and &gt;0 otherwise.</p>
+<p><code class="calibre2">R_WriteConsoleEx</code> writes the given buffer to the console, otype specifies the output type (regular output or warning/error). Call to <code class="calibre2">R_WriteConsole(buf, buflen)</code> is equivalent to <code class="calibre2">R_WriteConsoleEx(buf, buflen, 0)</code>. To ensure backward compatibility of the callbacks, <code class="calibre2">ptr_R_WriteConsoleEx</code> is used only if <code class="calibre2">ptr_R_WriteConsole</code> is set to <code class="calibre2">NULL</code>. To ensure that <code class="calibre2">stdout()</code> and <code class="calibre2">stderr()</code> connections point to the console, set the corresponding files to <code class="calibre2">NULL</code> <em>via</em></p>
+<div class="example">
+<pre class="example1"><code>      R_Outputfile = NULL;
+      R_Consolefile = NULL;</code></pre>
+</div>
+<p><code class="calibre2">R_ResetConsole</code> is called when the system is reset after an error. <code class="calibre2">R_FlushConsole</code> is called to flush any pending output to the system console. <code class="calibre2">R_ClearerrConsole</code> clears any errors associated with reading from the console.</p>
+</dd>
+</dl>
+<dl>
+<dt><a href="" id="index-R_005fShowFiles"></a>Function: <em>int</em> <strong>R_ShowFiles</strong> <em>(int nfile, const char **file, const char **headers, const char *wtitle, Rboolean del, const char *pager)</em></dt>
+<dd><p>This function is used to display the contents of files.</p>
+</dd>
+</dl>
+<dl>
+<dt><a href="" id="index-R_005fChooseFile"></a>Function: <em>int</em> <strong>R_ChooseFile</strong> <em>(int new, char *buf, int len)</em></dt>
+<dd><p>Choose a file and return its name in buf of length len. Return value is 0 for success, &gt; 0 otherwise.</p>
+</dd>
+</dl>
+<dl>
+<dt><a href="" id="index-R_005fEditFile"></a>Function: <em>int</em> <strong>R_EditFile</strong> <em>(const char *buf)</em></dt>
+<dd><p>Send a file to an editor window.</p>
+</dd>
+</dl>
+<dl>
+<dt><a href="" id="index-R_005fEditFiles"></a>Function: <em>int</em> <strong>R_EditFiles</strong> <em>(int nfile, const char **file, const char **title, const char *editor)</em></dt>
+<dd><p>Send nfile files to an editor, with titles possibly to be used for the editor window(s).</p>
+</dd>
+</dl>
+<dl>
+<dt><a href="" id="index-R_005floadhistory"></a>Function: <em>SEXP</em> <strong>R_loadhistory</strong> <em>(SEXP, SEXP, SEXP, SEXP);</em><br />
+<a href="" id="index-R_005fsavehistory"></a>Function: <em>SEXP</em> <strong>R_savehistory</strong> <em>(SEXP, SEXP, SEXP, SEXP);</em><br />
+<a href="" id="index-R_005faddhistory"></a>Function: <em>SEXP</em> <strong>R_addhistory</strong> <em>(SEXP, SEXP, SEXP, SEXP);</em></dt>
+<dd><p><code class="calibre2">.Internal</code> functions for <code class="calibre2">loadhistory</code>, <code class="calibre2">savehistory</code> and <code class="calibre2">timestamp</code>.</p>
+<p>If the console has no history mechanism these can be as simple as</p>
+<div class="example">
+<pre class="example1"><code>SEXP R_loadhistory (SEXP call, SEXP op, SEXP args, SEXP env)
+{
+    errorcall(call, &quot;loadhistory is not implemented&quot;);
+    return R_NilValue;
+}
+SEXP R_savehistory (SEXP call, SEXP op , SEXP args, SEXP env)
+{
+    errorcall(call, &quot;savehistory is not implemented&quot;);
+    return R_NilValue;
+}
+SEXP R_addhistory (SEXP call, SEXP op , SEXP args, SEXP env)
+{
+    return R_NilValue;
+}</code></pre>
+</div>
+<p>The <code class="calibre2">R_addhistory</code> function should return silently if no history mechanism is present, as a user may be calling <code class="calibre2">timestamp</code> purely to write the time stamp to the console.</p>
+</dd>
+</dl>
+<dl>
+<dt><a href="" id="index-R_005fSuicide"></a>Function: <em>void</em> <strong>R_Suicide</strong> <em>(const char *message)</em></dt>
+<dd><p>This should abort R as rapidly as possible, displaying the message. A possible implementation is</p>
+<div class="example">
+<pre class="example1"><code>void R_Suicide (const char *message)
+{
+    char  pp[1024];
+    snprintf(pp, 1024, &quot;Fatal error: %s&#92;n&quot;, s);
+    R_ShowMessage(pp);
+    R_CleanUp(SA_SUICIDE, 2, 0);
+}</code></pre>
+</div>
+</dd>
+</dl>
+<dl>
+<dt><a href="" id="index-R_005fCleanUp"></a>Function: <em>void</em> <strong>R_CleanUp</strong> <em>(SA_TYPE saveact, int status, int RunLast)</em></dt>
+<dd><p>This function invokes any actions which occur at system termination. It needs to be quite complex:</p>
+<div class="example">
+<pre class="example1"><code>#include &lt;Rinterface.h&gt;
+#include &lt;Rembedded.h&gt;    /* for Rf_KillAllDevices */
+
+void R_CleanUp (SA_TYPE saveact, int status, int RunLast)
+{
+    if(saveact == SA_DEFAULT) saveact = SaveAction;
+    if(saveact == SA_SAVEASK) {
+       /* ask what to do and set saveact */
+    }
+    switch (saveact) {
+    case SA_SAVE:
+        if(runLast) R_dot_Last();
+        if(R_DirtyImage) R_SaveGlobalEnv();
+        /* save the console history in R_HistoryFile */
+        break;
+    case SA_NOSAVE:
+        if(runLast) R_dot_Last();
+        break;
+    case SA_SUICIDE:
+    default:
+        break;
+    }
+
+    R_RunExitFinalizers();
+    /* clean up after the editor e.g. CleanEd() */
+
+    R_CleanTempDir();
+
+    /* close all the graphics devices */
+    if(saveact != SA_SUICIDE) Rf_KillAllDevices();
+    fpu_setup(FALSE);
+
+    exit(status);
+}</code></pre>
+</div>
+</dd>
+</dl>
+<p>These callbacks should never be changed in a running R session (and hence cannot be called from an extension package).</p>
+<dl>
+<dt><a href="" id="index-R_005fdataentry"></a>Function: <em>SEXP</em> <strong>R_dataentry</strong> <em>(SEXP, SEXP, SEXP, SEXP);</em><br />
+<a href="" id="index-R_005fdataviewer"></a>Function: <em>SEXP</em> <strong>R_dataviewer</strong> <em>(SEXP, SEXP, SEXP, SEXP);</em><br />
+<a href="" id="index-R_005fselectlist"></a>Function: <em>SEXP</em> <strong>R_selectlist</strong> <em>(SEXP, SEXP, SEXP, SEXP);</em></dt>
+<dd><p><code class="calibre2">.External</code> functions for <code class="calibre2">dataentry</code> (and <code class="calibre2">edit</code> on matrices and data frames), <code class="calibre2">View</code> and <code class="calibre2">select.list</code>. These can be changed if they are not currently in use.</p>
+</dd>
+</dl>
+<hr />
+<p><a href="" id="Registering-symbols"></a> <a href="" id="Registering-symbols-1"></a></p>
+<h4 id="registering-symbols" class="subsection">8.1.3 Registering symbols</h4>
+<p>An application embedding R needs a different way of registering symbols because it is not a dynamic library loaded by R as would be the case with a package. Therefore R reserves a special <code class="calibre2">DllInfo</code> entry for the embedding application such that it can register symbols to be used with <code class="calibre2">.C</code>, <code class="calibre2">.Call</code> etc. This entry can be obtained by calling <code class="calibre2">getEmbeddingDllInfo</code>, so a typical use is</p>
+<div class="example">
+<pre class="example1"><code>DllInfo *info = R_getEmbeddingDllInfo();
+R_registerRoutines(info, cMethods, callMethods, NULL, NULL);</code></pre>
+</div>
+<p>The native routines defined by <code class="calibre2">cMethods</code> and <code class="calibre2">callMethods</code> should be present in the embedding application. See <a href="system-and-foreign-language-interfaces.html#Registering-native-routines">Registering native routines</a> for details on registering symbols in general.</p>
+<hr />
+<p><a href="" id="Meshing-event-loops"></a> <a href="" id="Meshing-event-loops-1"></a></p>
+<h4 id="meshing-event-loops" class="subsection">8.1.4 Meshing event loops</h4>
+<p>One of the most difficult issues in interfacing R to a front-end is the handling of event loops, at least if a single thread is used. R uses events and timers for</p>
+<ul>
+<li>Running X11 windows such as the graphics device and data editor, and interacting with them (e.g., using <code class="calibre2">locator()</code>).</li>
+<li>Supporting Tcl/Tk events for the <strong>tcltk</strong> package (for at least the X11 version of Tk).</li>
+<li>Preparing input.</li>
+<li>Timing operations, for example for profiling R code and <code class="calibre2">Sys.sleep()</code>.</li>
+<li>Interrupts, where permitted.</li>
+</ul>
+<p>Specifically, the Unix-alike command-line version of R runs separate event loops for</p>
+<ul>
+<li>Preparing input at the console command-line, in file src/unix/sys-unix.c.</li>
+<li>Waiting for a response from a socket in the internal functions underlying FTP and HTTP transfers in <code class="calibre2">download.file()</code> and for direct socket access, in files src/modules/internet/nanoftp.c, src/modules/internet/nanohttp.c and src/modules/internet/Rsock.c</li>
+<li>Mouse and window events when displaying the X11-based dataentry window, in file src/modules/X11/dataentry.c. This is regarded as <em>modal</em>, and no other events are serviced whilst it is active.</li>
+</ul>
+<p>There is a protocol for adding event handlers to the first two types of event loops, using types and functions declared in the header R_ext/eventloop.h and described in comments in file src/unix/sys-std.c. It is possible to add (or remove) an input handler for events on a particular file descriptor, or to set a polling interval (<em>via</em> <code class="calibre2">R_wait_usec</code>) and a function to be called periodically <em>via</em> <code class="calibre2">R_PolledEvents</code>: the polling mechanism is used by the <strong>tcltk</strong> package.</p>
+<p>It is not intended that these facilities are used by packages, but if they are needed exceptionally, the package should ensure that it cleans up and removes its handlers when its namespace is unloaded. Note that the header sys/select.h is needed<a href="concept-index.html#FOOT145" id="DOCF145"><sup>145</sup></a>: users should check this is available and define <code class="calibre2">HAVE_SYS_SELECT_H</code> before including R_ext/eventloop.h. (It is often the case that another header will include sys/select.h before eventloop.h is processed, but this should not be relied on.)</p>
+<p>An alternative front-end needs both to make provision for other R events whilst waiting for input, and to ensure that it is not frozen out during events of the second type. The ability to add a polled handler as <code class="calibre2">R_timeout_handler</code> is used by the <strong>tcltk</strong> package.</p>
+<hr />
+<p><a href="" id="Threading-issues"></a> <a href="" id="Threading-issues-1"></a></p>
+<h4 id="threading-issues" class="subsection">8.1.5 Threading issues</h4>
+<p>Embedded R is designed to be run in the main thread, and all the testing is done in that context. There is a potential issue with the stack-checking mechanism where threads are involved. This uses two variables declared in Rinterface.h (if <code class="calibre2">CSTACK_DEFNS</code> is defined) as</p>
+<div class="example">
+<pre class="example1"><code>extern uintptr_t R_CStackLimit; /* C stack limit */
+extern uintptr_t R_CStackStart; /* Initial stack address */</code></pre>
+</div>
+<p>Note that <code class="calibre2">uintptr_t</code> is an optional C99 type for which a substitute is defined in R, so your code needs to define <code class="calibre2">HAVE_UINTPTR_T</code> appropriately. To do so, test if the type is defined in C header stdint.h or C++ header cstdint and if so include the header and define <code class="calibre2">HAVE_UINTPTR_T</code> before including Rinterface.h. (As from R 3.4.0 for C code one can simply include Rconfig.h, possibly <em>via</em> R.h, and for C++11 code Rinterface.h will include the header cstdint.)</p>
+<p>These will be set<a href="concept-index.html#FOOT146" id="DOCF146"><sup>146</sup></a> when <code class="calibre2">Rf_initialize_R</code> is called, to values appropriate to the main thread. Stack-checking can be disabled by setting <code class="calibre2">R_CStackLimit = (uintptr_t)-1</code> immediately after <code class="calibre2">Rf_initialize_R</code> is called, but it is better to if possible set appropriate values. (What these are and how to determine them are OS-specific, and the stack size limit may differ for secondary threads. If you have a choice of stack size, at least 10Mb is recommended.)</p>
+<p>You may also want to consider how signals are handled: R sets signal handlers for several signals, including <code class="calibre2">SIGINT</code>, <code class="calibre2">SIGSEGV</code>, <code class="calibre2">SIGPIPE</code>, <code class="calibre2">SIGUSR1</code> and <code class="calibre2">SIGUSR2</code>, but these can all be suppressed by setting the variable <code class="calibre2">R_SignalHandlers</code> (declared in Rinterface.h) to <code class="calibre2">0</code>.</p>
+<p>Note that these variables must not be changed by an R <strong>package</strong>: a package should not call R internals which makes use of the stack-checking mechanism on a secondary thread.</p>
+<hr />
+<p><a href="" id="Embedding-R-under-Windows"></a> <a href="" id="Embedding-R-under-Windows-1"></a></p>
+<h3 id="embedding-r-under-windows" class="section">8.2 Embedding R under Windows</h3>
+<p>All Windows interfaces to R call entry points in the DLL R.dll, directly or indirectly. Simpler applications may find it easier to use the indirect route <em>via</em> (D)COM.</p>
+<hr />
+<p><a href="" id="Using-_0028D_0029COM"></a> <a href="" id="Using-_0028D_0029COM-1"></a></p>
+<h4 id="using-dcom" class="subsection">8.2.1 Using (D)COM</h4>
+<p>(D)COM is a standard Windows mechanism used for communication between Windows applications. One application (here R) is run as COM server which offers services to clients, here the front-end calling application. The services are described in a ‘Type Library’ and are (more or less) language-independent, so the calling application can be written in C or C++ or Visual Basic or Perl or Python and so on. The ‘D’ in (D)COM refers to ‘distributed’, as the client and server can be running on different machines.</p>
+<p>The basic R distribution is not a (D)COM server, but two addons are currently available that interface directly with R and provide a (D)COM server:</p>
+<ul>
+<li><p>There is a (D)COM server called <code class="calibre2">StatConnector</code> written by Thomas Baier available <em>via</em> <a href="http://sunsite.univie.ac.at/rcom/" class="uri">http://sunsite.univie.ac.at/rcom/</a>, which works with R packages to support transfer of data to and from R and remote execution of R commands, as well as embedding of an R graphics window.</p>
+<p>Recent versions have usage restrictions.</p></li>
+<li>Another (D)COM server, <code class="calibre2">RDCOMServer</code>, may be available from Omegahat, <a href="http://www.omegahat.net/" class="uri">http://www.omegahat.net/</a>. Its philosophy is discussed in <a href="http://www.omegahat.net/RDCOMServer/Docs/Paradigm.html" class="uri">http://www.omegahat.net/RDCOMServer/Docs/Paradigm.html</a> and is very different from the purpose of this section.</li>
+</ul>
+<hr />
+<p><a href="" id="Calling-R_002edll-directly"></a> <a href="" id="Calling-R_002edll-directly-1"></a></p>
+<h4 id="calling-r.dll-directly" class="subsection">8.2.2 Calling R.dll directly</h4>
+<p>The <code class="calibre2">R</code> DLL is mainly written in C and has <code class="calibre2">_cdecl</code> entry points. Calling it directly will be tricky except from C code (or C++ with a little care).</p>
+<p>There is a version of the Unix-alike interface calling</p>
+<div class="example">
+<pre class="example1"><code>int Rf_initEmbeddedR(int ac, char **av);
+void Rf_endEmbeddedR(int fatal);</code></pre>
+</div>
+<p>which is an entry point in R.dll. Examples of its use (and a suitable Makefile.win) can be found in the tests/Embedding directory of the sources. You may need to ensure that R_HOME/bin is in your <code class="calibre2">PATH</code> so the R DLLs are found.</p>
+<p>Examples of calling R.dll directly are provided in the directory src/gnuwin32/front-ends, including a simple command-line front end rtest.c whose code is</p>
+<div class="example">
+<pre class="smallexample"><code>#define Win32
+#include &lt;windows.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;Rversion.h&gt;
+#define LibExtern __declspec(dllimport) extern
+#include &lt;Rembedded.h&gt;
+#include &lt;R_ext/RStartup.h&gt;
+/* for askok and askyesnocancel */
+#include &lt;graphapp.h&gt;
+
+/* for signal-handling code */
+#include &lt;psignal.h&gt;
+
+/* simple input, simple output */
+
+/* This version blocks all events: a real one needs to call ProcessEvents
+   frequently. See rterm.c and ../system.c for one approach using
+   a separate thread for input.
+*/
+int myReadConsole(const char *prompt, char *buf, int len, int addtohistory)
+{
+    fputs(prompt, stdout);
+    fflush(stdout);
+    if(fgets(buf, len, stdin)) return 1; else return 0;
+}
+
+void myWriteConsole(const char *buf, int len)
+{
+    printf(&quot;%s&quot;, buf);
+}
+
+void myCallBack(void)
+{
+    /* called during i/o, eval, graphics in ProcessEvents */
+}
+
+void myBusy(int which)
+{
+    /* set a busy cursor ... if which = 1, unset if which = 0 */
+}
+
+static void my_onintr(int sig) { UserBreak = 1; }
+
+int main (int argc, char **argv)
+{
+    structRstart rp;
+    Rstart Rp = &amp;rp;
+    char Rversion[25], *RHome;
+
+    sprintf(Rversion, &quot;%s.%s&quot;, R_MAJOR, R_MINOR);
+    if(strcmp(getDLLVersion(), Rversion) != 0) {
+        fprintf(stderr, &quot;Error: R.DLL version does not match&#92;n&quot;);
+        exit(1);
+    }
+
+    R_setStartTime();
+    R_DefParams(Rp);
+    if((RHome = get_R_HOME()) == NULL) {
+        fprintf(stderr, &quot;R_HOME must be set in the environment or Registry&#92;n&quot;);
+        exit(1);
+    }
+    Rp-&gt;rhome = RHome;
+    Rp-&gt;home = getRUser();
+    Rp-&gt;CharacterMode = LinkDLL;
+    Rp-&gt;ReadConsole = myReadConsole;
+    Rp-&gt;WriteConsole = myWriteConsole;
+    Rp-&gt;CallBack = myCallBack;
+    Rp-&gt;ShowMessage = askok;
+    Rp-&gt;YesNoCancel = askyesnocancel;
+    Rp-&gt;Busy = myBusy;
+
+    Rp-&gt;R_Quiet = TRUE;        /* Default is FALSE */
+    Rp-&gt;R_Interactive = FALSE; /* Default is TRUE */
+    Rp-&gt;RestoreAction = SA_RESTORE;
+    Rp-&gt;SaveAction = SA_NOSAVE;
+    R_SetParams(Rp);
+    R_set_command_line_arguments(argc, argv);
+
+    FlushConsoleInputBuffer(GetStdHandle(STD_INPUT_HANDLE));
+
+    signal(SIGBREAK, my_onintr);
+    GA_initapp(0, 0);
+    readconsolecfg();
+    setup_Rmainloop();
+#ifdef SIMPLE_CASE
+    run_Rmainloop();
+#else
+    R_ReplDLLinit();
+    while(R_ReplDLLdo1() &gt; 0) {
+/* add user actions here if desired */
+    }
+/* only get here on EOF (not q()) */
+#endif
+    Rf_endEmbeddedR(0);
+    return 0;
+}</code></pre>
+</div>
+<p>The ideas are</p>
+<ul>
+<li>Check that the front-end and the linked R.dll match – other front-ends may allow a looser match.</li>
+<li>Find and set the R home directory and the user’s home directory. The former may be available from the Windows Registry: it will be in <code class="calibre2">HKEY_LOCAL_MACHINE&#92;Software&#92;R-core&#92;R&#92;InstallPath</code> from an administrative install and <code class="calibre2">HKEY_CURRENT_USER&#92;Software&#92;R-core&#92;R&#92;InstallPath</code> otherwise, if selected during installation (as it is by default).</li>
+<li>Define startup conditions and callbacks <em>via</em> the <code class="calibre2">Rstart</code> structure. <code class="calibre2">R_DefParams</code> sets the defaults, and <code class="calibre2">R_SetParams</code> sets updated values.</li>
+<li>Record the command-line arguments used by <code class="calibre2">R_set_command_line_arguments</code> for use by the R function <code class="calibre2">commandArgs()</code>.</li>
+<li>Set up the signal handler and the basic user interface.</li>
+<li>Run the main R loop, possibly with our actions intermeshed.</li>
+<li>Arrange to clean up.</li>
+</ul>
+<p>An underlying theme is the need to keep the GUI ‘alive’, and this has not been done in this example. The R callback <code class="calibre2">R_ProcessEvents</code> needs to be called frequently to ensure that Windows events in R windows are handled expeditiously. Conversely, R needs to allow the GUI code (which is running in the same process) to update itself as needed – two ways are provided to allow this:</p>
+<ul>
+<li><code class="calibre2">R_ProcessEvents</code> calls the callback registered by <code class="calibre2">Rp-&gt;callback</code>. A version of this is used to run package Tcl/Tk for <strong>tcltk</strong> under Windows, for the code is
+<div class="example">
+<pre class="example1"><code>void R_ProcessEvents(void)
+{
+    while (peekevent()) doevent(); /* Windows events for GraphApp */
+    if (UserBreak) { UserBreak = FALSE; onintr(); }
+    R_CallBackHook();
+    if(R_tcldo) R_tcldo();
+}</code></pre>
+</div></li>
+<li>The mainloop can be split up to allow the calling application to take some action after each line of input has been dealt with: see the alternative code below <code class="calibre2">#ifdef SIMPLE_CASE</code>.</li>
+</ul>
+<p>It may be that no R GraphApp windows need to be considered, although these include pagers, the <code class="calibre2">windows()</code> graphics device, the R data and script editors and various popups such as <code class="calibre2">choose.file()</code> and <code class="calibre2">select.list()</code>. It would be possible to replace all of these, but it seems easier to allow GraphApp to handle most of them.</p>
+<p>It is possible to run R in a GUI in a single thread (as RGui.exe shows) but it will normally be easier<a href="concept-index.html#FOOT147" id="DOCF147"><sup>147</sup></a> to use multiple threads.</p>
+<p>Note that R’s own front ends use a stack size of 10Mb, whereas MinGW executables default to 2Mb, and Visual C++ ones to 1Mb. The latter stack sizes are too small for a number of R applications, so general-purpose front-ends should use a larger stack size.</p>
+<hr />
+<p><a href="" id="Finding-R_005fHOME"></a> <a href="" id="Finding-R_005fHOME-1"></a></p>
+<h4 id="finding-r_home" class="subsection">8.2.3 Finding R_HOME</h4>
+<p>Both applications which embed R and those which use a <code class="calibre2">system</code> call to invoke R (as <code class="calibre2">Rscript.exe</code>, <code class="calibre2">Rterm.exe</code> or <code class="calibre2">R.exe</code>) need to be able to find the R bin directory. The simplest way to do so is the ask the user to set an environment variable <code class="calibre2">R_HOME</code> and use that, but naive users may be flummoxed as to how to do so or what value to use.</p>
+<p>The R for Windows installers have for a long time allowed the value of <code class="calibre2">R_HOME</code> to be recorded in the Windows Registry: this is optional but selected by default. <em>Where</em> it is recorded has changed over the years to allow for multiple versions of R to be installed at once, and to allow 32- and 64-bit versions of R to be installed on the same machine.</p>
+<p>The basic Registry location is <code class="calibre2">Software&#92;R-core&#92;R</code>. For an administrative install this is under <code class="calibre2">HKEY_LOCAL_MACHINE</code> and on a 64-bit OS <code class="calibre2">HKEY_LOCAL_MACHINE&#92;Software&#92;R-core&#92;R</code> is by default redirected for a 32-bit application, so a 32-bit application will see the information for the last 32-bit install, and a 64-bit application that for the last 64-bit install. For a personal install, the information is under <code class="calibre2">HKEY_CURRENT_USER&#92;Software&#92;R-core&#92;R</code> which is seen by both 32-bit and 64-bit applications and so records the last install of either architecture. To circumvent this, there are locations <code class="calibre2">Software&#92;R-core&#92;R32</code> and <code class="calibre2">Software&#92;R-core&#92;R64</code> which always refer to one architecture.</p>
+<p>When R is installed and recording is not disabled then two string values are written at that location for keys <code class="calibre2">InstallPath</code> and <code class="calibre2">Current Version</code>, and these keys are removed when R is uninstalled. To allow information about other installed versions to be retained, there is also a key named something like <code class="calibre2">3.0.0</code> or <code class="calibre2">3.0.0 patched</code> or <code class="calibre2">3.1.0 Pre-release</code> with a value for <code class="calibre2">InstallPath</code>.</p>
+<p>So a comprehensive algorithm to search for <code class="calibre2">R_HOME</code> is something like</p>
+<ul>
+<li>Decide which of personal or administrative installs should have precedence. There are arguments both ways: we find that with roaming profiles that <code class="calibre2">HKEY_CURRENT_USER&#92;Software</code> often gets reverted to an earlier version. Do the following for one or both of <code class="calibre2">HKEY_CURRENT_USER</code> and <code class="calibre2">HKEY_LOCAL_MACHINE</code>.</li>
+<li>If the desired architecture is known, look in <code class="calibre2">Software&#92;R-core&#92;R32</code> or <code class="calibre2">Software&#92;R-core&#92;R64</code>, and if that does not exist or the architecture is immaterial, in <code class="calibre2">Software&#92;R-core&#92;R</code>.</li>
+<li>If key <code class="calibre2">InstallPath</code> exists then this is <code class="calibre2">R_HOME</code> (recorded using backslashes). If it does not, look for version-specific keys like <code class="calibre2">2.11.0 alpha</code>, pick the latest (which is of itself a complicated algorithm as <code class="calibre2">2.11.0 patched &gt; 2.11.0 &gt; 2.11.0 alpha &gt; 2.8.1</code>) and use its value for <code class="calibre2">InstallPath</code>.</li>
+</ul>
+<hr />
+<p><a href="" id="Function-and-variable-index"></a> <a href="" id="Function-and-variable-index-1"></a></p>
+
+

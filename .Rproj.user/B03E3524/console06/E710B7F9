@@ -1,0 +1,24 @@
+]0;/home/colin/R/writing-r-extensions]0;colin@colin-MacBookPro: ~/R/writing-r-extensions[01;32mcolin@colin-MacBookPro[00m:[01;34m~/R/writing-r-extensions[00m$ git init
+it
+git push -u origin masterDépôt Git vide initialisé dans /home/colin/R/writing-r-extensions/.git/
+]0;/home/colin/R/writing-r-extensions]0;colin@colin-MacBookPro: ~/R/writing-r-extensions[01;32mcolin@colin-MacBookPro[00m:[01;34m~/R/writing-r-extensions[00m$ git add README.md
+]0;/home/colin/R/writing-r-extensions]0;colin@colin-MacBookPro: ~/R/writing-r-extensions[01;32mcolin@colin-MacBookPro[00m:[01;34m~/R/writing-r-extensions[00m$ git commit -m "first commit"
+[master (commit racine) 5142984] first commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 README.md
+]0;/home/colin/R/writing-r-extensions]0;colin@colin-MacBookPro: ~/R/writing-r-extensions[01;32mcolin@colin-MacBookPro[00m:[01;34m~/R/writing-r-extensions[00m$ git remote add origin https://github.com/ColinFay/writing-r-extension s.git
+]0;/home/colin/R/writing-r-extensions]0;colin@colin-MacBookPro: ~/R/writing-r-extensions[01;32mcolin@colin-MacBookPro[00m:[01;34m~/R/writing-r-extensions[00m$ git push -u origin master
+error: cannot run rpostback-askpass: Aucun fichier ou dossier de ce type
+Username for 'https://github.com': ColinFay
+error: cannot run rpostback-askpass: Aucun fichier ou dossier de ce type
+Password for 'https://ColinFay@github.com': 
+Décompte des objets: 3, fait.
+Delta compression using up to 4 threads.
+Compression des objets:  50% (1/2)   Compression des objets: 100% (2/2)   Compression des objets: 100% (2/2), fait.
+Écriture des objets:  33% (1/3)   Écriture des objets:  66% (2/3)   Écriture des objets: 100% (3/3)   Écriture des objets: 100% (3/3), 357 bytes | 0 bytes/s, fait.
+Total 3 (delta 0), reused 0 (delta 0)
+To https://github.com/ColinFay/writing-r-extensions.git
+ * [new branch]      master -> master
+La branche master est paramétrée pour suivre la branche distante master depuis origin.
+]0;/home/colin/R/writing-r-extensions]0;colin@colin-MacBookPro: ~/R/writing-r-extensions[01;32mcolin@colin-MacBookPro[00m:[01;34m~/R/writing-r-extensions[00m$ git add -a[KA
+]0;/home/colin/R/writing-r-extensions]0;colin@colin-MacBookPro: ~/R/writing-r-extensions[01;32mcolin@colin-MacBookPro[00m:[01;34m~/R/writing-r-extensions[00m$ git add -A

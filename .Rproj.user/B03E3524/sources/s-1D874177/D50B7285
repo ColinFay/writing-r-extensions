@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1507576974263.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "542910308",
+    "id" : "D50B7285",
+    "lastKnownWriteTime" : 1507579834,
+    "last_content_update" : 1507579834489,
+    "path" : "~/R/writing-r-extensions/prep-data.R",
+    "project_path" : "prep-data.R",
+    "properties" : {
+        "cursorPosition" : "131,0",
+        "scrollLine" : "114",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
