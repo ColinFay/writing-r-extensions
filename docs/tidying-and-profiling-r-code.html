@@ -177,10 +177,10 @@ storm.fm &lt;- nls(Time ~ b*Viscosity/(Wt - c), stormer,
                 start = c(b=30.401, c=2.2183))
 st &lt;- cbind(stormer, fit=fitted(storm.fm))
 storm.bf &lt;- function(rs, i) {
-    st$Time &lt;-  st$fit + rs[i]
+    st&#36;Time &lt;-  st&#36;fit + rs[i]
     tmp &lt;- nls(Time ~ (b * Viscosity)/(Wt - c), st,
                start = coef(storm.fm))
-    tmp$m$getAllPars()
+    tmp&#36;m&#36;getAllPars()
 }
 rs &lt;- scale(resid(storm.fm), scale = FALSE) # remove the mean
 Rprof(&quot;boot.out&quot;)
@@ -220,7 +220,7 @@ Self seconds: time spent in function alone.</code></pre>
   self    seconds     total   seconds    name
    5.7      1.44       7.5      1.88     &quot;inherits&quot;
    4.0      1.02      96.3     24.30     &quot;nls&quot;
-   3.6      0.92       3.6      0.92     &quot;$&quot;
+   3.6      0.92       3.6      0.92     &quot;&#36;&quot;
    3.5      0.88      28.1      7.10     &quot;model.frame.default&quot;
    3.2      0.80      15.0      3.78     &quot;nlsModel&quot;
    2.8      0.70       9.8      2.46     &quot;qr.coef&quot;
@@ -272,8 +272,8 @@ allocates memory for a new vector <code class="calibre2">y</code>. Other memory 
 <div class="example">
 <pre class="smallexample"><code>print.svycoxph &lt;- function (x, ...)
 {
-    print(x$survey.design, varnames = FALSE, design.summaries = FALSE, ...)
-    x$call &lt;- x$printcall
+    print(x&#36;survey.design, varnames = FALSE, design.summaries = FALSE, ...)
+    x&#36;call &lt;- x&#36;printcall
     NextMethod()
 }</code></pre>
 </div>
@@ -341,26 +341,26 @@ In the example above we can run <code class="calibre2">tracemem</code> on the da
 [1] &quot;&lt;0x9abd5e0&gt;&quot;
 &gt; storm.boot &lt;- boot(rs, storm.bf, R = 4)
 memtrace[0x9abd5e0-&gt;0x92a6d08]: statistic boot
-memtrace[0x92a6d08-&gt;0x92a6d80]: $&lt;-.data.frame $&lt;- statistic boot
-memtrace[0x92a6d80-&gt;0x92a6df8]: $&lt;-.data.frame $&lt;- statistic boot
+memtrace[0x92a6d08-&gt;0x92a6d80]: &#36;&lt;-.data.frame &#36;&lt;- statistic boot
+memtrace[0x92a6d80-&gt;0x92a6df8]: &#36;&lt;-.data.frame &#36;&lt;- statistic boot
 memtrace[0x9abd5e0-&gt;0x9271318]: statistic boot
-memtrace[0x9271318-&gt;0x9271390]: $&lt;-.data.frame $&lt;- statistic boot
-memtrace[0x9271390-&gt;0x9271408]: $&lt;-.data.frame $&lt;- statistic boot
+memtrace[0x9271318-&gt;0x9271390]: &#36;&lt;-.data.frame &#36;&lt;- statistic boot
+memtrace[0x9271390-&gt;0x9271408]: &#36;&lt;-.data.frame &#36;&lt;- statistic boot
 memtrace[0x9abd5e0-&gt;0x914f558]: statistic boot
-memtrace[0x914f558-&gt;0x914f5f8]: $&lt;-.data.frame $&lt;- statistic boot
-memtrace[0x914f5f8-&gt;0x914f670]: $&lt;-.data.frame $&lt;- statistic boot
+memtrace[0x914f558-&gt;0x914f5f8]: &#36;&lt;-.data.frame &#36;&lt;- statistic boot
+memtrace[0x914f5f8-&gt;0x914f670]: &#36;&lt;-.data.frame &#36;&lt;- statistic boot
 memtrace[0x9abd5e0-&gt;0x972cbf0]: statistic boot
-memtrace[0x972cbf0-&gt;0x972cc68]: $&lt;-.data.frame $&lt;- statistic boot
-memtrace[0x972cc68-&gt;0x972cd08]: $&lt;-.data.frame $&lt;- statistic boot
+memtrace[0x972cbf0-&gt;0x972cc68]: &#36;&lt;-.data.frame &#36;&lt;- statistic boot
+memtrace[0x972cc68-&gt;0x972cd08]: &#36;&lt;-.data.frame &#36;&lt;- statistic boot
 memtrace[0x9abd5e0-&gt;0x98ead98]: statistic boot
-memtrace[0x98ead98-&gt;0x98eae10]: $&lt;-.data.frame $&lt;- statistic boot
-memtrace[0x98eae10-&gt;0x98eae88]: $&lt;-.data.frame $&lt;- statistic boot</code></pre>
+memtrace[0x98ead98-&gt;0x98eae10]: &#36;&lt;-.data.frame &#36;&lt;- statistic boot
+memtrace[0x98eae10-&gt;0x98eae88]: &#36;&lt;-.data.frame &#36;&lt;- statistic boot</code></pre>
 </div>
 <p>
 The object is duplicated fifteen times, three times for each of the <code class="calibre2">R+1</code> calls to <code class="calibre2">storm.bf</code>. This is surprising, since none of the duplications happen inside <code class="calibre2">nls</code>. Stepping through <code class="calibre2">storm.bf</code> in the debugger shows that all three happen in the line
 </p>
 <div class="example">
-<pre class="smallexample"><code>st$Time &lt;- st$fit + rs[i]</code></pre>
+<pre class="smallexample"><code>st&#36;Time &lt;- st&#36;fit + rs[i]</code></pre>
 </div>
 <p>
 Data frames are slower than matrices and this is an example of why. Using <code class="calibre2">tracemem(st$Viscosity)</code> does not reveal any additional copying.
@@ -664,17 +664,6 @@ gitbook.start({
 });
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(script.src))
-      script.src  = script.src.replace(/^https?:/, '');
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 </body>
 
 </html>

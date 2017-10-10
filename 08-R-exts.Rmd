@@ -91,7 +91,7 @@ Error: no valid set of coefficients has been found: please supply starting value
            envir = thisEnv)
        assign(&quot;dev&quot;, sum(resid^2), envir = thisEnv)
        assign(&quot;QR&quot;, qr(.swts * attr(rhs, &quot;gradient&quot;)), envir = thisEnv)
-       return(QR$rank &lt; min(dim(QR$qr)))
+       return(QR&#36;rank &lt; min(dim(QR&#36;qr)))
    }(c(-0.00760232418963883, 1.00119632515036))
 2: .Call(R_nls_iter, m, ctrl, trace)
 1: nls(yeps ~ gm(a, b, x), start = list(a = 0.12345, b = 0.54321))</code></pre>
@@ -472,7 +472,7 @@ Error: segfault from C stack overflow
 </div>
 <p>to examine the core dump. If core dumps are disabled or to catch errors that do not generate a dump one can run R directly under a debugger by for example</p>
 <div class="example">
-<pre class="example1"><code>$ R -d gdb --vanilla
+<pre class="example1"><code>&#36; R -d gdb --vanilla
 ...
 gdb&gt; run</code></pre>
 </div>
@@ -531,9 +531,9 @@ x00397682 in _int_free () from /lib/tls/libc.so.6
 </div>
 <p>By setting a breakpoint at <code class="calibre2">do_get</code> and typing get(&quot;DF&quot;) at the R prompt, one can find out the address in memory of <code class="calibre2">DF</code>, for example</p>
 <div class="example">
-<pre class="example1"><code>Value returned is $1 = (SEXPREC *) 0x40583e1c
-(gdb) p *$1
-$2 = {
+<pre class="example1"><code>Value returned is &#36;1 = (SEXPREC *) 0x40583e1c
+(gdb) p *&#36;1
+&#36;2 = {
   sxpinfo = {type = 19, obj = 1, named = 1, gp = 0,
     mark = 0, debug = 0, trace = 0, = 0},
   attrib = 0x40583e80,
@@ -556,33 +556,33 @@ $2 = {
 <p>(Debugger output reformatted for better legibility).</p>
 <p>Using <code class="calibre2">R_PV()</code> one can “inspect” the values of the various elements of the SEXP, for example,</p>
 <div class="example">
-<pre class="example1"><code>(gdb) p R_PV($1-&gt;attrib)
-$names
+<pre class="example1"><code>(gdb) p R_PV(&#36;1-&gt;attrib)
+&#36;names
 [1] &quot;a&quot; &quot;b&quot;
 
-$row.names
+&#36;row.names
 [1] &quot;1&quot; &quot;2&quot; &quot;3&quot;
 
-$class
+&#36;class
 [1] &quot;data.frame&quot;
 
-$3 = void</code></pre>
+&#36;3 = void</code></pre>
 </div>
 <p>To find out where exactly the corresponding information is stored, one needs to go “deeper”:</p>
 <div class="example">
-<pre class="example1"><code>(gdb) set $a = $1-&gt;attrib
-(gdb) p $a-&gt;u.listsxp.tagval-&gt;u.symsxp.pname-&gt;u.vecsxp.type.c
-$4 = 0x405d40e8 &quot;names&quot;
-(gdb) p $a-&gt;u.listsxp.carval-&gt;u.vecsxp.type.s[1]-&gt;u.vecsxp.type.c
-$5 = 0x40634378 &quot;b&quot;
-(gdb) p $1-&gt;u.vecsxp.type.s[0]-&gt;u.vecsxp.type.i[0]
-$6 = 1
-(gdb) p $1-&gt;u.vecsxp.type.s[1]-&gt;u.vecsxp.type.i[1]
-$7 = 5</code></pre>
+<pre class="example1"><code>(gdb) set &#36;a = &#36;1-&gt;attrib
+(gdb) p &#36;a-&gt;u.listsxp.tagval-&gt;u.symsxp.pname-&gt;u.vecsxp.type.c
+&#36;4 = 0x405d40e8 &quot;names&quot;
+(gdb) p &#36;a-&gt;u.listsxp.carval-&gt;u.vecsxp.type.s[1]-&gt;u.vecsxp.type.c
+&#36;5 = 0x40634378 &quot;b&quot;
+(gdb) p &#36;1-&gt;u.vecsxp.type.s[0]-&gt;u.vecsxp.type.i[0]
+&#36;6 = 1
+(gdb) p &#36;1-&gt;u.vecsxp.type.s[1]-&gt;u.vecsxp.type.i[1]
+&#36;7 = 5</code></pre>
 </div>
 <p>Another alternative is the <code class="calibre2">R_inspect</code> function which shows the low-level structure of the objects recursively (addresses differ from the above as this example is created on another machine):</p>
 <div class="example">
-<pre class="example1"><code>(gdb) p R_inspect($1)
+<pre class="example1"><code>(gdb) p R_inspect(&#36;1)
 @100954d18 19 VECSXP g0c2 [OBJ,NAM(2),ATT] (len=2, tl=0)
   @100954d50 13 INTSXP g0c2 [NAM(2)] (len=3, tl=0) 1,2,3
   @100954d88 13 INTSXP g0c2 [NAM(2)] (len=3, tl=0) 4,5,6
@@ -608,5 +608,7 @@ ATTRIB:
 <div id="calibre_pb_12" class="calibre6">
 
 </div>
+
+
 
 

@@ -405,7 +405,7 @@
 <h3 id="section-13" class="section"><a href="creating-r-packages.html#DOCF14" id="FOOT14" class="calibre21">(14)</a></h3>
 <p>This is true for OSes which implement the ‘C’ locale: Windows’ idea of the ‘C’ locale uses the WinAnsi charset.</p>
 <h3 id="section-14" class="section"><a href="creating-r-packages.html#DOCF15" id="FOOT15" class="calibre21">(15)</a></h3>
-<p>More precisely, they can contain the English alphanumeric characters and the symbols ‘$ - _ . + ! ' ( ) , ;  = &amp;’.</p>
+<p>More precisely, they can contain the English alphanumeric characters and the symbols ‘&#36; - _ . + ! ' ( ) , ;  = &amp;’.</p>
 <h3 id="section-15" class="section"><a href="creating-r-packages.html#DOCF16" id="FOOT16" class="calibre21">(16)</a></h3>
 <p>Note that Ratfor is not supported. If you have Ratfor source code, you need to convert it to FORTRAN. Only FORTRAN 77 (which we write in upper case) is supported on all platforms, but most also support Fortran-95 (for which we use title case). If you want to ship Ratfor source files, please do so in a subdirectory of src and not in the main subdirectory.</p>
 <h3 id="section-16" class="section"><a href="creating-r-packages.html#DOCF17" id="FOOT17" class="calibre21">(17)</a></h3>
@@ -423,7 +423,7 @@
 <h3 id="section-22" class="section"><a href="creating-r-packages.html#DOCF23" id="FOOT23" class="calibre21">(23)</a></h3>
 <p>People who have trouble with case are advised to use .rda as a common error is to refer to abc.RData as abc.Rdata!</p>
 <h3 id="section-23" class="section"><a href="creating-r-packages.html#DOCF24" id="FOOT24" class="calibre21">(24)</a></h3>
-<p>The script should only assume a POSIX-compliant <code class="calibre2">/bin/sh</code> – see <a href="http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html" class="uri">http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html</a>. In particular <code class="calibre2">bash</code> extensions must not be used, and not all R platforms have a <code class="calibre2">bash</code> command, let alone one at /bin/bash. All known shells used with R support the use of backticks, but not all support ‘$(cmd)’.</p>
+<p>The script should only assume a POSIX-compliant <code class="calibre2">/bin/sh</code> – see <a href="http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html" class="uri">http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html</a>. In particular <code class="calibre2">bash</code> extensions must not be used, and not all R platforms have a <code class="calibre2">bash</code> command, let alone one at /bin/bash. All known shells used with R support the use of backticks, but not all support ‘&#36;(cmd)’.</p>
 <h3 id="section-24" class="section"><a href="creating-r-packages.html#DOCF25" id="FOOT25" class="calibre21">(25)</a></h3>
 <p>in POSIX parlance: GNU <code class="calibre2">make</code> calls these ‘make variables’.</p>
 <h3 id="section-25" class="section"><a href="creating-r-packages.html#DOCF26" id="FOOT26" class="calibre21">(26)</a></h3>
@@ -501,7 +501,7 @@
 <h3 id="section-61" class="section"><a href="writing-package-vignettes.html#DOCF62" id="FOOT62" class="calibre21">(62)</a></h3>
 <p>This was necessary at least prior to R 3.0.2 as the <strong>methods</strong> package looked for its own R code on the search path.</p>
 <h3 id="section-62" class="section"><a href="writing-package-vignettes.html#DOCF63" id="FOOT63" class="calibre21">(63)</a></h3>
-<p>This defaults to the same pattern as <code class="calibre2">exportPattern</code>: use something like <code class="calibre2">exportClassPattern(&quot;^$&quot;)</code> to override this.</p>
+<p>This defaults to the same pattern as <code class="calibre2">exportPattern</code>: use something like <code class="calibre2">exportClassPattern(&quot;^&#36;&quot;)</code> to override this.</p>
 <h3 id="section-63" class="section"><a href="writing-package-vignettes.html#DOCF64" id="FOOT64" class="calibre21">(64)</a></h3>
 <p>if it does, there will be opaque warnings about replacing imports if the classes/methods are also imported.</p>
 <h3 id="section-64" class="section"><a href="writing-package-vignettes.html#DOCF65" id="FOOT65" class="calibre21">(65)</a></h3>
@@ -513,7 +513,7 @@
 <h3 id="section-67" class="section"><a href="writing-package-vignettes.html#DOCF68" id="FOOT68" class="calibre21">(68)</a></h3>
 <p>GNU make, BSD make formerly in FreeBSD and macOS, AT&amp;T make as implemented on Solaris, <code class="calibre2">pmake</code> in FreeBSD, ‘Distributed Make’ (<code class="calibre2">dmake</code>), part of Oracle Studio and available in other versions.</p>
 <h3 id="section-68" class="section"><a href="writing-package-vignettes.html#DOCF69" id="FOOT69" class="calibre21">(69)</a></h3>
-<p>For example, <code class="calibre2">test</code> options -a and -e are not portable, and not supported in the AT&amp;T Bourne shell used on Solaris 10/11, even though they are in the 2008 POSIX standard. Nor does Solaris support ‘$(cmd)’.</p>
+<p>For example, <code class="calibre2">test</code> options -a and -e are not portable, and not supported in the AT&amp;T Bourne shell used on Solaris 10/11, even though they are in the 2008 POSIX standard. Nor does Solaris support ‘&#36;(cmd)’.</p>
 <h3 id="section-69" class="section"><a href="writing-package-vignettes.html#DOCF70" id="FOOT70" class="calibre21">(70)</a></h3>
 <p><a href="http://fortranwiki.org/fortran/show/Modernizing+Old+Fortran" class="uri">http://fortranwiki.org/fortran/show/Modernizing+Old+Fortran</a> may help explain some of the warnings from <code class="calibre2">gfortran -Wall -pedantic</code>.</p>
 <h3 id="section-70" class="section"><a href="writing-package-vignettes.html#DOCF71" id="FOOT71" class="calibre21">(71)</a></h3>
@@ -672,5 +672,7 @@
 <p>An attempt to use only threads in the late 1990s failed to work correctly under Windows 95, the predominant version of Windows at that time.</p>
 </div>
 <hr />
+
+
 
 

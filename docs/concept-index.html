@@ -1294,7 +1294,241 @@ People who have trouble with case are advised to use .rda as a common error is t
 <a href="creating-r-packages.html#DOCF24" id="FOOT24" class="calibre21">(24)</a>
 </h3>
 <p>
-The script should only assume a POSIX-compliant <code class="calibre2">/bin/sh</code> – see <a href="http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html" class="uri">http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html</a>. In particular <code class="calibre2">bash</code> extensions must not be used, and not all R platforms have a <code class="calibre2">bash</code> command, let alone one at /bin/bash. All known shells used with R support the use of backticks, but not all support ‘<span class="math inline">\((cmd)’.&lt;/p&gt; &lt;h3 id=&quot;section-24&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF25&quot; id=&quot;FOOT25&quot; class=&quot;calibre21&quot;&gt;(25)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;in POSIX parlance: GNU &lt;code class=&quot;calibre2&quot;&gt;make&lt;/code&gt; calls these ‘make variables’.&lt;/p&gt; &lt;h3 id=&quot;section-25&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF26&quot; id=&quot;FOOT26&quot; class=&quot;calibre21&quot;&gt;(26)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;at least on Unix-alikes: the Windows build currently resolves such dependencies to a static FORTRAN library when Rblas.dll is built.&lt;/p&gt; &lt;h3 id=&quot;section-26&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF27&quot; id=&quot;FOOT27&quot; class=&quot;calibre21&quot;&gt;(27)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;&lt;a href=&quot;http://www.openmp.org/&quot; class=&quot;uri&quot;&gt;http://www.openmp.org/&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/OpenMP&quot; class=&quot;uri&quot;&gt;https://en.wikipedia.org/wiki/OpenMP&lt;/a&gt;, &lt;a href=&quot;https://computing.llnl.gov/tutorials/openMP/&quot; class=&quot;uri&quot;&gt;https://computing.llnl.gov/tutorials/openMP/&lt;/a&gt;&lt;/p&gt; &lt;h3 id=&quot;section-27&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF28&quot; id=&quot;FOOT28&quot; class=&quot;calibre21&quot;&gt;(28)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;Default builds of &lt;code class=&quot;calibre2&quot;&gt;clang&lt;/code&gt; 3.8.0 and later have support for OpenMP, but the &lt;code class=&quot;calibre2&quot;&gt;libomp&lt;/code&gt; run-time library may not be installed.&lt;/p&gt; &lt;h3 id=&quot;section-28&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF29&quot; id=&quot;FOOT29&quot; class=&quot;calibre21&quot;&gt;(29)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;In most implementations the &lt;code class=&quot;calibre2&quot;&gt;_OPENMP&lt;/code&gt; macro has value a date which can be mapped to an OpenMP version: for example, value &lt;code class=&quot;calibre2&quot;&gt;201307&lt;/code&gt; is the date of version 4.0 (July 2013). However this may be used to denote the latest version which is partially supported, not that which is fully implemented.&lt;/p&gt; &lt;h3 id=&quot;section-29&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF30&quot; id=&quot;FOOT30&quot; class=&quot;calibre21&quot;&gt;(30)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;GCC since 4.7, hence R builds for Windows since R 3.3.0, which also support OpenMP 4.0.&lt;/p&gt; &lt;h3 id=&quot;section-30&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF31&quot; id=&quot;FOOT31&quot; class=&quot;calibre21&quot;&gt;(31)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;People do use older versions of OSes such as Ubuntu 12.04LTS and Debian Wheezy LTS which have GCC 4.4.&lt;/p&gt; &lt;h3 id=&quot;section-31&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF32&quot; id=&quot;FOOT32&quot; class=&quot;calibre21&quot;&gt;(32)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;as did the GCC-based Apple implementation, but not the Intel/LLVM OpenMP runtime on macOS.&lt;/p&gt; &lt;h3 id=&quot;section-32&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF33&quot; id=&quot;FOOT33&quot; class=&quot;calibre21&quot;&gt;(33)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;Windows default, not MinGW-w64 default.&lt;/p&gt; &lt;h3 id=&quot;section-33&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF34&quot; id=&quot;FOOT34&quot; class=&quot;calibre21&quot;&gt;(34)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;Which it was at the time of writing with GCC, Oracle, Intel and Clang compilers.&lt;/p&gt; &lt;h3 id=&quot;section-34&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF35&quot; id=&quot;FOOT35&quot; class=&quot;calibre21&quot;&gt;(35)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;some Windows toolchains had the typo ‘_REENTRANCE’ instead.&lt;/p&gt; &lt;h3 id=&quot;section-35&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF36&quot; id=&quot;FOOT36&quot; class=&quot;calibre21&quot;&gt;(36)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;A few OSes (AIX, IRIX, Windows) do not need special flags for such code, but most do—although compilers will often generate PIC code when not asked to do so.&lt;/p&gt; &lt;h3 id=&quot;section-36&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF37&quot; id=&quot;FOOT37&quot; class=&quot;calibre21&quot;&gt;(37)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;Cygwin used &lt;code class=&quot;calibre2&quot;&gt;g77&lt;/code&gt; up to 2011, and some pre-built versions of R for Unix OSes still do.&lt;/p&gt; &lt;h3 id=&quot;section-37&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF38&quot; id=&quot;FOOT38&quot; class=&quot;calibre21&quot;&gt;(38)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;The changes are linked from &lt;a href=&quot;https://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations&quot; class=&quot;uri&quot;&gt;https://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations&lt;/a&gt;.&lt;/p&gt; &lt;h3 id=&quot;section-38&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF39&quot; id=&quot;FOOT39&quot; class=&quot;calibre21&quot;&gt;(39)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;Values &lt;code class=&quot;calibre2&quot;&gt;199711&lt;/code&gt;, &lt;code class=&quot;calibre2&quot;&gt;201103L&lt;/code&gt; and &lt;code class=&quot;calibre2&quot;&gt;201402L&lt;/code&gt; are most commonly used for C++98, C++11 and C++14 respectively, but some compilers set &lt;code class=&quot;calibre2&quot;&gt;1L&lt;/code&gt;.&lt;/p&gt; &lt;h3 id=&quot;section-39&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF40&quot; id=&quot;FOOT40&quot; class=&quot;calibre21&quot;&gt;(40)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;Some distributions, notably Debian, have supplied a build of &lt;code class=&quot;calibre2&quot;&gt;clang&lt;/code&gt; with &lt;code class=&quot;calibre2&quot;&gt;g++&lt;/code&gt;’s headers and library. Conversely, Apple’s command named &lt;code class=&quot;calibre2&quot;&gt;g++&lt;/code&gt; is based on &lt;code class=&quot;calibre2&quot;&gt;clang&lt;/code&gt; using &lt;code class=&quot;calibre2&quot;&gt;libc++&lt;/code&gt;.&lt;/p&gt; &lt;h3 id=&quot;section-40&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF41&quot; id=&quot;FOOT41&quot; class=&quot;calibre21&quot;&gt;(41)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;For details of these and related macros, see file config.site in the R sources.&lt;/p&gt; &lt;h3 id=&quot;section-41&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF42&quot; id=&quot;FOOT42&quot; class=&quot;calibre21&quot;&gt;(42)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;As from R 3.4.0, &lt;code class=&quot;calibre2&quot;&gt;configure&lt;/code&gt; attempts to supply a C++14 compiler only if explicitly requested. However, earlier versions of R will use the default C++14 mode of &lt;code class=&quot;calibre2&quot;&gt;g++&lt;/code&gt; 6 and later.&lt;/p&gt; &lt;h3 id=&quot;section-42&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF43&quot; id=&quot;FOOT43&quot; class=&quot;calibre21&quot;&gt;(43)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;&lt;a href=&quot;See%0Ahttps://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations&quot;&gt;See https://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations&lt;/a&gt; or &lt;a href=&quot;http://en.cppreference.com/w/cpp/experimental/feature_test&quot; class=&quot;uri&quot;&gt;http://en.cppreference.com/w/cpp/experimental/feature_test&lt;/a&gt;. It seems a reasonable assumption that any compiler promising some C++14 conformance will provide these—e.g. &lt;code class=&quot;calibre2&quot;&gt;g++&lt;/code&gt; 4.9.x did but 4.8.5 did not.&lt;/p&gt; &lt;h3 id=&quot;section-43&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF44&quot; id=&quot;FOOT44&quot; class=&quot;calibre21&quot;&gt;(44)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;On systems which use sub-architectures, architecture-specific versions such as ~/.R/check.Renviron.i386 take precedence.&lt;/p&gt; &lt;h3 id=&quot;section-44&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF45&quot; id=&quot;FOOT45&quot; class=&quot;calibre21&quot;&gt;(45)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;A suitable &lt;code class=&quot;calibre2&quot;&gt;file.exe&lt;/code&gt; is part of the Windows toolset: it checks for &lt;code class=&quot;calibre2&quot;&gt;gfile&lt;/code&gt; if a suitable &lt;code class=&quot;calibre2&quot;&gt;file&lt;/code&gt; is not found: the latter is available in the OpenCSW collection for Solaris at &lt;a href=&quot;http://www.opencsw.org&quot; class=&quot;uri&quot;&gt;http://www.opencsw.org&lt;/a&gt;. The source repository is &lt;a href=&quot;ftp://ftp.astron.com/pub/file/&quot; class=&quot;uri&quot;&gt;ftp://ftp.astron.com/pub/file/&lt;/a&gt;.&lt;/p&gt; &lt;h3 id=&quot;section-45&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF46&quot; id=&quot;FOOT46&quot; class=&quot;calibre21&quot;&gt;(46)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;An exception is made for subdirectories with names starting ‘win’ or ‘Win’.&lt;/p&gt; &lt;h3 id=&quot;section-46&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF47&quot; id=&quot;FOOT47&quot; class=&quot;calibre21&quot;&gt;(47)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;on most other platforms such runtime libraries are dynamic, but static libraries are currently used on Windows because the toolchain is not a standard part of the OS.&lt;/p&gt; &lt;h3 id=&quot;section-47&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF48&quot; id=&quot;FOOT48&quot; class=&quot;calibre21&quot;&gt;(48)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;or if option --use-valgrind is used or environment variable &lt;code class=&quot;calibre2&quot;&gt;_R_CHECK_ALWAYS_LOG_VIGNETTE_OUTPUT_&lt;/code&gt; is set to a true value or if there are differences from a target output file&lt;/p&gt; &lt;h3 id=&quot;section-48&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF49&quot; id=&quot;FOOT49&quot; class=&quot;calibre21&quot;&gt;(49)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;For example, in early 2014 &lt;a href=&quot;https://CRAN.R-project.org/package=gdata&quot;&gt;&lt;strong&gt;gdata&lt;/strong&gt;&lt;/a&gt; declared ‘Imports: gtools’ and &lt;a href=&quot;https://CRAN.R-project.org/package=gtools&quot;&gt;&lt;strong&gt;gtools&lt;/strong&gt;&lt;/a&gt; declared ‘Imports: gdata’.&lt;/p&gt; &lt;h3 id=&quot;section-49&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF50&quot; id=&quot;FOOT50&quot; class=&quot;calibre21&quot;&gt;(50)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;loading, examples, tests, running vignette code&lt;/p&gt; &lt;h3 id=&quot;section-50&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF51&quot; id=&quot;FOOT51&quot; class=&quot;calibre21&quot;&gt;(51)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;called CVS or .svn or .arch-ids or .bzr or .git (but not files called .git) or .hg.&lt;/p&gt; &lt;h3 id=&quot;section-51&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF52&quot; id=&quot;FOOT52&quot; class=&quot;calibre21&quot;&gt;(52)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;called .metadata.&lt;/p&gt; &lt;h3 id=&quot;section-52&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;creating-r-packages.html#DOCF53&quot; id=&quot;FOOT53&quot; class=&quot;calibre21&quot;&gt;(53)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;which is an error: GNU make uses GNUmakefile.&lt;/p&gt; &lt;h3 id=&quot;section-53&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF54&quot; id=&quot;FOOT54&quot; class=&quot;calibre21&quot;&gt;(54)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;and to avoid problems with case-insensitive file systems, lower-case versions of all these extensions.&lt;/p&gt; &lt;h3 id=&quot;section-54&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF55&quot; id=&quot;FOOT55&quot; class=&quot;calibre21&quot;&gt;(55)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;unless inhibited by using ‘BuildVignettes: no’ in the DESCRIPTION file.&lt;/p&gt; &lt;h3 id=&quot;section-55&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF56&quot; id=&quot;FOOT56&quot; class=&quot;calibre21&quot;&gt;(56)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;provided the conditions of the package’s license are met: many, including CRAN, see the omission of source components as incompatible with an Open Source license.&lt;/p&gt; &lt;h3 id=&quot;section-56&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF57&quot; id=&quot;FOOT57&quot; class=&quot;calibre21&quot;&gt;(57)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;&lt;code class=&quot;calibre2&quot;&gt;R_HOME/bin&lt;/code&gt; is prepended to the &lt;code class=&quot;calibre2&quot;&gt;PATH&lt;/code&gt; so that references to &lt;code class=&quot;calibre2&quot;&gt;R&lt;/code&gt; or &lt;code class=&quot;calibre2&quot;&gt;Rscript&lt;/code&gt; in the Makefile do make use of the currently running version of R.&lt;/p&gt; &lt;h3 id=&quot;section-57&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF58&quot; id=&quot;FOOT58&quot; class=&quot;calibre21&quot;&gt;(58)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;Note that lazy-loaded datasets are &lt;em&gt;not&lt;/em&gt; in the package’s namespace so need to be accessed &lt;em&gt;via&lt;/em&gt; &lt;code class=&quot;calibre2&quot;&gt;::&lt;/code&gt;, e.g. &lt;code class=&quot;calibre2&quot;&gt;survival::survexp.us&lt;/code&gt;.&lt;/p&gt; &lt;h3 id=&quot;section-58&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF59&quot; id=&quot;FOOT59&quot; class=&quot;calibre21&quot;&gt;(59)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;they will be called with two unnamed arguments, in that order.&lt;/p&gt; &lt;h3 id=&quot;section-59&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF60&quot; id=&quot;FOOT60&quot; class=&quot;calibre21&quot;&gt;(60)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;NB: this will only be read in all versions of R if the package contains R code in a R directory.&lt;/p&gt; &lt;h3 id=&quot;section-60&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF61&quot; id=&quot;FOOT61&quot; class=&quot;calibre21&quot;&gt;(61)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;Note that this is the basename of the shared object, and the appropriate extension (.so or .dll) will be added.&lt;/p&gt; &lt;h3 id=&quot;section-61&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF62&quot; id=&quot;FOOT62&quot; class=&quot;calibre21&quot;&gt;(62)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;This was necessary at least prior to R 3.0.2 as the &lt;strong&gt;methods&lt;/strong&gt; package looked for its own R code on the search path.&lt;/p&gt; &lt;h3 id=&quot;section-62&quot; class=&quot;section&quot;&gt;&lt;a href=&quot;writing-package-vignettes.html#DOCF63&quot; id=&quot;FOOT63&quot; class=&quot;calibre21&quot;&gt;(63)&lt;/a&gt;&lt;/h3&gt; &lt;p&gt;This defaults to the same pattern as &lt;code class=&quot;calibre2&quot;&gt;exportPattern&lt;/code&gt;: use something like &lt;code class=&quot;calibre2&quot;&gt;exportClassPattern(&amp;quot;^\)</span>“)</code> to override this.
+The script should only assume a POSIX-compliant <code class="calibre2">/bin/sh</code> – see <a href="http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html" class="uri">http://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html</a>. In particular <code class="calibre2">bash</code> extensions must not be used, and not all R platforms have a <code class="calibre2">bash</code> command, let alone one at /bin/bash. All known shells used with R support the use of backticks, but not all support ‘$(cmd)’.
+</p>
+<h3 id="section-24" class="section">
+<a href="creating-r-packages.html#DOCF25" id="FOOT25" class="calibre21">(25)</a>
+</h3>
+<p>
+in POSIX parlance: GNU <code class="calibre2">make</code> calls these ‘make variables’.
+</p>
+<h3 id="section-25" class="section">
+<a href="creating-r-packages.html#DOCF26" id="FOOT26" class="calibre21">(26)</a>
+</h3>
+<p>
+at least on Unix-alikes: the Windows build currently resolves such dependencies to a static FORTRAN library when Rblas.dll is built.
+</p>
+<h3 id="section-26" class="section">
+<a href="creating-r-packages.html#DOCF27" id="FOOT27" class="calibre21">(27)</a>
+</h3>
+<p>
+<a href="http://www.openmp.org/" class="uri">http://www.openmp.org/</a>, <a href="https://en.wikipedia.org/wiki/OpenMP" class="uri">https://en.wikipedia.org/wiki/OpenMP</a>, <a href="https://computing.llnl.gov/tutorials/openMP/" class="uri">https://computing.llnl.gov/tutorials/openMP/</a>
+</p>
+<h3 id="section-27" class="section">
+<a href="creating-r-packages.html#DOCF28" id="FOOT28" class="calibre21">(28)</a>
+</h3>
+<p>
+Default builds of <code class="calibre2">clang</code> 3.8.0 and later have support for OpenMP, but the <code class="calibre2">libomp</code> run-time library may not be installed.
+</p>
+<h3 id="section-28" class="section">
+<a href="creating-r-packages.html#DOCF29" id="FOOT29" class="calibre21">(29)</a>
+</h3>
+<p>
+In most implementations the <code class="calibre2">_OPENMP</code> macro has value a date which can be mapped to an OpenMP version: for example, value <code class="calibre2">201307</code> is the date of version 4.0 (July 2013). However this may be used to denote the latest version which is partially supported, not that which is fully implemented.
+</p>
+<h3 id="section-29" class="section">
+<a href="creating-r-packages.html#DOCF30" id="FOOT30" class="calibre21">(30)</a>
+</h3>
+<p>
+GCC since 4.7, hence R builds for Windows since R 3.3.0, which also support OpenMP 4.0.
+</p>
+<h3 id="section-30" class="section">
+<a href="creating-r-packages.html#DOCF31" id="FOOT31" class="calibre21">(31)</a>
+</h3>
+<p>
+People do use older versions of OSes such as Ubuntu 12.04LTS and Debian Wheezy LTS which have GCC 4.4.
+</p>
+<h3 id="section-31" class="section">
+<a href="creating-r-packages.html#DOCF32" id="FOOT32" class="calibre21">(32)</a>
+</h3>
+<p>
+as did the GCC-based Apple implementation, but not the Intel/LLVM OpenMP runtime on macOS.
+</p>
+<h3 id="section-32" class="section">
+<a href="creating-r-packages.html#DOCF33" id="FOOT33" class="calibre21">(33)</a>
+</h3>
+<p>
+Windows default, not MinGW-w64 default.
+</p>
+<h3 id="section-33" class="section">
+<a href="creating-r-packages.html#DOCF34" id="FOOT34" class="calibre21">(34)</a>
+</h3>
+<p>
+Which it was at the time of writing with GCC, Oracle, Intel and Clang compilers.
+</p>
+<h3 id="section-34" class="section">
+<a href="creating-r-packages.html#DOCF35" id="FOOT35" class="calibre21">(35)</a>
+</h3>
+<p>
+some Windows toolchains had the typo ‘_REENTRANCE’ instead.
+</p>
+<h3 id="section-35" class="section">
+<a href="creating-r-packages.html#DOCF36" id="FOOT36" class="calibre21">(36)</a>
+</h3>
+<p>
+A few OSes (AIX, IRIX, Windows) do not need special flags for such code, but most do—although compilers will often generate PIC code when not asked to do so.
+</p>
+<h3 id="section-36" class="section">
+<a href="creating-r-packages.html#DOCF37" id="FOOT37" class="calibre21">(37)</a>
+</h3>
+<p>
+Cygwin used <code class="calibre2">g77</code> up to 2011, and some pre-built versions of R for Unix OSes still do.
+</p>
+<h3 id="section-37" class="section">
+<a href="creating-r-packages.html#DOCF38" id="FOOT38" class="calibre21">(38)</a>
+</h3>
+<p>
+The changes are linked from <a href="https://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations" class="uri">https://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations</a>.
+</p>
+<h3 id="section-38" class="section">
+<a href="creating-r-packages.html#DOCF39" id="FOOT39" class="calibre21">(39)</a>
+</h3>
+<p>
+Values <code class="calibre2">199711</code>, <code class="calibre2">201103L</code> and <code class="calibre2">201402L</code> are most commonly used for C++98, C++11 and C++14 respectively, but some compilers set <code class="calibre2">1L</code>.
+</p>
+<h3 id="section-39" class="section">
+<a href="creating-r-packages.html#DOCF40" id="FOOT40" class="calibre21">(40)</a>
+</h3>
+<p>
+Some distributions, notably Debian, have supplied a build of <code class="calibre2">clang</code> with <code class="calibre2">g++</code>’s headers and library. Conversely, Apple’s command named <code class="calibre2">g++</code> is based on <code class="calibre2">clang</code> using <code class="calibre2">libc++</code>.
+</p>
+<h3 id="section-40" class="section">
+<a href="creating-r-packages.html#DOCF41" id="FOOT41" class="calibre21">(41)</a>
+</h3>
+<p>
+For details of these and related macros, see file config.site in the R sources.
+</p>
+<h3 id="section-41" class="section">
+<a href="creating-r-packages.html#DOCF42" id="FOOT42" class="calibre21">(42)</a>
+</h3>
+<p>
+As from R 3.4.0, <code class="calibre2">configure</code> attempts to supply a C++14 compiler only if explicitly requested. However, earlier versions of R will use the default C++14 mode of <code class="calibre2">g++</code> 6 and later.
+</p>
+<h3 id="section-42" class="section">
+<a href="creating-r-packages.html#DOCF43" id="FOOT43" class="calibre21">(43)</a>
+</h3>
+<p>
+<a href="See%0Ahttps://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations">See https://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations</a> or <a href="http://en.cppreference.com/w/cpp/experimental/feature_test" class="uri">http://en.cppreference.com/w/cpp/experimental/feature_test</a>. It seems a reasonable assumption that any compiler promising some C++14 conformance will provide these—e.g. <code class="calibre2">g++</code> 4.9.x did but 4.8.5 did not.
+</p>
+<h3 id="section-43" class="section">
+<a href="creating-r-packages.html#DOCF44" id="FOOT44" class="calibre21">(44)</a>
+</h3>
+<p>
+On systems which use sub-architectures, architecture-specific versions such as ~/.R/check.Renviron.i386 take precedence.
+</p>
+<h3 id="section-44" class="section">
+<a href="creating-r-packages.html#DOCF45" id="FOOT45" class="calibre21">(45)</a>
+</h3>
+<p>
+A suitable <code class="calibre2">file.exe</code> is part of the Windows toolset: it checks for <code class="calibre2">gfile</code> if a suitable <code class="calibre2">file</code> is not found: the latter is available in the OpenCSW collection for Solaris at <a href="http://www.opencsw.org" class="uri">http://www.opencsw.org</a>. The source repository is <a href="ftp://ftp.astron.com/pub/file/" class="uri">ftp://ftp.astron.com/pub/file/</a>.
+</p>
+<h3 id="section-45" class="section">
+<a href="creating-r-packages.html#DOCF46" id="FOOT46" class="calibre21">(46)</a>
+</h3>
+<p>
+An exception is made for subdirectories with names starting ‘win’ or ‘Win’.
+</p>
+<h3 id="section-46" class="section">
+<a href="creating-r-packages.html#DOCF47" id="FOOT47" class="calibre21">(47)</a>
+</h3>
+<p>
+on most other platforms such runtime libraries are dynamic, but static libraries are currently used on Windows because the toolchain is not a standard part of the OS.
+</p>
+<h3 id="section-47" class="section">
+<a href="creating-r-packages.html#DOCF48" id="FOOT48" class="calibre21">(48)</a>
+</h3>
+<p>
+or if option –use-valgrind is used or environment variable <code class="calibre2"><em>R_CHECK_ALWAYS_LOG_VIGNETTE_OUTPUT</em></code> is set to a true value or if there are differences from a target output file
+</p>
+<h3 id="section-48" class="section">
+<a href="creating-r-packages.html#DOCF49" id="FOOT49" class="calibre21">(49)</a>
+</h3>
+<p>
+For example, in early 2014 <a href="https://CRAN.R-project.org/package=gdata"><strong>gdata</strong></a> declared ‘Imports: gtools’ and <a href="https://CRAN.R-project.org/package=gtools"><strong>gtools</strong></a> declared ‘Imports: gdata’.
+</p>
+<h3 id="section-49" class="section">
+<a href="creating-r-packages.html#DOCF50" id="FOOT50" class="calibre21">(50)</a>
+</h3>
+<p>
+loading, examples, tests, running vignette code
+</p>
+<h3 id="section-50" class="section">
+<a href="creating-r-packages.html#DOCF51" id="FOOT51" class="calibre21">(51)</a>
+</h3>
+<p>
+called CVS or .svn or .arch-ids or .bzr or .git (but not files called .git) or .hg.
+</p>
+<h3 id="section-51" class="section">
+<a href="creating-r-packages.html#DOCF52" id="FOOT52" class="calibre21">(52)</a>
+</h3>
+<p>
+called .metadata.
+</p>
+<h3 id="section-52" class="section">
+<a href="creating-r-packages.html#DOCF53" id="FOOT53" class="calibre21">(53)</a>
+</h3>
+<p>
+which is an error: GNU make uses GNUmakefile.
+</p>
+<h3 id="section-53" class="section">
+<a href="writing-package-vignettes.html#DOCF54" id="FOOT54" class="calibre21">(54)</a>
+</h3>
+<p>
+and to avoid problems with case-insensitive file systems, lower-case versions of all these extensions.
+</p>
+<h3 id="section-54" class="section">
+<a href="writing-package-vignettes.html#DOCF55" id="FOOT55" class="calibre21">(55)</a>
+</h3>
+<p>
+unless inhibited by using ‘BuildVignettes: no’ in the DESCRIPTION file.
+</p>
+<h3 id="section-55" class="section">
+<a href="writing-package-vignettes.html#DOCF56" id="FOOT56" class="calibre21">(56)</a>
+</h3>
+<p>
+provided the conditions of the package’s license are met: many, including CRAN, see the omission of source components as incompatible with an Open Source license.
+</p>
+<h3 id="section-56" class="section">
+<a href="writing-package-vignettes.html#DOCF57" id="FOOT57" class="calibre21">(57)</a>
+</h3>
+<p>
+<code class="calibre2">R_HOME/bin</code> is prepended to the <code class="calibre2">PATH</code> so that references to <code class="calibre2">R</code> or <code class="calibre2">Rscript</code> in the Makefile do make use of the currently running version of R.
+</p>
+<h3 id="section-57" class="section">
+<a href="writing-package-vignettes.html#DOCF58" id="FOOT58" class="calibre21">(58)</a>
+</h3>
+<p>
+Note that lazy-loaded datasets are <em>not</em> in the package’s namespace so need to be accessed <em>via</em> <code class="calibre2">::</code>, e.g. <code class="calibre2">survival::survexp.us</code>.
+</p>
+<h3 id="section-58" class="section">
+<a href="writing-package-vignettes.html#DOCF59" id="FOOT59" class="calibre21">(59)</a>
+</h3>
+<p>
+they will be called with two unnamed arguments, in that order.
+</p>
+<h3 id="section-59" class="section">
+<a href="writing-package-vignettes.html#DOCF60" id="FOOT60" class="calibre21">(60)</a>
+</h3>
+<p>
+NB: this will only be read in all versions of R if the package contains R code in a R directory.
+</p>
+<h3 id="section-60" class="section">
+<a href="writing-package-vignettes.html#DOCF61" id="FOOT61" class="calibre21">(61)</a>
+</h3>
+<p>
+Note that this is the basename of the shared object, and the appropriate extension (.so or .dll) will be added.
+</p>
+<h3 id="section-61" class="section">
+<a href="writing-package-vignettes.html#DOCF62" id="FOOT62" class="calibre21">(62)</a>
+</h3>
+<p>
+This was necessary at least prior to R 3.0.2 as the <strong>methods</strong> package looked for its own R code on the search path.
+</p>
+<h3 id="section-62" class="section">
+<a href="writing-package-vignettes.html#DOCF63" id="FOOT63" class="calibre21">(63)</a>
+</h3>
+<p>
+This defaults to the same pattern as <code class="calibre2">exportPattern</code>: use something like <code class="calibre2">exportClassPattern(“^$”)</code> to override this.
 </p>
 <h3 id="section-63" class="section">
 <a href="writing-package-vignettes.html#DOCF64" id="FOOT64" class="calibre21">(64)</a>
@@ -1850,17 +2084,6 @@ gitbook.start({
 });
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(script.src))
-      script.src  = script.src.replace(/^https?:/, '');
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 </body>
 
 </html>

@@ -38,7 +38,7 @@
 <p>The optional files configure and cleanup are (Bourne) shell scripts which are, respectively, executed before and (if option --clean was given) after installation on Unix-alikes, see <a href="#Configure-and-cleanup">Configure and cleanup</a>. The analogues on Windows are configure.win and cleanup.win.</p>
 <p>For the conventions for files NEWS and ChangeLog in the GNU project see <a href="https://www.gnu.org/prep/standards/standards.html#Documentation" class="uri">https://www.gnu.org/prep/standards/standards.html#Documentation</a>.</p>
 <p>The package subdirectory should be given the same name as the package. Because some file systems (e.g., those on Windows and by default on OS X) are not case-sensitive, to maintain portability it is strongly recommended that case distinctions not be used to distinguish different packages. For example, if you have a package named foo, do not also create a package named Foo.</p>
-<p>To ensure that file names are valid across file systems and supported operating systems, the ASCII control characters as well as the characters ‘&quot;’, ‘*’, ‘:’, ‘/’, ‘&lt;’, ‘&gt;’, ‘?’, ‘&#92;’, and ‘|’ are not allowed in file names. In addition, files with names ‘con’, ‘prn’, ‘aux’, ‘clock$’, ‘nul’, ‘com1’ to ‘com9’, and ‘lpt1’ to ‘lpt9’ after conversion to lower case and stripping possible “extensions” (e.g., ‘lpt5.foo.bar’), are disallowed. Also, file names in the same directory must not differ only by case (see the previous paragraph). In addition, the basenames of ‘.Rd’ files may be used in URLs and so must be ASCII and not contain <code class="calibre2">%</code>. For maximal portability filenames should only contain only ASCII characters not excluded already (that is <code class="calibre2">A-Za-z0-9._!#$%&amp;+,;=@^(){}'[]</code> — we exclude space as many utilities do not accept spaces in file paths): non-English alphabetic characters cannot be guaranteed to be supported in all locales. It would be good practice to avoid the shell metacharacters <code class="calibre2">(){}'[]$~</code>: <code class="calibre2">~</code> is also used as part of ‘8.3’ filenames on Windows. In addition, packages are normally distributed as tarballs, and these have a limit on path lengths: for maximal portability 100 bytes.</p>
+<p>To ensure that file names are valid across file systems and supported operating systems, the ASCII control characters as well as the characters ‘&quot;’, ‘*’, ‘:’, ‘/’, ‘&lt;’, ‘&gt;’, ‘?’, ‘&#92;’, and ‘|’ are not allowed in file names. In addition, files with names ‘con’, ‘prn’, ‘aux’, ‘clock&#36;’, ‘nul’, ‘com1’ to ‘com9’, and ‘lpt1’ to ‘lpt9’ after conversion to lower case and stripping possible “extensions” (e.g., ‘lpt5.foo.bar’), are disallowed. Also, file names in the same directory must not differ only by case (see the previous paragraph). In addition, the basenames of ‘.Rd’ files may be used in URLs and so must be ASCII and not contain <code class="calibre2">%</code>. For maximal portability filenames should only contain only ASCII characters not excluded already (that is <code class="calibre2">A-Za-z0-9._!#&#36;%&amp;+,;=@^(){}'[]</code> — we exclude space as many utilities do not accept spaces in file paths): non-English alphabetic characters cannot be guaranteed to be supported in all locales. It would be good practice to avoid the shell metacharacters <code class="calibre2">(){}'[]&#36;~</code>: <code class="calibre2">~</code> is also used as part of ‘8.3’ filenames on Windows. In addition, packages are normally distributed as tarballs, and these have a limit on path lengths: for maximal portability 100 bytes.</p>
 <p>A source package if possible should not contain binary executable files: they are not portable, and a security risk if they are of the appropriate architecture. <code class="calibre2">R CMD check</code> will warn about them<a href="concept-index.html#FOOT4" id="DOCF4"><sup>4</sup></a> unless they are listed (one filepath per line) in a file BinaryFiles at the top level of the package. Note that CRAN will not accept submissions containing binary files even if they are listed.</p>
 <p>The R function <code class="calibre2">package.skeleton</code> can help to create the structure for a new package: see its help page for details.</p>
 <hr />
@@ -110,7 +110,7 @@ BugReports: https://pkgname.bugtracker.url</code></pre>
 <p>The ‘VignetteBuilder’ field names (in a comma-separated list) packages that provide an engine for building vignettes. These may include the current package, or ones listed in ‘Depends’, ‘Suggests’ or ‘Imports’. The <strong>utils</strong> package is always implicitly appended. See <a href="writing-package-vignettes.html#Non_002dSweave-vignettes">Non-Sweave vignettes</a> for details.</p>
 <p>If the DESCRIPTION file is not entirely in ASCII it should contain an ‘Encoding’ field specifying an encoding. This is used as the encoding of the DESCRIPTION file itself and of the R and NAMESPACE files, and as the default encoding of .Rd files. The examples are assumed to be in this encoding when running <code class="calibre2">R CMD check</code>, and it is used for the encoding of the <code class="calibre2">CITATION</code> file. Only encoding names <code class="calibre2">latin1</code>, <code class="calibre2">latin2</code> and <code class="calibre2">UTF-8</code> are known to be portable. (Do not specify an encoding unless one is actually needed: doing so makes the package <em>less</em> portable. If a package has a specified encoding, you should run <code class="calibre2">R CMD build</code> etc in a locale using that encoding.)</p>
 <p>The ‘NeedsCompilation’ field should be set to <code class="calibre2">&quot;yes&quot;</code> if the package contains code which to be compiled, otherwise <code class="calibre2">&quot;no&quot;</code> (when the package could be installed from source on any platform without additional tools). This is used by <code class="calibre2">install.packages(type = &quot;both&quot;)</code> in R &gt;= 2.15.2 on platforms where binary packages are the norm: it is normally set by <code class="calibre2">R CMD build</code> or the repository assuming compilation is required if and only if the package has a src directory.</p>
-<p>The ‘OS_type’ field specifies the OS(es) for which the package is intended. If present, it should be one of <code class="calibre2">unix</code> or <code class="calibre2">windows</code>, and indicates that the package can only be installed on a platform with ‘.Platform$OS.type’ having that value.</p>
+<p>The ‘OS_type’ field specifies the OS(es) for which the package is intended. If present, it should be one of <code class="calibre2">unix</code> or <code class="calibre2">windows</code>, and indicates that the package can only be installed on a platform with ‘.Platform&#36;OS.type’ having that value.</p>
 <p>The ‘Type’ field specifies the type of the package: see <a href="creating-r-packages.html#Package-types">Package types</a>.</p>
 <p>One can add subject classifications for the content of the package using the fields ‘Classification/ACM’ or ‘Classification/ACM-2012’ (using the Computing Classification System of the Association for Computing Machinery, <a href="http://www.acm.org/about/class/" class="uri">http://www.acm.org/about/class/</a>; the former refers to the 1998 version), ‘Classification/JEL’ (the Journal of Economic Literature Classification System, <a href="https://www.aeaweb.org/econlit/jelCodes.php" class="uri">https://www.aeaweb.org/econlit/jelCodes.php</a>, or ‘Classification/MSC’ or ‘Classification/MSC-2010’ (the Mathematics Subject Classification of the American Mathematical Society, <a href="http://www.ams.org/msc/" class="uri">http://www.ams.org/msc/</a>; the former refers to the 2000 version). The subject classifications should be comma-separated lists of the respective classification codes, e.g., ‘Classification/ACM: G.4, H.2.8, I.5.1’.</p>
 <p>A ‘Language’ field can be used to indicate if the package documentation is not in English: this should be a comma-separated list of standard (not private use or grandfathered) IETF language tags as currently defined by RFC 5646 (<a href="https://tools.ietf.org/html/rfc5646" class="uri">https://tools.ietf.org/html/rfc5646</a>, see also <a href="https://en.wikipedia.org/wiki/IETF_language_tag" class="uri">https://en.wikipedia.org/wiki/IETF_language_tag</a>), i.e., use language subtags which in essence are 2-letter ISO 639-1 (<a href="https://en.wikipedia.org/wiki/ISO_639-1" class="uri">https://en.wikipedia.org/wiki/ISO_639-1</a>) or 3-letter ISO 639-3 (<a href="https://en.wikipedia.org/wiki/ISO_639-3" class="uri">https://en.wikipedia.org/wiki/ISO_639-3</a>) language codes.</p>
@@ -253,7 +253,7 @@ if ( any(file.exists(execs)) ) {
 <p>The data subdirectory is for data files: See <a href="#Data-in-packages">Data in packages</a>.</p>
 <p>The demo subdirectory is for R scripts (for running <em>via</em> <code class="calibre2">demo()</code>) that demonstrate some of the functionality of the package. Demos may be interactive and are not checked automatically, so if testing is desired use code in the tests directory to achieve this. The script files must start with a (lower or upper case) letter and have one of the extensions .R or .r. If present, the demo subdirectory should also have a 00Index file with one line for each demo, giving its name and a description separated by a tab or at least three spaces. (This index file is not generated automatically.) Note that a demo does not have a specified encoding and so should be an ASCII file (see <a href="creating-r-packages.html#Encoding-issues">Encoding issues</a>). Function <code class="calibre2">demo()</code> will use the package encoding if there is one, but this is mainly useful for non-ASCII comments.</p>
 <p><a href="" id="index-_002eRinstignore-file"></a></p>
-<p>The contents of the inst subdirectory will be copied recursively to the installation directory. Subdirectories of inst should not interfere with those used by R (currently, R, data, demo, exec, libs, man, help, html and Meta, and earlier versions used latex, R-ex). The copying of the inst happens after src is built so its Makefile can create files to be installed. To exclude files from being installed, one can specify a list of exclude patterns in file .Rinstignore in the top-level source directory. These patterns should be Perl-like regular expressions (see the help for <code class="calibre2">regexp</code> in R for the precise details), one per line, to be matched case-insensitively against the file and directory paths, e.g. doc/.*[.]png$ will exclude all PNG files in inst/doc based on the extension.</p>
+<p>The contents of the inst subdirectory will be copied recursively to the installation directory. Subdirectories of inst should not interfere with those used by R (currently, R, data, demo, exec, libs, man, help, html and Meta, and earlier versions used latex, R-ex). The copying of the inst happens after src is built so its Makefile can create files to be installed. To exclude files from being installed, one can specify a list of exclude patterns in file .Rinstignore in the top-level source directory. These patterns should be Perl-like regular expressions (see the help for <code class="calibre2">regexp</code> in R for the precise details), one per line, to be matched case-insensitively against the file and directory paths, e.g. doc/.*[.]png&#36; will exclude all PNG files in inst/doc based on the extension.</p>
 <p>Note that with the exceptions of INDEX, LICENSE/LICENCE and NEWS, information files at the top level of the package will <em>not</em> be installed and so not be known to users of Windows and macOS compiled packages (and not seen by those who use <code class="calibre2">R CMD INSTALL</code> or <code class="calibre2">install.packages</code> on the tarball). So any information files you wish an end user to see should be included in inst. Note that if the named exceptions also occur in inst, the version in inst will be that seen in the installed package.</p>
 <p><a href="" id="index-CITATION"></a> <a href="" id="index-citation"></a> <a href="" id="index-NEWS_002eRd"></a> <a href="" id="index-news"></a></p>
 <p>Things you might like to add to inst are a CITATION file for use by the <code class="calibre2">citation</code> function, and a NEWS.Rd file for use by the <code class="calibre2">news</code> function. See its help page for the specific format restrictions of the NEWS.Rd file.</p>
@@ -341,24 +341,24 @@ AC_OUTPUT</code></pre>
 <p>One could also use different file fragments for available and missing functionality, respectively.</p>
 <p>You will very likely need to ensure that the same C compiler and compiler flags are used in the configure tests as when compiling R or your package. Under a Unix-alike, you can achieve this by including the following fragment early in configure.ac (<em>before</em> calling <code class="calibre2">AC_PROG_CC</code>)</p>
 <div class="example">
-<pre class="example1"><code>: ${R_HOME=`R RHOME`}
-if test -z &quot;${R_HOME}&quot;; then
+<pre class="example1"><code>: &#36;{R_HOME=`R RHOME`}
+if test -z &quot;&#36;{R_HOME}&quot;; then
   echo &quot;could not determine R_HOME&quot;
   exit 1
 fi
-CC=`&quot;${R_HOME}/bin/R&quot; CMD config CC`
-CFLAGS=`&quot;${R_HOME}/bin/R&quot; CMD config CFLAGS`
-CPPFLAGS=`&quot;${R_HOME}/bin/R&quot; CMD config CPPFLAGS`</code></pre>
+CC=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CC`
+CFLAGS=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CFLAGS`
+CPPFLAGS=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CPPFLAGS`</code></pre>
 </div>
-<p>(Using ‘${R_HOME}/bin/R’ rather than just ‘R’ is necessary in order to use the correct version of R when running the script as part of <code class="calibre2">R CMD INSTALL</code>, and the quotes since ‘${R_HOME}’ might contain spaces.)</p>
+<p>(Using ‘&#36;{R_HOME}/bin/R’ rather than just ‘R’ is necessary in order to use the correct version of R when running the script as part of <code class="calibre2">R CMD INSTALL</code>, and the quotes since ‘&#36;{R_HOME}’ might contain spaces.)</p>
 <p>If your code does load checks then you may also need</p>
 <div class="example">
-<pre class="example1"><code>LDFLAGS=`&quot;${R_HOME}/bin/R&quot; CMD config LDFLAGS`</code></pre>
+<pre class="example1"><code>LDFLAGS=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config LDFLAGS`</code></pre>
 </div>
 <p>and packages written with C++ need to pick up the details for the C++ compiler and switch the current language to C++ by something like</p>
 <div class="example">
-<pre class="example1"><code>CXX=`&quot;${R_HOME}/bin/R&quot; CMD config CXX`
-CXXFLAGS=`&quot;${R_HOME}/bin/R&quot; CMD config CXXFLAGS`
+<pre class="example1"><code>CXX=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CXX`
+CXXFLAGS=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CXXFLAGS`
 AC_LANG(C++)</code></pre>
 </div>
 <p>The latter is important, as for example C headers may not be available to C++ programs or may not be written to avoid C++ name-mangling.</p>
@@ -366,9 +366,9 @@ AC_LANG(C++)</code></pre>
 <p>You can use <code class="calibre2">R CMD config</code> for getting the value of the basic configuration variables, and also the header and library flags necessary for linking a front-end executable program against R, see R CMD config --help for details.</p>
 <p>To check for an external BLAS library using the <code class="calibre2">ACX_BLAS</code> macro from the official Autoconf Macro Archive, one can simply do</p>
 <div class="example">
-<pre class="example1"><code>F77=`&quot;${R_HOME}/bin/R&quot; CMD config F77`
+<pre class="example1"><code>F77=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config F77`
 AC_PROG_F77
-FLIBS=`&quot;${R_HOME}/bin/R&quot; CMD config FLIBS`
+FLIBS=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config FLIBS`
 ACX_BLAS([], AC_MSG_ERROR([could not find your BLAS library], 1))</code></pre>
 </div>
 <p>Note that <code class="calibre2">FLIBS</code> as determined by R must be used to ensure that FORTRAN 77 code works on all R platforms. Calls to the Autoconf macro <code class="calibre2">AC_F77_LIBRARY_LDFLAGS</code>, which would overwrite <code class="calibre2">FLIBS</code>, must not be used (and hence e.g. removed from <code class="calibre2">ACX_BLAS</code>). (Recent versions of Autoconf in fact allow an already set <code class="calibre2">FLIBS</code> to override the test for the FORTRAN linker flags.)</p>
@@ -380,16 +380,16 @@ rm -f config.* src/Makevars src/config.h</code></pre>
 </div>
 <p>As this example shows, <code class="calibre2">configure</code> often creates working files such as config.log.</p>
 <p>If your configure script needs auxiliary files, it is recommended that you ship them in a tools directory (as R itself does).</p>
-<p>You should bear in mind that the configure script will not be used on Windows systems. If your package is to be made publicly available, please give enough information for a user on a non-Unix-alike platform to configure it manually, or provide a configure.win script to be used on that platform. (Optionally, there can be a cleanup.win script. Both should be shell scripts to be executed by <code class="calibre2">ash</code>, which is a minimal version of Bourne-style <code class="calibre2">sh</code>.) When configure.win is run the environment variables <code class="calibre2">R_HOME</code> (which uses ‘/’ as the file separator), <code class="calibre2">R_ARCH</code> and Use <code class="calibre2">R_ARCH_BIN</code> will be set. Use <code class="calibre2">R_ARCH</code> to decide if this is a 64-bit build (its value there is ‘/x64’) and to install DLLs to the correct place (${R_HOME}/libs${R_ARCH}). Use <code class="calibre2">R_ARCH_BIN</code> to find the correct place under the bin directory, e.g. ${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe.</p>
-<p>In some rare circumstances, the configuration and cleanup scripts need to know the location into which the package is being installed. An example of this is a package that uses C code and creates two shared object/DLLs. Usually, the object that is dynamically loaded by R is linked against the second, dependent, object. On some systems, we can add the location of this dependent object to the object that is dynamically loaded by R. This means that each user does not have to set the value of the <code class="calibre2">LD_LIBRARY_PATH</code> (or equivalent) environment variable, but that the secondary object is automatically resolved. Another example is when a package installs support files that are required at run time, and their location is substituted into an R data structure at installation time. <a href="" id="index-R_005fLIBRARY_005fDIR"></a> <a href="" id="index-R_005fPACKAGE_005fDIR"></a> <a href="" id="index-R_005fPACKAGE_005fNAME"></a> The names of the top-level library directory (i.e., specifiable <em>via</em> the ‘-l’ argument) and the directory of the package itself are made available to the installation scripts <em>via</em> the two shell/environment variables <code class="calibre2">R_LIBRARY_DIR</code> and <code class="calibre2">R_PACKAGE_DIR</code>. Additionally, the name of the package (e.g. ‘survival’ or ‘MASS’) being installed is available from the environment variable <code class="calibre2">R_PACKAGE_NAME</code>. (Currently the value of <code class="calibre2">R_PACKAGE_DIR</code> is always <code class="calibre2">${R_LIBRARY_DIR}/${R_PACKAGE_NAME}</code>, but this used not to be the case when versioned installs were allowed. Its main use is in configure.win scripts for the installation path of external software’s DLLs.) Note that the value of <code class="calibre2">R_PACKAGE_DIR</code> may contain spaces and other shell-unfriendly characters, and so should be quoted in makefiles and configure scripts.</p>
+<p>You should bear in mind that the configure script will not be used on Windows systems. If your package is to be made publicly available, please give enough information for a user on a non-Unix-alike platform to configure it manually, or provide a configure.win script to be used on that platform. (Optionally, there can be a cleanup.win script. Both should be shell scripts to be executed by <code class="calibre2">ash</code>, which is a minimal version of Bourne-style <code class="calibre2">sh</code>.) When configure.win is run the environment variables <code class="calibre2">R_HOME</code> (which uses ‘/’ as the file separator), <code class="calibre2">R_ARCH</code> and Use <code class="calibre2">R_ARCH_BIN</code> will be set. Use <code class="calibre2">R_ARCH</code> to decide if this is a 64-bit build (its value there is ‘/x64’) and to install DLLs to the correct place (&#36;{R_HOME}/libs&#36;{R_ARCH}). Use <code class="calibre2">R_ARCH_BIN</code> to find the correct place under the bin directory, e.g. &#36;{R_HOME}/bin&#36;{R_ARCH_BIN}/Rscript.exe.</p>
+<p>In some rare circumstances, the configuration and cleanup scripts need to know the location into which the package is being installed. An example of this is a package that uses C code and creates two shared object/DLLs. Usually, the object that is dynamically loaded by R is linked against the second, dependent, object. On some systems, we can add the location of this dependent object to the object that is dynamically loaded by R. This means that each user does not have to set the value of the <code class="calibre2">LD_LIBRARY_PATH</code> (or equivalent) environment variable, but that the secondary object is automatically resolved. Another example is when a package installs support files that are required at run time, and their location is substituted into an R data structure at installation time. <a href="" id="index-R_005fLIBRARY_005fDIR"></a> <a href="" id="index-R_005fPACKAGE_005fDIR"></a> <a href="" id="index-R_005fPACKAGE_005fNAME"></a> The names of the top-level library directory (i.e., specifiable <em>via</em> the ‘-l’ argument) and the directory of the package itself are made available to the installation scripts <em>via</em> the two shell/environment variables <code class="calibre2">R_LIBRARY_DIR</code> and <code class="calibre2">R_PACKAGE_DIR</code>. Additionally, the name of the package (e.g. ‘survival’ or ‘MASS’) being installed is available from the environment variable <code class="calibre2">R_PACKAGE_NAME</code>. (Currently the value of <code class="calibre2">R_PACKAGE_DIR</code> is always <code class="calibre2">&#36;{R_LIBRARY_DIR}/&#36;{R_PACKAGE_NAME}</code>, but this used not to be the case when versioned installs were allowed. Its main use is in configure.win scripts for the installation path of external software’s DLLs.) Note that the value of <code class="calibre2">R_PACKAGE_DIR</code> may contain spaces and other shell-unfriendly characters, and so should be quoted in makefiles and configure scripts.</p>
 <p>One of the more tricky tasks can be to find the headers and libraries of external software. One tool which is increasingly available on Unix-alikes (but not by default on macOS) to do this is <code class="calibre2">pkg-config</code>. The configure script will need to test for the presence of the command itself (see for example package <a href="https://CRAN.R-project.org/package=Cairo"><strong>Cairo</strong></a>), and if present it can be asked if the software is installed, of a suitable version and for compilation/linking flags by e.g.</p>
 <div class="example">
-<pre class="example1"><code>$ pkg-config --exists ‘QtCore &gt;= 4.0.0’  # check the status
-$ pkg-config --modversion QtCore
+<pre class="example1"><code>&#36; pkg-config --exists ‘QtCore &gt;= 4.0.0’  # check the status
+&#36; pkg-config --modversion QtCore
 4.7.1
-$ pkg-config --cflags QtCore
+&#36; pkg-config --cflags QtCore
 -DQT_SHARED -I/usr/include/QtCore
-$ pkg-config --libs QtCore
+&#36; pkg-config --libs QtCore
 -lQtCore</code></pre>
 </div>
 <p>Note that <code class="calibre2">pkg-config --libs</code> gives the information required to link against the default version of that library (usually the dynamic one), and <code class="calibre2">pkg-config --static</code> is needed if the static library is to be used.</p>
@@ -437,30 +437,30 @@ $ pkg-config --libs QtCore
 <div class="example">
 <pre class="example1"><code>PKG_LIBS = @BLAS_LIBS@
 
-SLAMC_FFLAGS=$(R_XTRA_FFLAGS) $(FPICFLAGS) $(SHLIB_FFLAGS) $(SAFE_FFLAGS)
+SLAMC_FFLAGS=&#36;(R_XTRA_FFLAGS) &#36;(FPICFLAGS) &#36;(SHLIB_FFLAGS) &#36;(SAFE_FFLAGS)
 
-all: $(SHLIB)
+all: &#36;(SHLIB)
 
 slamc.o: slamc.f
-        $(F77) $(SLAMC_FFLAGS) -c -o slamc.o slamc.f</code></pre>
+        &#36;(F77) &#36;(SLAMC_FFLAGS) -c -o slamc.o slamc.f</code></pre>
 </div>
 <p>needed to ensure that the LAPACK routines find some constants without infinite looping. The Windows equivalent was</p>
 <div class="example">
-<pre class="example1"><code>all: $(SHLIB)
+<pre class="example1"><code>all: &#36;(SHLIB)
 
 slamc.o: slamc.f
-        $(F77) $(SAFE_FFLAGS) -c -o slamc.o slamc.f</code></pre>
+        &#36;(F77) &#36;(SAFE_FFLAGS) -c -o slamc.o slamc.f</code></pre>
 </div>
 <p>(since the other macros are all empty on that platform, and R’s internal BLAS was not used). Note that the first target in Makevars will be called, but for back-compatibility it is best named <code class="calibre2">all</code>.</p>
 <p>If you want to create and then link to a library, say using code in a subdirectory, use something like</p>
 <div class="example">
 <pre class="example1"><code>.PHONY: all mylibs
 
-all: $(SHLIB)
-$(SHLIB): mylibs
+all: &#36;(SHLIB)
+&#36;(SHLIB): mylibs
 
 mylibs:
-        (cd subdir; $(MAKE))</code></pre>
+        (cd subdir; &#36;(MAKE))</code></pre>
 </div>
 <p>Be careful to create all the necessary dependencies, as there is no guarantee that the dependencies of <code class="calibre2">all</code> will be run in a particular order (and some of the CRAN build machines use multiple CPUs and parallel makes). In particular,</p>
 <div class="example">
@@ -468,16 +468,16 @@ mylibs:
 </div>
 <p>does <strong>not</strong> suffice.</p>
 <p>Note that on Windows it is required that Makevars[.win] does create a DLL: this is needed as it is the only reliable way to ensure that building a DLL succeeded. If you want to use the src directory for some purpose other than building a DLL, use a Makefile.win file.</p>
-<p>It is sometimes useful to have a target ‘clean’ in Makevars or Makevars.win: this will be used by <code class="calibre2">R CMD build</code> to clean up (a copy of) the package sources. When it is run by <code class="calibre2">build</code> it will have fewer macros set, in particular not <code class="calibre2">$(SHLIB)</code>, nor <code class="calibre2">$(OBJECTS)</code> unless set in the file itself. It would also be possible to add tasks to the target ‘shlib-clean’ which is run by <code class="calibre2">R CMD INSTALL</code> and <code class="calibre2">R CMD SHLIB</code> with options --clean and --preclean.</p>
+<p>It is sometimes useful to have a target ‘clean’ in Makevars or Makevars.win: this will be used by <code class="calibre2">R CMD build</code> to clean up (a copy of) the package sources. When it is run by <code class="calibre2">build</code> it will have fewer macros set, in particular not <code class="calibre2">&#36;(SHLIB)</code>, nor <code class="calibre2">&#36;(OBJECTS)</code> unless set in the file itself. It would also be possible to add tasks to the target ‘shlib-clean’ which is run by <code class="calibre2">R CMD INSTALL</code> and <code class="calibre2">R CMD SHLIB</code> with options --clean and --preclean.</p>
 <p>If you want to run R code in Makevars, e.g. to find configuration information, please do ensure that you use the correct copy of <code class="calibre2">R</code> or <code class="calibre2">Rscript</code>: there might not be one in the path at all, or it might be the wrong version or architecture. The correct way to do this is <em>via</em></p>
 <div class="example">
-<pre class="example1"><code>&quot;$(R_HOME)/bin$(R_ARCH_BIN)/Rscript&quot; filename
-&quot;$(R_HOME)/bin$(R_ARCH_BIN)/Rscript&quot; -e ‘R expression’</code></pre>
+<pre class="example1"><code>&quot;&#36;(R_HOME)/bin&#36;(R_ARCH_BIN)/Rscript&quot; filename
+&quot;&#36;(R_HOME)/bin&#36;(R_ARCH_BIN)/Rscript&quot; -e ‘R expression’</code></pre>
 </div>
-<p>where <code class="calibre2">$(R_ARCH_BIN)</code> is only needed currently on Windows.</p>
+<p>where <code class="calibre2">&#36;(R_ARCH_BIN)</code> is only needed currently on Windows.</p>
 <p>Environment or make variables can be used to select different macros for 32- and 64-bit code, for example (GNU <code class="calibre2">make</code> syntax, allowed on Windows)</p>
 <div class="example">
-<pre class="example1"><code>ifeq &quot;$(WIN)&quot; &quot;64&quot;
+<pre class="example1"><code>ifeq &quot;&#36;(WIN)&quot; &quot;64&quot;
 PKG_LIBS = value for 64-bit Windows
 else
 PKG_LIBS = value for 32-bit Windows
@@ -485,11 +485,11 @@ endif</code></pre>
 </div>
 <p>On Windows there is normally a choice between linking to an import library or directly to a DLL. Where possible, the latter is much more reliable: import libraries are tied to a specific toolchain, and in particular on 64-bit Windows two different conventions have been commonly used. So for example instead of</p>
 <div class="example">
-<pre class="example1"><code>PKG_LIBS = -L$(XML_DIR)/lib -lxml2</code></pre>
+<pre class="example1"><code>PKG_LIBS = -L&#36;(XML_DIR)/lib -lxml2</code></pre>
 </div>
 <p>one can use</p>
 <div class="example">
-<pre class="example1"><code>PKG_LIBS = -L$(XML_DIR)/bin -lxml2</code></pre>
+<pre class="example1"><code>PKG_LIBS = -L&#36;(XML_DIR)/bin -lxml2</code></pre>
 </div>
 <p>since on Windows <code class="calibre2">-lxxx</code> will look in turn for</p>
 <div class="example">
@@ -517,14 +517,14 @@ SHLIB_OPENMP_FFLAGS</code></pre>
 <p>are available for use in src/Makevars or src/Makevars.win. Include the appropriate macro in <code class="calibre2">PKG_CFLAGS</code>, <code class="calibre2">PKG_CPPFLAGS</code> and so on, and also in <code class="calibre2">PKG_LIBS</code>. C/C++ code that needs to be conditioned on the use of OpenMP can be used inside <code class="calibre2">#ifdef _OPENMP</code>: note that some toolchains used for R (including that of macOS and some others using <code class="calibre2">clang</code><a href="concept-index.html#FOOT28" id="DOCF28"><sup>28</sup></a>) have no OpenMP support at all, not even omp.h.</p>
 <p>For example, a package with C code written for OpenMP should have in src/Makevars the lines</p>
 <div class="example">
-<pre class="example1"><code>PKG_CFLAGS = $(SHLIB_OPENMP_CFLAGS)
-PKG_LIBS = $(SHLIB_OPENMP_CFLAGS)</code></pre>
+<pre class="example1"><code>PKG_CFLAGS = &#36;(SHLIB_OPENMP_CFLAGS)
+PKG_LIBS = &#36;(SHLIB_OPENMP_CFLAGS)</code></pre>
 </div>
 <p>Note that the macro <code class="calibre2">SHLIB_OPENMP_CXXFLAGS</code> applies to the default C++ compiler and not necessarily to the C++11/14/17 compiler: users of the latter should do their own <code class="calibre2">configure</code> checks (an example is available in CRAN package <a href="https://CRAN.R-project.org/package=ARTP2"><strong>ARTP2</strong></a>).</p>
 <p>Some care is needed when compilers are from different families which may use different OpenMP runtimes (e.g. <code class="calibre2">clang</code> <em>vs</em> GCC including <code class="calibre2">gfortran</code>, although it is currently possible to use the <code class="calibre2">clang</code> runtime with GCC but not <em>vice versa</em>). For a package with Fortran 77 code using OpenMP the appropriate lines are</p>
 <div class="example">
-<pre class="example1"><code>PKG_FFLAGS = $(SHLIB_OPENMP_FFLAGS)
-PKG_LIBS = $(SHLIB_OPENMP_CFLAGS)</code></pre>
+<pre class="example1"><code>PKG_FFLAGS = &#36;(SHLIB_OPENMP_FFLAGS)
+PKG_LIBS = &#36;(SHLIB_OPENMP_CFLAGS)</code></pre>
 </div>
 <p>as the C compiler will be used to link the package code (and there is no guarantee that this will work everywhere). (This does not apply to Fortran 9x code, where <code class="calibre2">SHLIB_OPENMP_FCFLAGS</code> should be used in both <code class="calibre2">PKG_FCFLAGS</code> and <code class="calibre2">PKG_LIBS</code>.)</p>
 <p>For portability, any C/C++ code using the <code class="calibre2">omp_*</code> functions should include the omp.h header: some compilers (but not all) include it when OpenMP mode is switched on (e.g. <em>via</em> flag -fopenmp).</p>
@@ -563,9 +563,9 @@ PKG_LIBS = -lpthread</code></pre>
 <p>Package authors fairly often want to organize code in sub-directories of src, for example if they are including a separate piece of external software to which this is an R interface.</p>
 <p>One simple way is simply to set <code class="calibre2">OBJECTS</code> to be all the objects that need to be compiled, including in sub-directories. For example, CRAN package <a href="https://CRAN.R-project.org/package=RSiena"><strong>RSiena</strong></a> has</p>
 <div class="example">
-<pre class="smallexample"><code>SOURCES = $(wildcard data/*.cpp network/*.cpp utils/*.cpp model/*.cpp model/*/*.cpp model/*/*/*.cpp)
+<pre class="smallexample"><code>SOURCES = &#36;(wildcard data/*.cpp network/*.cpp utils/*.cpp model/*.cpp model/*/*.cpp model/*/*/*.cpp)
 
-OBJECTS = siena07utilities.o siena07internals.o siena07setup.o siena07models.o $(SOURCES:.cpp=.o)</code></pre>
+OBJECTS = siena07utilities.o siena07internals.o siena07setup.o siena07models.o &#36;(SOURCES:.cpp=.o)</code></pre>
 </div>
 <p>One problem with that approach is that unless GNU make extensions are used, the source files need to be listed and kept up-to-date. As in the following from CRAN package <a href="https://CRAN.R-project.org/package=lossDev"><strong>lossDev</strong></a>:</p>
 <div class="example">
@@ -577,19 +577,19 @@ OBJECTS.distributions = distributions/DSpline.o &#92;
   distributions/DNormOV.o distributions/DUnifOV.o distributions/RScalarDist.o
 OBJECTS.root = RJump.o
 
-OBJECTS = $(OBJECTS.samplers) $(OBJECTS.distributions) $(OBJECTS.root)</code></pre>
+OBJECTS = &#36;(OBJECTS.samplers) &#36;(OBJECTS.distributions) &#36;(OBJECTS.root)</code></pre>
 </div>
 <p>Where the subdirectory is self-contained code with a suitable makefile, the best approach is something like</p>
 <div class="example">
-<pre class="smallexample"><code>PKG_LIBS = -LCsdp/lib -lsdp $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+<pre class="smallexample"><code>PKG_LIBS = -LCsdp/lib -lsdp &#36;(LAPACK_LIBS) &#36;(BLAS_LIBS) &#36;(FLIBS)
 
-$(SHLIB): Csdp/lib/libsdp.a
+&#36;(SHLIB): Csdp/lib/libsdp.a
 
 Csdp/lib/libsdp.a:      
-        @(cd Csdp/lib &amp;&amp; $(MAKE) libsdp.a &#92;
-          CC=&quot;$(CC)&quot; CFLAGS=&quot;$(CFLAGS) $(CPICFLAGS)&quot; AR=&quot;$(AR)&quot; RANLIB=&quot;$(RANLIB)&quot;)</code></pre>
+        @(cd Csdp/lib &amp;&amp; &#36;(MAKE) libsdp.a &#92;
+          CC=&quot;&#36;(CC)&quot; CFLAGS=&quot;&#36;(CFLAGS) &#36;(CPICFLAGS)&quot; AR=&quot;&#36;(AR)&quot; RANLIB=&quot;&#36;(RANLIB)&quot;)</code></pre>
 </div>
-<p>Note the quotes: the macros can contain spaces, e.g. <code class="calibre2">CC = &quot;gcc -m64 -std=gnu99&quot;</code>. Several authors have forgotten about parallel makes: the static library in the subdirectory must be made before the shared object (<code class="calibre2">$(SHLIB)</code>) and so the latter must depend on the former. Others forget the need<a href="concept-index.html#FOOT36" id="DOCF36"><sup>36</sup></a> for position-independent code.</p>
+<p>Note the quotes: the macros can contain spaces, e.g. <code class="calibre2">CC = &quot;gcc -m64 -std=gnu99&quot;</code>. Several authors have forgotten about parallel makes: the static library in the subdirectory must be made before the shared object (<code class="calibre2">&#36;(SHLIB)</code>) and so the latter must depend on the former. Others forget the need<a href="concept-index.html#FOOT36" id="DOCF36"><sup>36</sup></a> for position-independent code.</p>
 <p>We really do not recommend using src/Makefile instead of src/Makevars, and as the example above shows, it is not necessary.</p>
 <hr />
 <p><a href="" id="Configure-example"></a> <a href="" id="Configure-example-1"></a></p>
@@ -605,9 +605,9 @@ odbc_mgr=&quot;&quot;
 AC_ARG_WITH([odbc-manager],
             AC_HELP_STRING([--with-odbc-manager=MGR],
                            [specify the ODBC manager, e.g. odbc or iodbc]),
-            [odbc_mgr=$withval])
+            [odbc_mgr=&#36;withval])
 
-if test &quot;$odbc_mgr&quot; = &quot;odbc&quot; ; then
+if test &quot;&#36;odbc_mgr&quot; = &quot;odbc&quot; ; then
   AC_PATH_PROGS(ODBC_CONFIG, odbc_config)
 fi
 
@@ -616,13 +616,13 @@ dnl or from an environment variable.
 AC_ARG_WITH([odbc-include],
             AC_HELP_STRING([--with-odbc-include=INCLUDE_PATH],
                            [the location of ODBC header files]),
-            [odbc_include_path=$withval])
+            [odbc_include_path=&#36;withval])
 RODBC_CPPFLAGS=&quot;-I.&quot;
-if test [ -n &quot;$odbc_include_path&quot; ] ; then
-   RODBC_CPPFLAGS=&quot;-I. -I${odbc_include_path}&quot;
+if test [ -n &quot;&#36;odbc_include_path&quot; ] ; then
+   RODBC_CPPFLAGS=&quot;-I. -I&#36;{odbc_include_path}&quot;
 else
-  if test [ -n &quot;${ODBC_INCLUDE}&quot; ] ; then
-     RODBC_CPPFLAGS=&quot;-I. -I${ODBC_INCLUDE}&quot;
+  if test [ -n &quot;&#36;{ODBC_INCLUDE}&quot; ] ; then
+     RODBC_CPPFLAGS=&quot;-I. -I&#36;{ODBC_INCLUDE}&quot;
   fi
 fi
 
@@ -630,50 +630,50 @@ dnl ditto for a library path
 AC_ARG_WITH([odbc-lib],
             AC_HELP_STRING([--with-odbc-lib=LIB_PATH],
                            [the location of ODBC libraries]),
-            [odbc_lib_path=$withval])
-if test [ -n &quot;$odbc_lib_path&quot; ] ; then
-   LIBS=&quot;-L$odbc_lib_path ${LIBS}&quot;
+            [odbc_lib_path=&#36;withval])
+if test [ -n &quot;&#36;odbc_lib_path&quot; ] ; then
+   LIBS=&quot;-L&#36;odbc_lib_path &#36;{LIBS}&quot;
 else
-  if test [ -n &quot;${ODBC_LIBS}&quot; ] ; then
-     LIBS=&quot;-L${ODBC_LIBS} ${LIBS}&quot;
+  if test [ -n &quot;&#36;{ODBC_LIBS}&quot; ] ; then
+     LIBS=&quot;-L&#36;{ODBC_LIBS} &#36;{LIBS}&quot;
   else
-    if test -n &quot;${ODBC_CONFIG}&quot;; then
+    if test -n &quot;&#36;{ODBC_CONFIG}&quot;; then
       odbc_lib_path=`odbc_config --libs | sed s/-lodbc//`
-      LIBS=&quot;${odbc_lib_path} ${LIBS}&quot;
+      LIBS=&quot;&#36;{odbc_lib_path} &#36;{LIBS}&quot;
     fi
   fi
 fi
 
 dnl Now find the compiler and compiler flags to use
-: ${R_HOME=`R RHOME`}
-if test -z &quot;${R_HOME}&quot;; then
+: &#36;{R_HOME=`R RHOME`}
+if test -z &quot;&#36;{R_HOME}&quot;; then
   echo &quot;could not determine R_HOME&quot;
   exit 1
 fi
-CC=`&quot;${R_HOME}/bin/R&quot; CMD config CC`
-CPP=`&quot;${R_HOME}/bin/R&quot; CMD config CPP`
-CFLAGS=`&quot;${R_HOME}/bin/R&quot; CMD config CFLAGS`
-CPPFLAGS=`&quot;${R_HOME}/bin/R&quot; CMD config CPPFLAGS`
+CC=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CC`
+CPP=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CPP`
+CFLAGS=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CFLAGS`
+CPPFLAGS=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CPPFLAGS`
 AC_PROG_CC
 AC_PROG_CPP
 
 
-if test -n &quot;${ODBC_CONFIG}&quot;; then
+if test -n &quot;&#36;{ODBC_CONFIG}&quot;; then
   RODBC_CPPFLAGS=`odbc_config --cflags`
 fi
-CPPFLAGS=&quot;${CPPFLAGS} ${RODBC_CPPFLAGS}&quot;
+CPPFLAGS=&quot;&#36;{CPPFLAGS} &#36;{RODBC_CPPFLAGS}&quot;
 
 dnl Check the headers can be found
 AC_CHECK_HEADERS(sql.h sqlext.h)
-if test &quot;${ac_cv_header_sql_h}&quot; = no ||
-   test &quot;${ac_cv_header_sqlext_h}&quot; = no; then
+if test &quot;&#36;{ac_cv_header_sql_h}&quot; = no ||
+   test &quot;&#36;{ac_cv_header_sqlext_h}&quot; = no; then
    AC_MSG_ERROR(&quot;ODBC headers sql.h and sqlext.h not found&quot;)
 fi
 
 dnl search for a library containing an ODBC function
-if test [ -n &quot;${odbc_mgr}&quot; ] ; then
-  AC_SEARCH_LIBS(SQLTables, ${odbc_mgr}, ,
-      AC_MSG_ERROR(&quot;ODBC driver manager ${odbc_mgr} not found&quot;))
+if test [ -n &quot;&#36;{odbc_mgr}&quot; ] ; then
+  AC_SEARCH_LIBS(SQLTables, &#36;{odbc_mgr}, ,
+      AC_MSG_ERROR(&quot;ODBC driver manager &#36;{odbc_mgr} not found&quot;))
 else
   AC_SEARCH_LIBS(SQLTables, odbc odbc32 iodbc, ,
       AC_MSG_ERROR(&quot;no ODBC driver manager found&quot;))
@@ -749,18 +749,18 @@ PKG_LIBS = @LIBS@</code></pre>
 <p>There is no guarantee that C++11 can be used in a package in combination with any other compiled language (even C), as the C++11 compiler may be incompatible with the native compilers for the platform. (There are known problems mixing C++11 with Fortran.)</p>
 <p>If a package using C++11 has a <code class="calibre2">configure</code> script it is essential that it selects the correct compiler, <em>via</em> something like</p>
 <div class="example">
-<pre class="example1"><code>CXX11=`&quot;${R_HOME}/bin/R&quot; CMD config CXX11`
-CXX11STD=`&quot;${R_HOME}/bin/R&quot; CMD config CXX11STD`
-CXX=&quot;${CXX11} ${CXX11STD}&quot;
-CXXFLAGS=`&quot;${R_HOME}/bin/R&quot; CMD config CXX11FLAGS`
+<pre class="example1"><code>CXX11=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CXX11`
+CXX11STD=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CXX11STD`
+CXX=&quot;&#36;{CXX11} &#36;{CXX11STD}&quot;
+CXXFLAGS=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CXX11FLAGS`
 AC_LANG(C++)</code></pre>
 </div>
 <p>(paying attention to all the quotes required).</p>
 <p>If you want to compile C++11 code in a subdirectory, make sure you pass down the macros to specify that compiler, e.g. in src/Makevars</p>
 <div class="example">
 <pre class="example1"><code>sublibs:
-         @(cd libs &amp;&amp; $(MAKE) &#92;
-            CXX=&quot;$(CXX11) $(CXX11STD)&quot; CXXFLAGS=&quot;$(CXX11FLAGS) $(CXX11PICFLAGS)&quot;)</code></pre>
+         @(cd libs &amp;&amp; &#36;(MAKE) &#92;
+            CXX=&quot;&#36;(CXX11) &#36;(CXX11STD)&quot; CXXFLAGS=&quot;&#36;(CXX11FLAGS) &#36;(CXX11PICFLAGS)&quot;)</code></pre>
 </div>
 <p>Note that the mechanisms described here specify C++11 for code compiled by <code class="calibre2">R CMD SHLIB</code> as used by default by <code class="calibre2">R CMD INSTALL</code>. They do not necessarily apply if there is a src/Makefile file, nor to compilation done in vignettes or <em>via</em> other packages.</p>
 <hr />
@@ -843,7 +843,7 @@ using std::make_unique;
 <li>Documentation for functions, data sets, and S4 classes is checked for consistency with the corresponding code.</li>
 <li>It is checked whether all function arguments given in <code class="calibre2">&#92;usage</code> sections of Rd files are documented in the corresponding <code class="calibre2">&#92;arguments</code> section.</li>
 <li>The data directory is checked for non-ASCII characters and for the use of reasonable levels of compression.</li>
-<li><p>C, C++ and FORTRAN source and header files<a href="concept-index.html#FOOT46" id="DOCF46"><sup>46</sup></a> are tested for portable (LF-only) line endings. If there is a Makefile or Makefile.in or Makevars or Makevars.in file under the src directory, it is checked for portable line endings and the correct use of ‘$(BLAS_LIBS)’ and ‘$(LAPACK_LIBS)’</p>
+<li><p>C, C++ and FORTRAN source and header files<a href="concept-index.html#FOOT46" id="DOCF46"><sup>46</sup></a> are tested for portable (LF-only) line endings. If there is a Makefile or Makefile.in or Makevars or Makevars.in file under the src directory, it is checked for portable line endings and the correct use of ‘&#36;(BLAS_LIBS)’ and ‘&#36;(LAPACK_LIBS)’</p>
 <p>Compiled code is checked for symbols corresponding to functions which might terminate R or write to stdout/stderr instead of the console. Note that the latter might give false positives in that the symbols might be pulled in with external libraries and could never be called. Windows<a href="concept-index.html#FOOT47" id="DOCF47"><sup>47</sup></a> users should note that the Fortran and C++ runtime libraries are examples of such external libraries.</p></li>
 <li>Some checks are made of the contents of the inst/doc directory. These always include checking for files that look like leftovers, and if suitable tools (such as <code class="calibre2">qpdf</code>) are available, checking that the PDF documentation is of minimal size.</li>
 <li><p>The examples provided by the package’s documentation are run. (see <a href="writing-r-documentation-files.html">Writing R documentation files</a>, for information on using <code class="calibre2">&#92;examples</code> to create executable example code.) If there is a file tests/Examples/pkg-Ex.Rout.save, the output of running the examples is compared to that file.</p>
@@ -908,6 +908,8 @@ using std::make_unique;
 <p>Finally, at least one web-based service is available for building binary packages from (checked) source code: WinBuilder (see <a href="https://win-builder.R-project.org/" class="uri">https://win-builder.R-project.org/</a>) is able to build Windows binaries. Note that this is intended for developers on other platforms who do not have access to Windows but wish to provide binaries for the Windows platform.</p>
 <hr />
 <p><a href="" id="Writing-package-vignettes"></a> <a href="" id="Writing-package-vignettes-1"></a></p>
+
+
 
 
 

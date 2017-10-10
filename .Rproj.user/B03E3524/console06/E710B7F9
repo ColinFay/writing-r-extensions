@@ -22,3 +22,66 @@ To https://github.com/ColinFay/writing-r-extensions.git
 La branche master est paramétrée pour suivre la branche distante master depuis origin.
 ]0;/home/colin/R/writing-r-extensions]0;colin@colin-MacBookPro: ~/R/writing-r-extensions[01;32mcolin@colin-MacBookPro[00m:[01;34m~/R/writing-r-extensions[00m$ git add -a[KA
 ]0;/home/colin/R/writing-r-extensions]0;colin@colin-MacBookPro: ~/R/writing-r-extensions[01;32mcolin@colin-MacBookPro[00m:[01;34m~/R/writing-r-extensions[00m$ [K]0;colin@colin-MacBookPro: ~/R/writing-r-extensions[01;32mcolin@colin-MacBookPro[00m:[01;34m~/R/writing-r-extensions[00m$ git p[Kadd -A
+]0;/home/colin/R/writing-r-extensions]0;colin@colin-MacBookPro: ~/R/writing-r-extensions[01;32mcolin@colin-MacBookPro[00m:[01;34m~/R/writing-r-extensions[00m$ git commit -m "m[Kipdat[K[K[K[Kndex update"
+[master 96c6f24] index update
+ 46 files changed, 94 insertions(+), 29525 deletions(-)
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/12A2D85F-contents
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/37C87E86-contents
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/61843014-contents
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/69FAE3-contents
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/7E1B8223
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/7E1B8223-contents
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/837FEB58
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/837FEB58-contents
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/8FC5E4A4-contents
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/91E12545-contents
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/99EFD30-contents
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/99F0BC4F-contents
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/9F714F83-contents
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/A9CB7800-contents
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/B117E1D7
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/B117E1D7-contents
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/CB10DFFC-contents
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/DDDD0D76-contents
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/E029BF2
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/E029BF2-contents
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/F3B29FA6-contents
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/FC8AA132
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/FC8AA132-contents
+ delete mode 100644 .Rproj.user/B03E3524/sources/s-3468D2F6/lock_file
+ delete mode 100644 .Rproj.user/shared/notebooks/5330EA83-03-R-exts/1/s/chunks.json
+ create mode 100644 .gitignore
+]0;/home/colin/R/writing-r-extensions]0;colin@colin-MacBookPro: ~/R/writing-r-extensions[01;32mcolin@colin-MacBookPro[00m:[01;34m~/R/writing-r-extensions[00m$ git ppus[K[K[Kush
+warning: push.default n'est pas défini ; sa valeur implicite a changé dans Git 2.0
+de 'matching' vers 'simple'. Pour supprimer ce message et maintenir
+le comportement actuel après la modification de la valeur de défaut, utilisez :
+
+  git config --global push.default matching
+
+Pour supprimer ce message et adopter le nouveau comportement maintenant, utilisez :
+
+  git config --global push.default simple
+
+Quand push.default vaudra 'matching', git poussera les branches locales
+sur les branches distantes qui existent déjà avec le même nom.
+
+Depuis Git 2.0, Git utilise par défaut le comportement plus conservatif 'simple'
+qui ne pousse la branche courante que vers la branche distante correspondante
+que 'git pull' utilise pour mettre à jour la branche courante.
+ 
+Voir 'git help config' et chercher 'push.default' pour plus d'information.
+(le mode 'simple' a été introduit dans Git 1.7.11. Utilisez le mode similaire
+'current' au lieu de 'simple' si vous utilisez de temps en temps d'anciennes versions de Git)
+
+Décompte des objets: 34, fait.
+Delta compression using up to 4 threads.
+Compression des objets:   3% (1/30)   Compression des objets:   6% (2/30)   Compression des objets:  10% (3/30)   Compression des objets:  13% (4/30)   Compression des objets:  16% (5/30)   Compression des objets:  20% (6/30)   Compression des objets:  23% (7/30)   Compression des objets:  26% (8/30)   Compression des objets:  30% (9/30)   Compression des objets:  33% (10/30)   Compression des objets:  36% (11/30)   Compression des objets:  40% (12/30)   Compression des objets:  43% (13/30)   Compression des objets:  46% (14/30)   Compression des objets:  50% (15/30)   Compression des objets:  53% (16/30)   Compression des objets:  56% (17/30)   Compression des objets:  60% (18/30)   Compression des objets:  63% (19/30)   Compression des objets:  66% (20/30)   Compression des objets:  70% (21/30)   Compression des objets:  73% (22/30)   Compression des objets:  76% (23/30)   Compression des objets:  80% (24/30)   Compression des objets:  83% (25/30)   Compression des objets:  86% (26/30)   Compression des objets:  90% (27/30)   Compression des objets:  93% (28/30)   Compression des objets:  96% (29/30)   Compression des objets: 100% (30/30)   Compression des objets: 100% (30/30), fait.
+Écriture des objets:   2% (1/34)   Écriture des objets:   5% (2/34)   Écriture des objets:   8% (3/34)   Écriture des objets:  11% (4/34)   Écriture des objets:  14% (5/34)   Écriture des objets:  17% (6/34)   Écriture des objets:  20% (7/34)   Écriture des objets:  23% (8/34)   Écriture des objets:  26% (9/34)   Écriture des objets:  29% (10/34)   Écriture des objets:  32% (11/34)   Écriture des objets:  35% (12/34)   Écriture des objets:  38% (13/34)   Écriture des objets:  41% (14/34)   Écriture des objets:  44% (15/34)   Écriture des objets:  47% (16/34)   Écriture des objets:  50% (17/34)   Écriture des objets:  52% (18/34)   Écriture des objets:  55% (19/34)   Écriture des objets:  58% (20/34)   Écriture des objets:  61% (21/34)   Écriture des objets:  64% (22/34)   Écriture des objets:  67% (23/34)   Écriture des objets:  70% (24/34)   Écriture des objets:  73% (25/34)   Écriture des objets:  76% (26/34)   Écriture des objets:  79% (27/34)   Écriture des objets:  82% (28/34)   Écriture des objets:  85% (29/34)   Écriture des objets:  88% (30/34)   Écriture des objets:  91% (31/34)   Écriture des objets:  94% (32/34)   Écriture des objets:  97% (33/34)   Écriture des objets: 100% (34/34)   Écriture des objets: 100% (34/34), 3.73 KiB | 0 bytes/s, fait.
+Total 34 (delta 20), reused 0 (delta 0)
+remote: Resolving deltas:   0% (0/20)   [Kremote: Resolving deltas:   5% (1/20)   [Kremote: Resolving deltas:  10% (2/20)   [Kremote: Resolving deltas:  15% (3/20)   [Kremote: Resolving deltas:  20% (4/20)   [Kremote: Resolving deltas:  25% (5/20)   [Kremote: Resolving deltas:  30% (6/20)   [Kremote: Resolving deltas:  35% (7/20)   [Kremote: Resolving deltas:  40% (8/20)   [Kremote: Resolving deltas:  45% (9/20)   [Kremote: Resolving deltas:  50% (10/20)   [Kremote: Resolving deltas:  55% (11/20)   [Kremote: Resolving deltas:  60% (12/20)   [Kremote: Resolving deltas:  65% (13/20)   [Kremote: Resolving deltas:  70% (14/20)   [Kremote: Resolving deltas:  75% (15/20)   [Kremote: Resolving deltas:  80% (16/20)   [Kremote: Resolving deltas:  85% (17/20)   [Kremote: Resolving deltas:  90% (18/20)   [Kremote: Resolving deltas:  95% (19/20)   [Kremote: Resolving deltas: 100% (20/20)   [Kremote: Resolving deltas: 100% (20/20), completed with 20 local objects.[K
+To https://github.com/ColinFay/writing-r-extensions.git
+   352366a..96c6f24  master -> master
+]0;/home/colin/R/writing-r-extensions]0;colin@colin-MacBookPro: ~/R/writing-r-extensions[01;32mcolin@colin-MacBookPro[00m:[01;34m~/R/writing-r-extensions[00m$ déconnexion
+git pull
+Already up-to-date.
+]0;/home/colin/R/writing-r-extensions]0;colin@colin-MacBookPro: ~/R/writing-r-extensions[01;32mcolin@colin-MacBookPro[00m:[01;34m~/R/writing-r-extensions[00m$ git commit -a

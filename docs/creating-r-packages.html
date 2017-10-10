@@ -203,7 +203,157 @@ For the conventions for files NEWS and ChangeLog in the GNU project see <a href=
 The package subdirectory should be given the same name as the package. Because some file systems (e.g., those on Windows and by default on OS X) are not case-sensitive, to maintain portability it is strongly recommended that case distinctions not be used to distinguish different packages. For example, if you have a package named foo, do not also create a package named Foo.
 </p>
 <p>
-To ensure that file names are valid across file systems and supported operating systems, the ASCII control characters as well as the characters ‘“’, ‘*’, ‘:’, ‘/’, ‘&lt;’, ‘&gt;’, ‘?’, ‘\’, and ‘|’ are not allowed in file names. In addition, files with names ‘con’, ‘prn’, ‘aux’, ‘clock<span class="math inline">\(’, ‘nul’, ‘com1’ to ‘com9’, and ‘lpt1’ to ‘lpt9’ after conversion to lower case and stripping possible “extensions” (e.g., ‘lpt5.foo.bar’), are disallowed. Also, file names in the same directory must not differ only by case (see the previous paragraph). In addition, the basenames of ‘.Rd’ files may be used in URLs and so must be ASCII and not contain &lt;code class=&quot;calibre2&quot;&gt;%&lt;/code&gt;. For maximal portability filenames should only contain only ASCII characters not excluded already (that is &lt;code class=&quot;calibre2&quot;&gt;A-Za-z0-9._!#\)</span>%&amp;+,;=@^(){}’[]</code> — we exclude space as many utilities do not accept spaces in file paths): non-English alphabetic characters cannot be guaranteed to be supported in all locales. It would be good practice to avoid the shell metacharacters <code class="calibre2">(){}‘[]<span class="math inline">\(~&lt;/code&gt;: &lt;code class=&quot;calibre2&quot;&gt;~&lt;/code&gt; is also used as part of ‘8.3’ filenames on Windows. In addition, packages are normally distributed as tarballs, and these have a limit on path lengths: for maximal portability 100 bytes.&lt;/p&gt; &lt;p&gt;A source package if possible should not contain binary executable files: they are not portable, and a security risk if they are of the appropriate architecture. &lt;code class=&quot;calibre2&quot;&gt;R CMD check&lt;/code&gt; will warn about them&lt;a href=&quot;concept-index.html#FOOT4&quot; id=&quot;DOCF4&quot;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/a&gt; unless they are listed (one filepath per line) in a file BinaryFiles at the top level of the package. Note that CRAN will not accept submissions containing binary files even if they are listed.&lt;/p&gt; &lt;p&gt;The R function &lt;code class=&quot;calibre2&quot;&gt;package.skeleton&lt;/code&gt; can help to create the structure for a new package: see its help page for details.&lt;/p&gt; &lt;hr /&gt; &lt;p&gt;&lt;a href=&quot;&quot; id=&quot;The-DESCRIPTION-file&quot;&gt;&lt;/a&gt; &lt;a href=&quot;&quot; id=&quot;The-DESCRIPTION-file-1&quot;&gt;&lt;/a&gt;&lt;/p&gt; &lt;h4 id=&quot;the-description-file&quot; class=&quot;subsection&quot;&gt;1.1.1 The DESCRIPTION file&lt;/h4&gt; &lt;p&gt;&lt;a href=&quot;&quot; id=&quot;index-DESCRIPTION-file&quot;&gt;&lt;/a&gt;&lt;/p&gt; &lt;p&gt;The DESCRIPTION file contains basic information about the package in the following format:&lt;/p&gt; &lt;blockquote&gt; &lt;table&gt; &lt;colgroup&gt; &lt;col width=&quot;100%&quot; /&gt; &lt;/colgroup&gt; &lt;tbody&gt; &lt;tr class=&quot;odd&quot;&gt; &lt;td align=&quot;left&quot;&gt;&lt;div class=&quot;example&quot;&gt; &lt;pre class=&quot;smallexample&quot;&gt;&lt;code&gt;Package: pkgname Version: 0.5-1 Date: 2015-01-01 Title: My First Collection of Functions Authors@R: c(person(&amp;quot;Joe&amp;quot;, &amp;quot;Developer&amp;quot;, role = c(&amp;quot;aut&amp;quot;, &amp;quot;cre&amp;quot;),  email = &amp;quot;Joe.Developer@some.domain.net&amp;quot;),  person(&amp;quot;Pat&amp;quot;, &amp;quot;Developer&amp;quot;, role = &amp;quot;aut&amp;quot;),  person(&amp;quot;A.&amp;quot;, &amp;quot;User&amp;quot;, role = &amp;quot;ctb&amp;quot;,  email = &amp;quot;A.User@whereever.net&amp;quot;)) Author: Joe Developer [aut, cre],  Pat Developer [aut],  A. User [ctb] Maintainer: Joe Developer &amp;lt;Joe.Developer@some.domain.net&amp;gt; Depends: R (&amp;gt;= 3.1.0), nlme Suggests: MASS Description: A (one paragraph) description of what  the package does and why it may be useful. License: GPL (&amp;gt;= 2) URL: https://www.r-project.org, http://www.another.url BugReports: https://pkgname.bugtracker.url&lt;/code&gt;&lt;/pre&gt; &lt;/div&gt;&lt;/td&gt; &lt;/tr&gt; &lt;/tbody&gt; &lt;/table&gt; &lt;/blockquote&gt; &lt;p&gt;The format is that of a version of a ‘Debian Control File’ (see the help for ‘read.dcf’ and &lt;a href=&quot;https://www.debian.org/doc/debian-policy/ch-controlfields.html&quot; class=&quot;uri&quot;&gt;https://www.debian.org/doc/debian-policy/ch-controlfields.html&lt;/a&gt;: R does not require encoding in UTF-8 and does not support comments starting with ‘#’). Fields start with an ASCII name immediately followed by a colon: the value starts after the colon and a space. Continuation lines (for example, for descriptions longer than one line) start with a space or tab. Field names are case-sensitive: all those used by R are capitalized.&lt;/p&gt; &lt;p&gt;For maximal portability, the DESCRIPTION file should be written entirely in ASCII — if this is not possible it must contain an ‘Encoding’ field (see below).&lt;/p&gt; &lt;p&gt;Several optional fields take &lt;em&gt;logical values&lt;/em&gt;: these can be specified as ‘yes’, ‘true’, ‘no’ or ‘false’: capitalized values are also accepted.&lt;/p&gt; &lt;p&gt;The ‘Package’, ‘Version’, ‘License’, ‘Description’, ‘Title’, ‘Author’, and ‘Maintainer’ fields are mandatory, all other fields are optional. Fields ‘Author’ and ‘Maintainer’ can be auto-generated from ‘Authors@R’, and may be omitted if the latter is provided: however if they are not ASCII we recommend that they are provided.&lt;/p&gt; &lt;p&gt;The mandatory ‘Package’ field gives the name of the package. This should contain only (ASCII) letters, numbers and dot, have at least two characters and start with a letter and not end in a dot. If it needs explaining, this should be done in the ‘Description’ field (and not the ‘Title’ field).&lt;/p&gt; &lt;p&gt;The mandatory ‘Version’ field gives the version of the package. This is a sequence of at least &lt;em&gt;two&lt;/em&gt; (and usually three) non-negative integers separated by single ‘.’ or ‘-’ characters. The canonical form is as shown in the example, and a version such as ‘0.01’ or ‘0.01.0’ will be handled as if it were ‘0.1-0’. It is &lt;strong&gt;not&lt;/strong&gt; a decimal number, so for example &lt;code class=&quot;calibre2&quot;&gt;0.9 &amp;lt; 0.75&lt;/code&gt; since &lt;code class=&quot;calibre2&quot;&gt;9 &amp;lt; 75&lt;/code&gt;.&lt;/p&gt; &lt;p&gt;The mandatory ‘License’ field is discussed in the next subsection.&lt;/p&gt; &lt;p&gt;The mandatory ‘Title’ field should give a &lt;em&gt;short&lt;/em&gt; description of the package. Some package listings may truncate the title to 65 characters. It should use &lt;em&gt;title case&lt;/em&gt; (that is, use capitals for the principal words: &lt;code class=&quot;calibre2&quot;&gt;tools::toTitleCase&lt;/code&gt; can help you with this), not use any markup, not have any continuation lines, and not end in a period (unless part of …). Do not repeat the package name: it is often used prefixed by the name. Refer to other packages and external software in single quotes, and to book titles (and similar) in double quotes.&lt;/p&gt; &lt;p&gt;The mandatory ‘Description’ field should give a &lt;em&gt;comprehensive&lt;/em&gt; description of what the package does. One can use several (complete) sentences, but only one paragraph. It should be intelligible to all the intended readership (e.g. for a CRAN package to all CRAN users). It is good practice not to start with the package name, ‘This package’ or similar. As with the ‘Title’ field, double quotes should be used for quotations (including titles of books and articles), and single quotes for non-English usage, including names of other packages and external software. This field should also be used for explaining the package name if necessary. URLs should be enclosed in angle brackets, e.g. ‘&amp;lt;https://www.r-project.org&amp;gt;’: see also &lt;a href=&quot;#Specifying-URLs&quot;&gt;Specifying URLs&lt;/a&gt;.&lt;/p&gt; &lt;p&gt;The mandatory ‘Author’ field describes who wrote &lt;em&gt;the package&lt;/em&gt;. It is a plain text field intended for human readers, but not for automatic processing (such as extracting the email addresses of all listed contributors: for that use ‘Authors@R’). Note that all significant contributors must be included: if you wrote an R wrapper for the work of others included in the src directory, you are not the sole (and maybe not even the main) author.&lt;/p&gt; &lt;p&gt;The mandatory ‘Maintainer’ field should give a &lt;em&gt;single&lt;/em&gt; name followed by a &lt;em&gt;valid&lt;/em&gt; (RFC 2822) email address in angle brackets. It should not end in a period or comma. This field is what is reported by the &lt;code class=&quot;calibre2&quot;&gt;maintainer&lt;/code&gt; function and used by &lt;code class=&quot;calibre2&quot;&gt;bug.report&lt;/code&gt;. For a CRAN package it should be a &lt;em&gt;person&lt;/em&gt;, not a mailing list and not a corporate entity: do ensure that it is valid and will remain valid for the lifetime of the package.&lt;/p&gt; &lt;p&gt;Note that the &lt;em&gt;display name&lt;/em&gt; (the part before the address in angle brackets) should be enclosed in double quotes if it contains non-alphanumeric characters such as comma or period. (The current standard, RFC 5322, allows periods but RFC 2822 did not.)&lt;/p&gt; &lt;p&gt;Both ‘Author’ and ‘Maintainer’ fields can be omitted if a suitable ‘Authors@R’ field is given. This field can be used to provide a refined and machine-readable description of the package “authors” (in particular specifying their precise &lt;em&gt;roles&lt;/em&gt;), via suitable R code. It should create an object of class &lt;code class=&quot;calibre2&quot;&gt;&amp;quot;person&amp;quot;&lt;/code&gt;, by either a call to &lt;code class=&quot;calibre2&quot;&gt;person&lt;/code&gt; or a series of calls (one per “author”) concatenated by &lt;code class=&quot;calibre2&quot;&gt;c()&lt;/code&gt;: see the example DESCRIPTION file above. The roles can include ‘&amp;quot;aut&amp;quot;’ (author) for full authors, ‘&amp;quot;cre&amp;quot;’ (creator) for the package maintainer, and ‘&amp;quot;ctb&amp;quot;’ (contributor) for other contributors, ‘&amp;quot;cph&amp;quot;’ (copyright holder), among others. See &lt;code class=&quot;calibre2&quot;&gt;?person&lt;/code&gt; for more information. Note that no role is assumed by default. Auto-generated package citation information takes advantage of this specification. The ‘Author’ and ‘Maintainer’ fields are auto-generated from it if needed when building&lt;a href=&quot;concept-index.html#FOOT5&quot; id=&quot;DOCF5&quot;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/a&gt; or installing.&lt;/p&gt; &lt;p&gt;&lt;a href=&quot;&quot; id=&quot;index-COPYRIGHTS&quot;&gt;&lt;/a&gt;&lt;/p&gt; &lt;p&gt;An optional ‘Copyright’ field can be used where the copyright holder(s) are not the authors. If necessary, this can refer to an installed file: the convention is to use file inst/COPYRIGHTS.&lt;/p&gt; &lt;p&gt;The optional ‘Date’ field gives the &lt;em&gt;release date&lt;/em&gt; of the current version of the package. It is strongly recommended&lt;a href=&quot;concept-index.html#FOOT6&quot; id=&quot;DOCF6&quot;&gt;&lt;sup&gt;6&lt;/sup&gt;&lt;/a&gt; to use the ‘yyyy-mm-dd’ format conforming to the ISO 8601 standard.&lt;/p&gt; &lt;p&gt;The ‘Depends’, ‘Imports’, ‘Suggests’, ‘Enhances’, ‘LinkingTo’ and ‘Additional_repositories’ fields are discussed in a later subsection.&lt;/p&gt; &lt;p&gt;Dependencies external to the R system should be listed in the ‘SystemRequirements’ field, possibly amplified in a separate README file.&lt;/p&gt; &lt;p&gt;The ‘URL’ field may give a list of URLs separated by commas or whitespace, for example the homepage of the author or a page where additional material describing the software can be found. These URLs are converted to active hyperlinks in CRAN package listings. See &lt;a href=&quot;#Specifying-URLs&quot;&gt;Specifying URLs&lt;/a&gt;.&lt;/p&gt; &lt;p&gt;The ‘BugReports’ field may contain a single URL to which bug reports about the package should be submitted. This URL will be used by &lt;code class=&quot;calibre2&quot;&gt;bug.report&lt;/code&gt; instead of sending an email to the maintainer. A browser is opened for a ‘http://’ or ‘https://’ URL. As from R 3.4.0, &lt;code class=&quot;calibre2&quot;&gt;bug.report&lt;/code&gt; will try to extract an email address (preferably from a ‘mailto:’ URL or enclosed in angle brackets).&lt;/p&gt; &lt;p&gt;Base and recommended packages (i.e., packages contained in the R source distribution or available from CRAN and recommended to be included in every binary distribution of R) have a ‘Priority’ field with value ‘base’ or ‘recommended’, respectively. These priorities must not be used by other packages.&lt;/p&gt; &lt;p&gt;A ‘Collate’ field can be used for controlling the collation order for the R code files in a package when these are processed for package installation. The default is to collate according to the ‘C’ locale. If present, the collate specification must list &lt;em&gt;all&lt;/em&gt; R code files in the package (taking possible OS-specific subdirectories into account, see &lt;a href=&quot;#Package-subdirectories&quot;&gt;Package subdirectories&lt;/a&gt;) as a whitespace separated list of file paths relative to the R subdirectory. Paths containing white space or quotes need to be quoted. An OS-specific collation field (‘Collate.unix’ or ‘Collate.windows’) will be used in preference to ‘Collate’.&lt;/p&gt; &lt;p&gt;The ‘LazyData’ logical field controls whether the R datasets use lazy-loading. A ‘LazyLoad’ field was used in versions prior to 2.14.0, but now is ignored.&lt;/p&gt; &lt;p&gt;The ‘KeepSource’ logical field controls if the package code is sourced using &lt;code class=&quot;calibre2&quot;&gt;keep.source = TRUE&lt;/code&gt; or &lt;code class=&quot;calibre2&quot;&gt;FALSE&lt;/code&gt;: it might be needed exceptionally for a package designed to always be used with &lt;code class=&quot;calibre2&quot;&gt;keep.source = TRUE&lt;/code&gt;.&lt;/p&gt; &lt;p&gt;The ‘ByteCompile’ logical field controls if the package code is to be byte-compiled on installation: the default is currently not to, so this may be useful for a package known to benefit particularly from byte-compilation (which can take quite a long time and increases the installed size of the package). It is used for the recommended packages, as they are byte-compiled when R is installed and for consistency should be byte-compiled when updated. This can be overridden by installing with flag --no-byte-compile.&lt;/p&gt; &lt;p&gt;The ‘ZipData’ logical field was used to control whether the automatic Windows build would zip up the data directory or not prior to R 2.13.0: it is now ignored.&lt;/p&gt; &lt;p&gt;The ‘Biarch’ logical field is used on Windows to select the &lt;code class=&quot;calibre2&quot;&gt;INSTALL&lt;/code&gt; option --force-biarch for this package.&lt;/p&gt; &lt;p&gt;The ‘BuildVignettes’ logical field can be set to a false value to stop &lt;code class=&quot;calibre2&quot;&gt;R CMD build&lt;/code&gt; from attempting to build the vignettes, as well as preventing&lt;a href=&quot;concept-index.html#FOOT7&quot; id=&quot;DOCF7&quot;&gt;&lt;sup&gt;7&lt;/sup&gt;&lt;/a&gt; &lt;code class=&quot;calibre2&quot;&gt;R CMD check&lt;/code&gt; from testing this. This should only be used exceptionally, for example if the PDFs include large figures which are not part of the package sources (and hence only in packages which do not have an Open Source license).&lt;/p&gt; &lt;p&gt;The ‘VignetteBuilder’ field names (in a comma-separated list) packages that provide an engine for building vignettes. These may include the current package, or ones listed in ‘Depends’, ‘Suggests’ or ‘Imports’. The &lt;strong&gt;utils&lt;/strong&gt; package is always implicitly appended. See &lt;a href=&quot;writing-package-vignettes.html#Non_002dSweave-vignettes&quot;&gt;Non-Sweave vignettes&lt;/a&gt; for details.&lt;/p&gt; &lt;p&gt;If the DESCRIPTION file is not entirely in ASCII it should contain an ‘Encoding’ field specifying an encoding. This is used as the encoding of the DESCRIPTION file itself and of the R and NAMESPACE files, and as the default encoding of .Rd files. The examples are assumed to be in this encoding when running &lt;code class=&quot;calibre2&quot;&gt;R CMD check&lt;/code&gt;, and it is used for the encoding of the &lt;code class=&quot;calibre2&quot;&gt;CITATION&lt;/code&gt; file. Only encoding names &lt;code class=&quot;calibre2&quot;&gt;latin1&lt;/code&gt;, &lt;code class=&quot;calibre2&quot;&gt;latin2&lt;/code&gt; and &lt;code class=&quot;calibre2&quot;&gt;UTF-8&lt;/code&gt; are known to be portable. (Do not specify an encoding unless one is actually needed: doing so makes the package &lt;em&gt;less&lt;/em&gt; portable. If a package has a specified encoding, you should run &lt;code class=&quot;calibre2&quot;&gt;R CMD build&lt;/code&gt; etc in a locale using that encoding.)&lt;/p&gt; &lt;p&gt;The ‘NeedsCompilation’ field should be set to &lt;code class=&quot;calibre2&quot;&gt;&amp;quot;yes&amp;quot;&lt;/code&gt; if the package contains code which to be compiled, otherwise &lt;code class=&quot;calibre2&quot;&gt;&amp;quot;no&amp;quot;&lt;/code&gt; (when the package could be installed from source on any platform without additional tools). This is used by &lt;code class=&quot;calibre2&quot;&gt;install.packages(type = &amp;quot;both&amp;quot;)&lt;/code&gt; in R &amp;gt;= 2.15.2 on platforms where binary packages are the norm: it is normally set by &lt;code class=&quot;calibre2&quot;&gt;R CMD build&lt;/code&gt; or the repository assuming compilation is required if and only if the package has a src directory.&lt;/p&gt; &lt;p&gt;The ‘OS_type’ field specifies the OS(es) for which the package is intended. If present, it should be one of &lt;code class=&quot;calibre2&quot;&gt;unix&lt;/code&gt; or &lt;code class=&quot;calibre2&quot;&gt;windows&lt;/code&gt;, and indicates that the package can only be installed on a platform with ‘.Platform\)</span>OS.type’ having that value.
+To ensure that file names are valid across file systems and supported operating systems, the ASCII control characters as well as the characters ‘“’, ‘*’, ‘:’, ‘/’, ‘&lt;’, ‘&gt;’, ‘?’, ‘\’, and ‘|’ are not allowed in file names. In addition, files with names ‘con’, ‘prn’, ‘aux’, ‘clock$’, ‘nul’, ‘com1’ to ‘com9’, and ‘lpt1’ to ‘lpt9’ after conversion to lower case and stripping possible “extensions” (e.g., ‘lpt5.foo.bar’), are disallowed. Also, file names in the same directory must not differ only by case (see the previous paragraph). In addition, the basenames of ‘.Rd’ files may be used in URLs and so must be ASCII and not contain <code class="calibre2">%</code>. For maximal portability filenames should only contain only ASCII characters not excluded already (that is <code class="calibre2">A-Za-z0-9._!#$%&amp;+,;=@^(){}‘[]</code> — we exclude space as many utilities do not accept spaces in file paths): non-English alphabetic characters cannot be guaranteed to be supported in all locales. It would be good practice to avoid the shell metacharacters <code class="calibre2">(){}’[]$~</code>: <code class="calibre2">~</code> is also used as part of ‘8.3’ filenames on Windows. In addition, packages are normally distributed as tarballs, and these have a limit on path lengths: for maximal portability 100 bytes.
+</p>
+<p>
+A source package if possible should not contain binary executable files: they are not portable, and a security risk if they are of the appropriate architecture. <code class="calibre2">R CMD check</code> will warn about them<a href="concept-index.html#FOOT4" id="DOCF4"><sup>4</sup></a> unless they are listed (one filepath per line) in a file BinaryFiles at the top level of the package. Note that CRAN will not accept submissions containing binary files even if they are listed.
+</p>
+<p>
+The R function <code class="calibre2">package.skeleton</code> can help to create the structure for a new package: see its help page for details.
+</p>
+<hr />
+<p>
+<a href="" id="The-DESCRIPTION-file"></a> <a href="" id="The-DESCRIPTION-file-1"></a>
+</p>
+<h4 id="the-description-file" class="subsection">
+1.1.1 The DESCRIPTION file
+</h4>
+<p>
+<a href="" id="index-DESCRIPTION-file"></a>
+</p>
+<p>
+The DESCRIPTION file contains basic information about the package in the following format:
+</p>
+<blockquote>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left">
+<div class="example">
+<pre class="smallexample"><code>Package: pkgname
+Version: 0.5-1
+Date: 2015-01-01
+Title: My First Collection of Functions
+Authors@R: c(person(&quot;Joe&quot;, &quot;Developer&quot;, role = c(&quot;aut&quot;, &quot;cre&quot;),
+                     email = &quot;Joe.Developer@some.domain.net&quot;),
+              person(&quot;Pat&quot;, &quot;Developer&quot;, role = &quot;aut&quot;),
+              person(&quot;A.&quot;, &quot;User&quot;, role = &quot;ctb&quot;,
+                     email = &quot;A.User@whereever.net&quot;))
+Author: Joe Developer [aut, cre],
+  Pat Developer [aut],
+  A. User [ctb]
+Maintainer: Joe Developer &lt;Joe.Developer@some.domain.net&gt;
+Depends: R (&gt;= 3.1.0), nlme
+Suggests: MASS
+Description: A (one paragraph) description of what
+  the package does and why it may be useful.
+License: GPL (&gt;= 2)
+URL: https://www.r-project.org, http://www.another.url
+BugReports: https://pkgname.bugtracker.url</code></pre>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>
+The format is that of a version of a ‘Debian Control File’ (see the help for ‘read.dcf’ and <a href="https://www.debian.org/doc/debian-policy/ch-controlfields.html" class="uri">https://www.debian.org/doc/debian-policy/ch-controlfields.html</a>: R does not require encoding in UTF-8 and does not support comments starting with ‘#’). Fields start with an ASCII name immediately followed by a colon: the value starts after the colon and a space. Continuation lines (for example, for descriptions longer than one line) start with a space or tab. Field names are case-sensitive: all those used by R are capitalized.
+</p>
+<p>
+For maximal portability, the DESCRIPTION file should be written entirely in ASCII — if this is not possible it must contain an ‘Encoding’ field (see below).
+</p>
+<p>
+Several optional fields take <em>logical values</em>: these can be specified as ‘yes’, ‘true’, ‘no’ or ‘false’: capitalized values are also accepted.
+</p>
+<p>
+The ‘Package’, ‘Version’, ‘License’, ‘Description’, ‘Title’, ‘Author’, and ‘Maintainer’ fields are mandatory, all other fields are optional. Fields ‘Author’ and ‘Maintainer’ can be auto-generated from ‘<a href="mailto:Authors@R">Authors@R</a>’, and may be omitted if the latter is provided: however if they are not ASCII we recommend that they are provided.
+</p>
+<p>
+The mandatory ‘Package’ field gives the name of the package. This should contain only (ASCII) letters, numbers and dot, have at least two characters and start with a letter and not end in a dot. If it needs explaining, this should be done in the ‘Description’ field (and not the ‘Title’ field).
+</p>
+<p>
+The mandatory ‘Version’ field gives the version of the package. This is a sequence of at least <em>two</em> (and usually three) non-negative integers separated by single ‘.’ or ‘-’ characters. The canonical form is as shown in the example, and a version such as ‘0.01’ or ‘0.01.0’ will be handled as if it were ‘0.1-0’. It is <strong>not</strong> a decimal number, so for example <code class="calibre2">0.9 &lt; 0.75</code> since <code class="calibre2">9 &lt; 75</code>.
+</p>
+<p>
+The mandatory ‘License’ field is discussed in the next subsection.
+</p>
+<p>
+The mandatory ‘Title’ field should give a <em>short</em> description of the package. Some package listings may truncate the title to 65 characters. It should use <em>title case</em> (that is, use capitals for the principal words: <code class="calibre2">tools::toTitleCase</code> can help you with this), not use any markup, not have any continuation lines, and not end in a period (unless part of …). Do not repeat the package name: it is often used prefixed by the name. Refer to other packages and external software in single quotes, and to book titles (and similar) in double quotes.
+</p>
+<p>
+The mandatory ‘Description’ field should give a <em>comprehensive</em> description of what the package does. One can use several (complete) sentences, but only one paragraph. It should be intelligible to all the intended readership (e.g. for a CRAN package to all CRAN users). It is good practice not to start with the package name, ‘This package’ or similar. As with the ‘Title’ field, double quotes should be used for quotations (including titles of books and articles), and single quotes for non-English usage, including names of other packages and external software. This field should also be used for explaining the package name if necessary. URLs should be enclosed in angle brackets, e.g. ‘&lt;<a href="https://www.r-project.org%3E" class="uri">https://www.r-project.org&gt;</a>’: see also <a href="creating-r-packages.html#Specifying-URLs">Specifying URLs</a>.
+</p>
+<p>
+The mandatory ‘Author’ field describes who wrote <em>the package</em>. It is a plain text field intended for human readers, but not for automatic processing (such as extracting the email addresses of all listed contributors: for that use ‘<a href="mailto:Authors@R">Authors@R</a>’). Note that all significant contributors must be included: if you wrote an R wrapper for the work of others included in the src directory, you are not the sole (and maybe not even the main) author.
+</p>
+<p>
+The mandatory ‘Maintainer’ field should give a <em>single</em> name followed by a <em>valid</em> (RFC 2822) email address in angle brackets. It should not end in a period or comma. This field is what is reported by the <code class="calibre2">maintainer</code> function and used by <code class="calibre2">bug.report</code>. For a CRAN package it should be a <em>person</em>, not a mailing list and not a corporate entity: do ensure that it is valid and will remain valid for the lifetime of the package.
+</p>
+<p>
+Note that the <em>display name</em> (the part before the address in angle brackets) should be enclosed in double quotes if it contains non-alphanumeric characters such as comma or period. (The current standard, RFC 5322, allows periods but RFC 2822 did not.)
+</p>
+<p>
+Both ‘Author’ and ‘Maintainer’ fields can be omitted if a suitable ‘<a href="mailto:Authors@R">Authors@R</a>’ field is given. This field can be used to provide a refined and machine-readable description of the package “authors” (in particular specifying their precise <em>roles</em>), via suitable R code. It should create an object of class <code class="calibre2">“person”</code>, by either a call to <code class="calibre2">person</code> or a series of calls (one per “author”) concatenated by <code class="calibre2">c()</code>: see the example DESCRIPTION file above. The roles can include ‘“aut”’ (author) for full authors, ‘“cre”’ (creator) for the package maintainer, and ‘“ctb”’ (contributor) for other contributors, ‘“cph”’ (copyright holder), among others. See <code class="calibre2">?person</code> for more information. Note that no role is assumed by default. Auto-generated package citation information takes advantage of this specification. The ‘Author’ and ‘Maintainer’ fields are auto-generated from it if needed when building<a href="concept-index.html#FOOT5" id="DOCF5"><sup>5</sup></a> or installing.
+</p>
+<p>
+<a href="" id="index-COPYRIGHTS"></a>
+</p>
+<p>
+An optional ‘Copyright’ field can be used where the copyright holder(s) are not the authors. If necessary, this can refer to an installed file: the convention is to use file inst/COPYRIGHTS.
+</p>
+<p>
+The optional ‘Date’ field gives the <em>release date</em> of the current version of the package. It is strongly recommended<a href="concept-index.html#FOOT6" id="DOCF6"><sup>6</sup></a> to use the ‘yyyy-mm-dd’ format conforming to the ISO 8601 standard.
+</p>
+<p>
+The ‘Depends’, ‘Imports’, ‘Suggests’, ‘Enhances’, ‘LinkingTo’ and ‘Additional_repositories’ fields are discussed in a later subsection.
+</p>
+<p>
+Dependencies external to the R system should be listed in the ‘SystemRequirements’ field, possibly amplified in a separate README file.
+</p>
+<p>
+The ‘URL’ field may give a list of URLs separated by commas or whitespace, for example the homepage of the author or a page where additional material describing the software can be found. These URLs are converted to active hyperlinks in CRAN package listings. See <a href="creating-r-packages.html#Specifying-URLs">Specifying URLs</a>.
+</p>
+<p>
+The ‘BugReports’ field may contain a single URL to which bug reports about the package should be submitted. This URL will be used by <code class="calibre2">bug.report</code> instead of sending an email to the maintainer. A browser is opened for a ‘<a href="http://" class="uri">http://</a>’ or ‘<a href="https://" class="uri">https://</a>’ URL. As from R 3.4.0, <code class="calibre2">bug.report</code> will try to extract an email address (preferably from a ‘mailto:’ URL or enclosed in angle brackets).
+</p>
+<p>
+Base and recommended packages (i.e., packages contained in the R source distribution or available from CRAN and recommended to be included in every binary distribution of R) have a ‘Priority’ field with value ‘base’ or ‘recommended’, respectively. These priorities must not be used by other packages.
+</p>
+<p>
+A ‘Collate’ field can be used for controlling the collation order for the R code files in a package when these are processed for package installation. The default is to collate according to the ‘C’ locale. If present, the collate specification must list <em>all</em> R code files in the package (taking possible OS-specific subdirectories into account, see <a href="creating-r-packages.html#Package-subdirectories">Package subdirectories</a>) as a whitespace separated list of file paths relative to the R subdirectory. Paths containing white space or quotes need to be quoted. An OS-specific collation field (‘Collate.unix’ or ‘Collate.windows’) will be used in preference to ‘Collate’.
+</p>
+<p>
+The ‘LazyData’ logical field controls whether the R datasets use lazy-loading. A ‘LazyLoad’ field was used in versions prior to 2.14.0, but now is ignored.
+</p>
+<p>
+The ‘KeepSource’ logical field controls if the package code is sourced using <code class="calibre2">keep.source = TRUE</code> or <code class="calibre2">FALSE</code>: it might be needed exceptionally for a package designed to always be used with <code class="calibre2">keep.source = TRUE</code>.
+</p>
+<p>
+The ‘ByteCompile’ logical field controls if the package code is to be byte-compiled on installation: the default is currently not to, so this may be useful for a package known to benefit particularly from byte-compilation (which can take quite a long time and increases the installed size of the package). It is used for the recommended packages, as they are byte-compiled when R is installed and for consistency should be byte-compiled when updated. This can be overridden by installing with flag –no-byte-compile.
+</p>
+<p>
+The ‘ZipData’ logical field was used to control whether the automatic Windows build would zip up the data directory or not prior to R 2.13.0: it is now ignored.
+</p>
+<p>
+The ‘Biarch’ logical field is used on Windows to select the <code class="calibre2">INSTALL</code> option –force-biarch for this package.
+</p>
+<p>
+The ‘BuildVignettes’ logical field can be set to a false value to stop <code class="calibre2">R CMD build</code> from attempting to build the vignettes, as well as preventing<a href="concept-index.html#FOOT7" id="DOCF7"><sup>7</sup></a> <code class="calibre2">R CMD check</code> from testing this. This should only be used exceptionally, for example if the PDFs include large figures which are not part of the package sources (and hence only in packages which do not have an Open Source license).
+</p>
+<p>
+The ‘VignetteBuilder’ field names (in a comma-separated list) packages that provide an engine for building vignettes. These may include the current package, or ones listed in ‘Depends’, ‘Suggests’ or ‘Imports’. The <strong>utils</strong> package is always implicitly appended. See <a href="writing-package-vignettes.html#Non_002dSweave-vignettes">Non-Sweave vignettes</a> for details.
+</p>
+<p>
+If the DESCRIPTION file is not entirely in ASCII it should contain an ‘Encoding’ field specifying an encoding. This is used as the encoding of the DESCRIPTION file itself and of the R and NAMESPACE files, and as the default encoding of .Rd files. The examples are assumed to be in this encoding when running <code class="calibre2">R CMD check</code>, and it is used for the encoding of the <code class="calibre2">CITATION</code> file. Only encoding names <code class="calibre2">latin1</code>, <code class="calibre2">latin2</code> and <code class="calibre2">UTF-8</code> are known to be portable. (Do not specify an encoding unless one is actually needed: doing so makes the package <em>less</em> portable. If a package has a specified encoding, you should run <code class="calibre2">R CMD build</code> etc in a locale using that encoding.)
+</p>
+<p>
+The ‘NeedsCompilation’ field should be set to <code class="calibre2">“yes”</code> if the package contains code which to be compiled, otherwise <code class="calibre2">“no”</code> (when the package could be installed from source on any platform without additional tools). This is used by <code class="calibre2">install.packages(type = “both”)</code> in R &gt;= 2.15.2 on platforms where binary packages are the norm: it is normally set by <code class="calibre2">R CMD build</code> or the repository assuming compilation is required if and only if the package has a src directory.
+</p>
+<p>
+The ‘OS_type’ field specifies the OS(es) for which the package is intended. If present, it should be one of <code class="calibre2">unix</code> or <code class="calibre2">windows</code>, and indicates that the package can only be installed on a platform with ‘.Platform$OS.type’ having that value.
 </p>
 <p>
 The ‘Type’ field specifies the type of the package: see <a href="creating-r-packages.html#Package-types">Package types</a>.
@@ -731,30 +881,30 @@ One could also use different file fragments for available and missing functional
 You will very likely need to ensure that the same C compiler and compiler flags are used in the configure tests as when compiling R or your package. Under a Unix-alike, you can achieve this by including the following fragment early in configure.ac (<em>before</em> calling <code class="calibre2">AC_PROG_CC</code>)
 </p>
 <div class="example">
-<pre class="example1"><code>: ${R_HOME=`R RHOME`}
-if test -z &quot;${R_HOME}&quot;; then
+<pre class="example1"><code>: &#36;{R_HOME=`R RHOME`}
+if test -z &quot;&#36;{R_HOME}&quot;; then
   echo &quot;could not determine R_HOME&quot;
   exit 1
 fi
-CC=`&quot;${R_HOME}/bin/R&quot; CMD config CC`
-CFLAGS=`&quot;${R_HOME}/bin/R&quot; CMD config CFLAGS`
-CPPFLAGS=`&quot;${R_HOME}/bin/R&quot; CMD config CPPFLAGS`</code></pre>
+CC=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CC`
+CFLAGS=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CFLAGS`
+CPPFLAGS=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CPPFLAGS`</code></pre>
 </div>
 <p>
-(Using ‘<span class="math inline">\({R_HOME}/bin/R’ rather than just ‘R’ is necessary in order to use the correct version of R when running the script as part of &lt;code class=&quot;calibre2&quot;&gt;R CMD INSTALL&lt;/code&gt;, and the quotes since ‘\)</span>{R_HOME}’ might contain spaces.)
+(Using ‘${R_HOME}/bin/R’ rather than just ‘R’ is necessary in order to use the correct version of R when running the script as part of <code class="calibre2">R CMD INSTALL</code>, and the quotes since ‘${R_HOME}’ might contain spaces.)
 </p>
 <p>
 If your code does load checks then you may also need
 </p>
 <div class="example">
-<pre class="example1"><code>LDFLAGS=`&quot;${R_HOME}/bin/R&quot; CMD config LDFLAGS`</code></pre>
+<pre class="example1"><code>LDFLAGS=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config LDFLAGS`</code></pre>
 </div>
 <p>
 and packages written with C++ need to pick up the details for the C++ compiler and switch the current language to C++ by something like
 </p>
 <div class="example">
-<pre class="example1"><code>CXX=`&quot;${R_HOME}/bin/R&quot; CMD config CXX`
-CXXFLAGS=`&quot;${R_HOME}/bin/R&quot; CMD config CXXFLAGS`
+<pre class="example1"><code>CXX=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CXX`
+CXXFLAGS=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CXXFLAGS`
 AC_LANG(C++)</code></pre>
 </div>
 <p>
@@ -770,9 +920,9 @@ You can use <code class="calibre2">R CMD config</code> for getting the value of 
 To check for an external BLAS library using the <code class="calibre2">ACX_BLAS</code> macro from the official Autoconf Macro Archive, one can simply do
 </p>
 <div class="example">
-<pre class="example1"><code>F77=`&quot;${R_HOME}/bin/R&quot; CMD config F77`
+<pre class="example1"><code>F77=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config F77`
 AC_PROG_F77
-FLIBS=`&quot;${R_HOME}/bin/R&quot; CMD config FLIBS`
+FLIBS=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config FLIBS`
 ACX_BLAS([], AC_MSG_ERROR([could not find your BLAS library], 1))</code></pre>
 </div>
 <p>
@@ -793,21 +943,21 @@ As this example shows, <code class="calibre2">configure</code> often creates wor
 If your configure script needs auxiliary files, it is recommended that you ship them in a tools directory (as R itself does).
 </p>
 <p>
-You should bear in mind that the configure script will not be used on Windows systems. If your package is to be made publicly available, please give enough information for a user on a non-Unix-alike platform to configure it manually, or provide a configure.win script to be used on that platform. (Optionally, there can be a cleanup.win script. Both should be shell scripts to be executed by <code class="calibre2">ash</code>, which is a minimal version of Bourne-style <code class="calibre2">sh</code>.) When configure.win is run the environment variables <code class="calibre2">R_HOME</code> (which uses ‘/’ as the file separator), <code class="calibre2">R_ARCH</code> and Use <code class="calibre2">R_ARCH_BIN</code> will be set. Use <code class="calibre2">R_ARCH</code> to decide if this is a 64-bit build (its value there is ‘/x64’) and to install DLLs to the correct place (<span class="math inline">\({R_HOME}/libs\)</span>{R_ARCH}). Use <code class="calibre2">R_ARCH_BIN</code> to find the correct place under the bin directory, e.g. <span class="math inline">\({R_HOME}/bin\)</span>{R_ARCH_BIN}/Rscript.exe.
+You should bear in mind that the configure script will not be used on Windows systems. If your package is to be made publicly available, please give enough information for a user on a non-Unix-alike platform to configure it manually, or provide a configure.win script to be used on that platform. (Optionally, there can be a cleanup.win script. Both should be shell scripts to be executed by <code class="calibre2">ash</code>, which is a minimal version of Bourne-style <code class="calibre2">sh</code>.) When configure.win is run the environment variables <code class="calibre2">R_HOME</code> (which uses ‘/’ as the file separator), <code class="calibre2">R_ARCH</code> and Use <code class="calibre2">R_ARCH_BIN</code> will be set. Use <code class="calibre2">R_ARCH</code> to decide if this is a 64-bit build (its value there is ‘/x64’) and to install DLLs to the correct place (${R_HOME}/libs${R_ARCH}). Use <code class="calibre2">R_ARCH_BIN</code> to find the correct place under the bin directory, e.g. ${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe.
 </p>
 <p>
-In some rare circumstances, the configuration and cleanup scripts need to know the location into which the package is being installed. An example of this is a package that uses C code and creates two shared object/DLLs. Usually, the object that is dynamically loaded by R is linked against the second, dependent, object. On some systems, we can add the location of this dependent object to the object that is dynamically loaded by R. This means that each user does not have to set the value of the <code class="calibre2">LD_LIBRARY_PATH</code> (or equivalent) environment variable, but that the secondary object is automatically resolved. Another example is when a package installs support files that are required at run time, and their location is substituted into an R data structure at installation time. <a href="" id="index-R_005fLIBRARY_005fDIR"></a> <a href="" id="index-R_005fPACKAGE_005fDIR"></a> <a href="" id="index-R_005fPACKAGE_005fNAME"></a> The names of the top-level library directory (i.e., specifiable <em>via</em> the ‘-l’ argument) and the directory of the package itself are made available to the installation scripts <em>via</em> the two shell/environment variables <code class="calibre2">R_LIBRARY_DIR</code> and <code class="calibre2">R_PACKAGE_DIR</code>. Additionally, the name of the package (e.g. ‘survival’ or ‘MASS’) being installed is available from the environment variable <code class="calibre2">R_PACKAGE_NAME</code>. (Currently the value of <code class="calibre2">R_PACKAGE_DIR</code> is always <code class="calibre2"><span class="math inline">\({R_LIBRARY_DIR}/\)</span>{R_PACKAGE_NAME}</code>, but this used not to be the case when versioned installs were allowed. Its main use is in configure.win scripts for the installation path of external software’s DLLs.) Note that the value of <code class="calibre2">R_PACKAGE_DIR</code> may contain spaces and other shell-unfriendly characters, and so should be quoted in makefiles and configure scripts.
+In some rare circumstances, the configuration and cleanup scripts need to know the location into which the package is being installed. An example of this is a package that uses C code and creates two shared object/DLLs. Usually, the object that is dynamically loaded by R is linked against the second, dependent, object. On some systems, we can add the location of this dependent object to the object that is dynamically loaded by R. This means that each user does not have to set the value of the <code class="calibre2">LD_LIBRARY_PATH</code> (or equivalent) environment variable, but that the secondary object is automatically resolved. Another example is when a package installs support files that are required at run time, and their location is substituted into an R data structure at installation time. <a href="" id="index-R_005fLIBRARY_005fDIR"></a> <a href="" id="index-R_005fPACKAGE_005fDIR"></a> <a href="" id="index-R_005fPACKAGE_005fNAME"></a> The names of the top-level library directory (i.e., specifiable <em>via</em> the ‘-l’ argument) and the directory of the package itself are made available to the installation scripts <em>via</em> the two shell/environment variables <code class="calibre2">R_LIBRARY_DIR</code> and <code class="calibre2">R_PACKAGE_DIR</code>. Additionally, the name of the package (e.g. ‘survival’ or ‘MASS’) being installed is available from the environment variable <code class="calibre2">R_PACKAGE_NAME</code>. (Currently the value of <code class="calibre2">R_PACKAGE_DIR</code> is always <code class="calibre2">${R_LIBRARY_DIR}/${R_PACKAGE_NAME}</code>, but this used not to be the case when versioned installs were allowed. Its main use is in configure.win scripts for the installation path of external software’s DLLs.) Note that the value of <code class="calibre2">R_PACKAGE_DIR</code> may contain spaces and other shell-unfriendly characters, and so should be quoted in makefiles and configure scripts.
 </p>
 <p>
 One of the more tricky tasks can be to find the headers and libraries of external software. One tool which is increasingly available on Unix-alikes (but not by default on macOS) to do this is <code class="calibre2">pkg-config</code>. The configure script will need to test for the presence of the command itself (see for example package <a href="https://CRAN.R-project.org/package=Cairo"><strong>Cairo</strong></a>), and if present it can be asked if the software is installed, of a suitable version and for compilation/linking flags by e.g.
 </p>
 <div class="example">
-<pre class="example1"><code>$ pkg-config --exists ‘QtCore &gt;= 4.0.0’  # check the status
-$ pkg-config --modversion QtCore
+<pre class="example1"><code>&#36; pkg-config --exists ‘QtCore &gt;= 4.0.0’  # check the status
+&#36; pkg-config --modversion QtCore
 4.7.1
-$ pkg-config --cflags QtCore
+&#36; pkg-config --cflags QtCore
 -DQT_SHARED -I/usr/include/QtCore
-$ pkg-config --libs QtCore
+&#36; pkg-config --libs QtCore
 -lQtCore</code></pre>
 </div>
 <p>
@@ -917,21 +1067,21 @@ Note that Makevars should not normally contain targets, as it is included before
 <div class="example">
 <pre class="example1"><code>PKG_LIBS = @BLAS_LIBS@
 
-SLAMC_FFLAGS=$(R_XTRA_FFLAGS) $(FPICFLAGS) $(SHLIB_FFLAGS) $(SAFE_FFLAGS)
+SLAMC_FFLAGS=&#36;(R_XTRA_FFLAGS) &#36;(FPICFLAGS) &#36;(SHLIB_FFLAGS) &#36;(SAFE_FFLAGS)
 
-all: $(SHLIB)
+all: &#36;(SHLIB)
 
 slamc.o: slamc.f
-        $(F77) $(SLAMC_FFLAGS) -c -o slamc.o slamc.f</code></pre>
+        &#36;(F77) &#36;(SLAMC_FFLAGS) -c -o slamc.o slamc.f</code></pre>
 </div>
 <p>
 needed to ensure that the LAPACK routines find some constants without infinite looping. The Windows equivalent was
 </p>
 <div class="example">
-<pre class="example1"><code>all: $(SHLIB)
+<pre class="example1"><code>all: &#36;(SHLIB)
 
 slamc.o: slamc.f
-        $(F77) $(SAFE_FFLAGS) -c -o slamc.o slamc.f</code></pre>
+        &#36;(F77) &#36;(SAFE_FFLAGS) -c -o slamc.o slamc.f</code></pre>
 </div>
 <p>
 (since the other macros are all empty on that platform, and R’s internal BLAS was not used). Note that the first target in Makevars will be called, but for back-compatibility it is best named <code class="calibre2">all</code>.
@@ -942,11 +1092,11 @@ If you want to create and then link to a library, say using code in a subdirecto
 <div class="example">
 <pre class="example1"><code>.PHONY: all mylibs
 
-all: $(SHLIB)
-$(SHLIB): mylibs
+all: &#36;(SHLIB)
+&#36;(SHLIB): mylibs
 
 mylibs:
-        (cd subdir; $(MAKE))</code></pre>
+        (cd subdir; &#36;(MAKE))</code></pre>
 </div>
 <p>
 Be careful to create all the necessary dependencies, as there is no guarantee that the dependencies of <code class="calibre2">all</code> will be run in a particular order (and some of the CRAN build machines use multiple CPUs and parallel makes). In particular,
@@ -961,30 +1111,39 @@ does <strong>not</strong> suffice.
 Note that on Windows it is required that Makevars[.win] does create a DLL: this is needed as it is the only reliable way to ensure that building a DLL succeeded. If you want to use the src directory for some purpose other than building a DLL, use a Makefile.win file.
 </p>
 <p>
-It is sometimes useful to have a target ‘clean’ in Makevars or Makevars.win: this will be used by <code class="calibre2">R CMD build</code> to clean up (a copy of) the package sources. When it is run by <code class="calibre2">build</code> it will have fewer macros set, in particular not <code class="calibre2"><span class="math inline">\((SHLIB)&lt;/code&gt;, nor &lt;code class=&quot;calibre2&quot;&gt;\)</span>(OBJECTS)</code> unless set in the file itself. It would also be possible to add tasks to the target ‘shlib-clean’ which is run by <code class="calibre2">R CMD INSTALL</code> and <code class="calibre2">R CMD SHLIB</code> with options –clean and –preclean.
+It is sometimes useful to have a target ‘clean’ in Makevars or Makevars.win: this will be used by <code class="calibre2">R CMD build</code> to clean up (a copy of) the package sources. When it is run by <code class="calibre2">build</code> it will have fewer macros set, in particular not <code class="calibre2">$(SHLIB)</code>, nor <code class="calibre2">$(OBJECTS)</code> unless set in the file itself. It would also be possible to add tasks to the target ‘shlib-clean’ which is run by <code class="calibre2">R CMD INSTALL</code> and <code class="calibre2">R CMD SHLIB</code> with options –clean and –preclean.
 </p>
 <p>
 If you want to run R code in Makevars, e.g. to find configuration information, please do ensure that you use the correct copy of <code class="calibre2">R</code> or <code class="calibre2">Rscript</code>: there might not be one in the path at all, or it might be the wrong version or architecture. The correct way to do this is <em>via</em>
 </p>
 <div class="example">
-<pre class="example1"><code>&quot;$(R_HOME)/bin$(R_ARCH_BIN)/Rscript&quot; filename
-&quot;$(R_HOME)/bin$(R_ARCH_BIN)/Rscript&quot; -e ‘R expression’</code></pre>
+<pre class="example1"><code>&quot;&#36;(R_HOME)/bin&#36;(R_ARCH_BIN)/Rscript&quot; filename
+&quot;&#36;(R_HOME)/bin&#36;(R_ARCH_BIN)/Rscript&quot; -e ‘R expression’</code></pre>
 </div>
 <p>
-where <code class="calibre2"><span class="math inline">\((R_ARCH_BIN)&lt;/code&gt; is only needed currently on Windows.&lt;/p&gt; &lt;p&gt;Environment or make variables can be used to select different macros for 32- and 64-bit code, for example (GNU &lt;code class=&quot;calibre2&quot;&gt;make&lt;/code&gt; syntax, allowed on Windows)&lt;/p&gt; &lt;div class=&quot;example&quot;&gt; &lt;pre class=&quot;example1&quot;&gt;&lt;code&gt;ifeq &amp;quot;\)</span>(WIN)&quot; “64” PKG_LIBS = value for 64-bit Windows else PKG_LIBS = value for 32-bit Windows endif</code>
-</pre>
+where <code class="calibre2">$(R_ARCH_BIN)</code> is only needed currently on Windows.
+</p>
+<p>
+Environment or make variables can be used to select different macros for 32- and 64-bit code, for example (GNU <code class="calibre2">make</code> syntax, allowed on Windows)
+</p>
+<div class="example">
+<pre class="example1"><code>ifeq &quot;&#36;(WIN)&quot; &quot;64&quot;
+PKG_LIBS = value for 64-bit Windows
+else
+PKG_LIBS = value for 32-bit Windows
+endif</code></pre>
 </div>
 <p>
 On Windows there is normally a choice between linking to an import library or directly to a DLL. Where possible, the latter is much more reliable: import libraries are tied to a specific toolchain, and in particular on 64-bit Windows two different conventions have been commonly used. So for example instead of
 </p>
 <div class="example">
-<pre class="example1"><code>PKG_LIBS = -L$(XML_DIR)/lib -lxml2</code></pre>
+<pre class="example1"><code>PKG_LIBS = -L&#36;(XML_DIR)/lib -lxml2</code></pre>
 </div>
 <p>
 one can use
 </p>
 <div class="example">
-<pre class="example1"><code>PKG_LIBS = -L$(XML_DIR)/bin -lxml2</code></pre>
+<pre class="example1"><code>PKG_LIBS = -L&#36;(XML_DIR)/bin -lxml2</code></pre>
 </div>
 <p>
 since on Windows <code class="calibre2">-lxxx</code> will look in turn for
@@ -1032,8 +1191,8 @@ are available for use in src/Makevars or src/Makevars.win. Include the appropria
 For example, a package with C code written for OpenMP should have in src/Makevars the lines
 </p>
 <div class="example">
-<pre class="example1"><code>PKG_CFLAGS = $(SHLIB_OPENMP_CFLAGS)
-PKG_LIBS = $(SHLIB_OPENMP_CFLAGS)</code></pre>
+<pre class="example1"><code>PKG_CFLAGS = &#36;(SHLIB_OPENMP_CFLAGS)
+PKG_LIBS = &#36;(SHLIB_OPENMP_CFLAGS)</code></pre>
 </div>
 <p>
 Note that the macro <code class="calibre2">SHLIB_OPENMP_CXXFLAGS</code> applies to the default C++ compiler and not necessarily to the C++11/14/17 compiler: users of the latter should do their own <code class="calibre2">configure</code> checks (an example is available in CRAN package <a href="https://CRAN.R-project.org/package=ARTP2"><strong>ARTP2</strong></a>).
@@ -1042,8 +1201,8 @@ Note that the macro <code class="calibre2">SHLIB_OPENMP_CXXFLAGS</code> applies 
 Some care is needed when compilers are from different families which may use different OpenMP runtimes (e.g. <code class="calibre2">clang</code> <em>vs</em> GCC including <code class="calibre2">gfortran</code>, although it is currently possible to use the <code class="calibre2">clang</code> runtime with GCC but not <em>vice versa</em>). For a package with Fortran 77 code using OpenMP the appropriate lines are
 </p>
 <div class="example">
-<pre class="example1"><code>PKG_FFLAGS = $(SHLIB_OPENMP_FFLAGS)
-PKG_LIBS = $(SHLIB_OPENMP_CFLAGS)</code></pre>
+<pre class="example1"><code>PKG_FFLAGS = &#36;(SHLIB_OPENMP_FFLAGS)
+PKG_LIBS = &#36;(SHLIB_OPENMP_CFLAGS)</code></pre>
 </div>
 <p>
 as the C compiler will be used to link the package code (and there is no guarantee that this will work everywhere). (This does not apply to Fortran 9x code, where <code class="calibre2">SHLIB_OPENMP_FCFLAGS</code> should be used in both <code class="calibre2">PKG_FCFLAGS</code> and <code class="calibre2">PKG_LIBS</code>.)
@@ -1128,9 +1287,9 @@ Package authors fairly often want to organize code in sub-directories of src, fo
 One simple way is simply to set <code class="calibre2">OBJECTS</code> to be all the objects that need to be compiled, including in sub-directories. For example, CRAN package <a href="https://CRAN.R-project.org/package=RSiena"><strong>RSiena</strong></a> has
 </p>
 <div class="example">
-<pre class="smallexample"><code>SOURCES = $(wildcard data/*.cpp network/*.cpp utils/*.cpp model/*.cpp model/*/*.cpp model/*/*/*.cpp)
+<pre class="smallexample"><code>SOURCES = &#36;(wildcard data/*.cpp network/*.cpp utils/*.cpp model/*.cpp model/*/*.cpp model/*/*/*.cpp)
 
-OBJECTS = siena07utilities.o siena07internals.o siena07setup.o siena07models.o $(SOURCES:.cpp=.o)</code></pre>
+OBJECTS = siena07utilities.o siena07internals.o siena07setup.o siena07models.o &#36;(SOURCES:.cpp=.o)</code></pre>
 </div>
 <p>
 One problem with that approach is that unless GNU make extensions are used, the source files need to be listed and kept up-to-date. As in the following from CRAN package <a href="https://CRAN.R-project.org/package=lossDev"><strong>lossDev</strong></a>:
@@ -1144,19 +1303,19 @@ OBJECTS.distributions = distributions/DSpline.o &#92;
   distributions/DNormOV.o distributions/DUnifOV.o distributions/RScalarDist.o
 OBJECTS.root = RJump.o
 
-OBJECTS = $(OBJECTS.samplers) $(OBJECTS.distributions) $(OBJECTS.root)</code></pre>
+OBJECTS = &#36;(OBJECTS.samplers) &#36;(OBJECTS.distributions) &#36;(OBJECTS.root)</code></pre>
 </div>
 <p>
 Where the subdirectory is self-contained code with a suitable makefile, the best approach is something like
 </p>
 <div class="example">
-<pre class="smallexample"><code>PKG_LIBS = -LCsdp/lib -lsdp $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+<pre class="smallexample"><code>PKG_LIBS = -LCsdp/lib -lsdp &#36;(LAPACK_LIBS) &#36;(BLAS_LIBS) &#36;(FLIBS)
 
-$(SHLIB): Csdp/lib/libsdp.a
+&#36;(SHLIB): Csdp/lib/libsdp.a
 
 Csdp/lib/libsdp.a:      
-        @(cd Csdp/lib &amp;&amp; $(MAKE) libsdp.a &#92;
-          CC=&quot;$(CC)&quot; CFLAGS=&quot;$(CFLAGS) $(CPICFLAGS)&quot; AR=&quot;$(AR)&quot; RANLIB=&quot;$(RANLIB)&quot;)</code></pre>
+        @(cd Csdp/lib &amp;&amp; &#36;(MAKE) libsdp.a &#92;
+          CC=&quot;&#36;(CC)&quot; CFLAGS=&quot;&#36;(CFLAGS) &#36;(CPICFLAGS)&quot; AR=&quot;&#36;(AR)&quot; RANLIB=&quot;&#36;(RANLIB)&quot;)</code></pre>
 </div>
 <p>
 Note the quotes: the macros can contain spaces, e.g. <code class="calibre2">CC = “gcc -m64 -std=gnu99”</code>. Several authors have forgotten about parallel makes: the static library in the subdirectory must be made before the shared object (<code class="calibre2">$(SHLIB)</code>) and so the latter must depend on the former. Others forget the need<a href="concept-index.html#FOOT36" id="DOCF36"><sup>36</sup></a> for position-independent code.
@@ -1186,9 +1345,9 @@ odbc_mgr=&quot;&quot;
 AC_ARG_WITH([odbc-manager],
             AC_HELP_STRING([--with-odbc-manager=MGR],
                            [specify the ODBC manager, e.g. odbc or iodbc]),
-            [odbc_mgr=$withval])
+            [odbc_mgr=&#36;withval])
 
-if test &quot;$odbc_mgr&quot; = &quot;odbc&quot; ; then
+if test &quot;&#36;odbc_mgr&quot; = &quot;odbc&quot; ; then
   AC_PATH_PROGS(ODBC_CONFIG, odbc_config)
 fi
 
@@ -1197,13 +1356,13 @@ dnl or from an environment variable.
 AC_ARG_WITH([odbc-include],
             AC_HELP_STRING([--with-odbc-include=INCLUDE_PATH],
                            [the location of ODBC header files]),
-            [odbc_include_path=$withval])
+            [odbc_include_path=&#36;withval])
 RODBC_CPPFLAGS=&quot;-I.&quot;
-if test [ -n &quot;$odbc_include_path&quot; ] ; then
-   RODBC_CPPFLAGS=&quot;-I. -I${odbc_include_path}&quot;
+if test [ -n &quot;&#36;odbc_include_path&quot; ] ; then
+   RODBC_CPPFLAGS=&quot;-I. -I&#36;{odbc_include_path}&quot;
 else
-  if test [ -n &quot;${ODBC_INCLUDE}&quot; ] ; then
-     RODBC_CPPFLAGS=&quot;-I. -I${ODBC_INCLUDE}&quot;
+  if test [ -n &quot;&#36;{ODBC_INCLUDE}&quot; ] ; then
+     RODBC_CPPFLAGS=&quot;-I. -I&#36;{ODBC_INCLUDE}&quot;
   fi
 fi
 
@@ -1211,50 +1370,50 @@ dnl ditto for a library path
 AC_ARG_WITH([odbc-lib],
             AC_HELP_STRING([--with-odbc-lib=LIB_PATH],
                            [the location of ODBC libraries]),
-            [odbc_lib_path=$withval])
-if test [ -n &quot;$odbc_lib_path&quot; ] ; then
-   LIBS=&quot;-L$odbc_lib_path ${LIBS}&quot;
+            [odbc_lib_path=&#36;withval])
+if test [ -n &quot;&#36;odbc_lib_path&quot; ] ; then
+   LIBS=&quot;-L&#36;odbc_lib_path &#36;{LIBS}&quot;
 else
-  if test [ -n &quot;${ODBC_LIBS}&quot; ] ; then
-     LIBS=&quot;-L${ODBC_LIBS} ${LIBS}&quot;
+  if test [ -n &quot;&#36;{ODBC_LIBS}&quot; ] ; then
+     LIBS=&quot;-L&#36;{ODBC_LIBS} &#36;{LIBS}&quot;
   else
-    if test -n &quot;${ODBC_CONFIG}&quot;; then
+    if test -n &quot;&#36;{ODBC_CONFIG}&quot;; then
       odbc_lib_path=`odbc_config --libs | sed s/-lodbc//`
-      LIBS=&quot;${odbc_lib_path} ${LIBS}&quot;
+      LIBS=&quot;&#36;{odbc_lib_path} &#36;{LIBS}&quot;
     fi
   fi
 fi
 
 dnl Now find the compiler and compiler flags to use
-: ${R_HOME=`R RHOME`}
-if test -z &quot;${R_HOME}&quot;; then
+: &#36;{R_HOME=`R RHOME`}
+if test -z &quot;&#36;{R_HOME}&quot;; then
   echo &quot;could not determine R_HOME&quot;
   exit 1
 fi
-CC=`&quot;${R_HOME}/bin/R&quot; CMD config CC`
-CPP=`&quot;${R_HOME}/bin/R&quot; CMD config CPP`
-CFLAGS=`&quot;${R_HOME}/bin/R&quot; CMD config CFLAGS`
-CPPFLAGS=`&quot;${R_HOME}/bin/R&quot; CMD config CPPFLAGS`
+CC=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CC`
+CPP=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CPP`
+CFLAGS=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CFLAGS`
+CPPFLAGS=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CPPFLAGS`
 AC_PROG_CC
 AC_PROG_CPP
 
 
-if test -n &quot;${ODBC_CONFIG}&quot;; then
+if test -n &quot;&#36;{ODBC_CONFIG}&quot;; then
   RODBC_CPPFLAGS=`odbc_config --cflags`
 fi
-CPPFLAGS=&quot;${CPPFLAGS} ${RODBC_CPPFLAGS}&quot;
+CPPFLAGS=&quot;&#36;{CPPFLAGS} &#36;{RODBC_CPPFLAGS}&quot;
 
 dnl Check the headers can be found
 AC_CHECK_HEADERS(sql.h sqlext.h)
-if test &quot;${ac_cv_header_sql_h}&quot; = no ||
-   test &quot;${ac_cv_header_sqlext_h}&quot; = no; then
+if test &quot;&#36;{ac_cv_header_sql_h}&quot; = no ||
+   test &quot;&#36;{ac_cv_header_sqlext_h}&quot; = no; then
    AC_MSG_ERROR(&quot;ODBC headers sql.h and sqlext.h not found&quot;)
 fi
 
 dnl search for a library containing an ODBC function
-if test [ -n &quot;${odbc_mgr}&quot; ] ; then
-  AC_SEARCH_LIBS(SQLTables, ${odbc_mgr}, ,
-      AC_MSG_ERROR(&quot;ODBC driver manager ${odbc_mgr} not found&quot;))
+if test [ -n &quot;&#36;{odbc_mgr}&quot; ] ; then
+  AC_SEARCH_LIBS(SQLTables, &#36;{odbc_mgr}, ,
+      AC_MSG_ERROR(&quot;ODBC driver manager &#36;{odbc_mgr} not found&quot;))
 else
   AC_SEARCH_LIBS(SQLTables, odbc odbc32 iodbc, ,
       AC_MSG_ERROR(&quot;no ODBC driver manager found&quot;))
@@ -1382,10 +1541,10 @@ There is no guarantee that C++11 can be used in a package in combination with an
 If a package using C++11 has a <code class="calibre2">configure</code> script it is essential that it selects the correct compiler, <em>via</em> something like
 </p>
 <div class="example">
-<pre class="example1"><code>CXX11=`&quot;${R_HOME}/bin/R&quot; CMD config CXX11`
-CXX11STD=`&quot;${R_HOME}/bin/R&quot; CMD config CXX11STD`
-CXX=&quot;${CXX11} ${CXX11STD}&quot;
-CXXFLAGS=`&quot;${R_HOME}/bin/R&quot; CMD config CXX11FLAGS`
+<pre class="example1"><code>CXX11=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CXX11`
+CXX11STD=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CXX11STD`
+CXX=&quot;&#36;{CXX11} &#36;{CXX11STD}&quot;
+CXXFLAGS=`&quot;&#36;{R_HOME}/bin/R&quot; CMD config CXX11FLAGS`
 AC_LANG(C++)</code></pre>
 </div>
 <p>
@@ -1396,8 +1555,8 @@ If you want to compile C++11 code in a subdirectory, make sure you pass down the
 </p>
 <div class="example">
 <pre class="example1"><code>sublibs:
-         @(cd libs &amp;&amp; $(MAKE) &#92;
-            CXX=&quot;$(CXX11) $(CXX11STD)&quot; CXXFLAGS=&quot;$(CXX11FLAGS) $(CXX11PICFLAGS)&quot;)</code></pre>
+         @(cd libs &amp;&amp; &#36;(MAKE) &#92;
+            CXX=&quot;&#36;(CXX11) &#36;(CXX11STD)&quot; CXXFLAGS=&quot;&#36;(CXX11FLAGS) &#36;(CXX11PICFLAGS)&quot;)</code></pre>
 </div>
 <p>
 Note that the mechanisms described here specify C++11 for code compiled by <code class="calibre2">R CMD SHLIB</code> as used by default by <code class="calibre2">R CMD INSTALL</code>. They do not necessarily apply if there is a src/Makefile file, nor to compilation done in vignettes or <em>via</em> other packages.
@@ -1574,7 +1733,7 @@ The data directory is checked for non-ASCII characters and for the use of reason
 </li>
 <li>
 <p>
-C, C++ and FORTRAN source and header files<a href="concept-index.html#FOOT46" id="DOCF46"><sup>46</sup></a> are tested for portable (LF-only) line endings. If there is a Makefile or Makefile.in or Makevars or Makevars.in file under the src directory, it is checked for portable line endings and the correct use of ‘<span class="math inline">\((BLAS_LIBS)’ and ‘\)</span>(LAPACK_LIBS)’
+C, C++ and FORTRAN source and header files<a href="concept-index.html#FOOT46" id="DOCF46"><sup>46</sup></a> are tested for portable (LF-only) line endings. If there is a Makefile or Makefile.in or Makevars or Makevars.in file under the src directory, it is checked for portable line endings and the correct use of ‘$(BLAS_LIBS)’ and ‘$(LAPACK_LIBS)’
 </p>
 <p>
 Compiled code is checked for symbols corresponding to functions which might terminate R or write to stdout/stderr instead of the console. Note that the latter might give false positives in that the symbols might be pulled in with external libraries and could never be called. Windows<a href="concept-index.html#FOOT47" id="DOCF47"><sup>47</sup></a> users should note that the Fortran and C++ runtime libraries are examples of such external libraries.
@@ -1786,7 +1945,7 @@ all: pdf clean
 pdf: ABC-intro.pdf ABC-details.pdf
 
 %.pdf:  %.tex
-        texi2dvi --pdf $*
+        texi2dvi --pdf &#36;*
 
 clean:
         rm *.tex ABC-details-*.pdf</code></pre>
@@ -1897,7 +2056,7 @@ Package writers who would like to supply vignette engines need to register those
 </p>
 <div class="example">
 <pre class="example1"><code>tools::vignetteEngine(&quot;knitr&quot;, weave = vweave, tangle = vtangle,
-                      pattern = &quot;[.]Rmd$&quot;, package = &quot;knitr&quot;)</code></pre>
+                      pattern = &quot;[.]Rmd&#36;&quot;, package = &quot;knitr&quot;)</code></pre>
 </div>
 <p>
 (The actual registration in <a href="https://CRAN.R-project.org/package=knitr"><strong>knitr</strong></a> is more complicated, because it supports other input formats.) See the <code class="calibre2">?tools::vignetteEngine</code> help topic for details on engine registration.
@@ -2118,13 +2277,19 @@ Symbols without explicit names are assigned to the R variable with that name.
 In some cases, it may be preferable not to create R variables in the package’s namespace that identify the native routines. It may be too costly to compute these for many routines when the package is loaded if many of these routines are not likely to be used. In this case, one can still perform the symbol resolution correctly using the DLL, but do this each time the routine is called. Given a reference to the DLL as an R variable, say <code class="calibre2">dll</code>, we can call the routine <code class="calibre2">myRoutine</code> using the expression
 </p>
 <div class="example">
-<pre class="example1"><code> .Call(dll$myRoutine, x, y)</code></pre>
+<pre class="example1"><code> .Call(dll&#36;myRoutine, x, y)</code></pre>
 </div>
 <p>
-The <code class="calibre2"><span class="math inline">\(&lt;/code&gt; operator resolves the routine with the given name in the DLL using a call to &lt;code class=&quot;calibre2&quot;&gt;getNativeSymbol&lt;/code&gt;. This is the same computation as above where we resolve the symbol when the package is loaded. The only difference is that this is done each time in the case of &lt;code class=&quot;calibre2&quot;&gt;dll\)</span>myRoutine</code>.
+The <code class="calibre2">$</code> operator resolves the routine with the given name in the DLL using a call to <code class="calibre2">getNativeSymbol</code>. This is the same computation as above where we resolve the symbol when the package is loaded. The only difference is that this is done each time in the case of <code class="calibre2">dll$myRoutine</code>.
 </p>
 <p>
-In order to use this dynamic approach (e.g., <code class="calibre2">dll<span class="math inline">\(myRoutine&lt;/code&gt;), one needs the reference to the DLL as an R variable in the package. The DLL can be assigned to a variable by using the &lt;code class=&quot;calibre2&quot;&gt;variable = dllName&lt;/code&gt; format used above for mapping symbols to R variables. For example, if we wanted to assign the DLL reference for the DLL &lt;code class=&quot;calibre2&quot;&gt;foo&lt;/code&gt; in the example above to the variable &lt;code class=&quot;calibre2&quot;&gt;myDLL&lt;/code&gt;, we would use the following directive in the NAMESPACE file:&lt;/p&gt; &lt;div class=&quot;example&quot;&gt; &lt;pre class=&quot;example1&quot;&gt;&lt;code&gt;myDLL = useDynLib(foo, myRoutine_sym = myRoutine, myOtherRoutine)&lt;/code&gt;&lt;/pre&gt; &lt;/div&gt; &lt;p&gt;Then, the R variable &lt;code class=&quot;calibre2&quot;&gt;myDLL&lt;/code&gt; is in the package’s namespace and available for calls such as &lt;code class=&quot;calibre2&quot;&gt;myDLL\)</span>dynRoutine</code> to access routines that are not explicitly resolved at load time.
+In order to use this dynamic approach (e.g., <code class="calibre2">dll$myRoutine</code>), one needs the reference to the DLL as an R variable in the package. The DLL can be assigned to a variable by using the <code class="calibre2">variable = dllName</code> format used above for mapping symbols to R variables. For example, if we wanted to assign the DLL reference for the DLL <code class="calibre2">foo</code> in the example above to the variable <code class="calibre2">myDLL</code>, we would use the following directive in the NAMESPACE file:
+</p>
+<div class="example">
+<pre class="example1"><code>myDLL = useDynLib(foo, myRoutine_sym = myRoutine, myOtherRoutine)</code></pre>
+</div>
+<p>
+Then, the R variable <code class="calibre2">myDLL</code> is in the package’s namespace and available for calls such as <code class="calibre2">myDLL$dynRoutine</code> to access routines that are not explicitly resolved at load time.
 </p>
 <p>
 If the package has registration information (see <a href="system-and-foreign-language-interfaces.html#Registering-native-routines">Registering native routines</a>), then we can use that directly rather than specifying the list of symbols again in the <code class="calibre2">useDynLib</code> directive in the NAMESPACE file. Each routine in the registration information is specified by giving a name by which the routine is to be specified along with the address of the routine and any information about the number and type of the parameters. Using the <code class="calibre2">.registration</code> argument of <code class="calibre2">useDynLib</code>, we can instruct the namespace mechanism to create R variables for these symbols. For example, suppose we have the following registration information for a DLL named <code class="calibre2">myDLL</code>:
@@ -2408,11 +2573,202 @@ If your package has a configure script, provide a configure.win script to be use
 </li>
 <li>
 <p>
-If your package has a Makevars or Makefile file, make sure that you use only portable make features. Such files should be LF-terminated<a href="concept-index.html#FOOT66" id="DOCF66"><sup>66</sup></a> (including the final line of the file) and not make use of GNU extensions. (The POSIX specification is available at <a href="http://pubs.opengroup.org/onlinepubs/9699919799/utilities/make.html" class="uri">http://pubs.opengroup.org/onlinepubs/9699919799/utilities/make.html</a>; anything not documented there should be regarded as an extension to be avoided.) Commonly misused GNU extensions are conditional inclusions (<code class="calibre2">ifeq</code> and the like), <code class="calibre2"><span class="math inline">\({shell ...}&lt;/code&gt;, &lt;code class=&quot;calibre2&quot;&gt;\)</span>{wildcard …}</code> and similar, and the use of <code class="calibre2">+=</code><a href="concept-index.html#FOOT67" id="DOCF67"><sup>67</sup></a> and <code class="calibre2">:=</code>. Also, the use of <code class="calibre2"><span class="math inline">\(&amp;lt;&lt;/code&gt; other than in implicit rules is a GNU extension, as is the &lt;code class=&quot;calibre2&quot;&gt;\)</span>^</code> macro. Unfortunately makefiles which use GNU extensions often run on other platforms but do not have the intended results.
+If your package has a Makevars or Makefile file, make sure that you use only portable make features. Such files should be LF-terminated<a href="concept-index.html#FOOT66" id="DOCF66"><sup>66</sup></a> (including the final line of the file) and not make use of GNU extensions. (The POSIX specification is available at <a href="http://pubs.opengroup.org/onlinepubs/9699919799/utilities/make.html" class="uri">http://pubs.opengroup.org/onlinepubs/9699919799/utilities/make.html</a>; anything not documented there should be regarded as an extension to be avoided.) Commonly misused GNU extensions are conditional inclusions (<code class="calibre2">ifeq</code> and the like), <code class="calibre2">${shell …}</code>, <code class="calibre2">${wildcard …}</code> and similar, and the use of <code class="calibre2">+=</code><a href="concept-index.html#FOOT67" id="DOCF67"><sup>67</sup></a> and <code class="calibre2">:=</code>. Also, the use of <code class="calibre2">$&lt;</code> other than in implicit rules is a GNU extension, as is the <code class="calibre2">$^</code> macro. Unfortunately makefiles which use GNU extensions often run on other platforms but do not have the intended results.
 </p>
 <p>
-The use of <code class="calibre2"><span class="math inline">\({shell ...}&lt;/code&gt; can be avoided by using backticks, e.g.&lt;/p&gt; &lt;div class=&quot;example&quot;&gt; &lt;pre class=&quot;example1&quot;&gt;&lt;code&gt;PKG_CPPFLAGS = `gsl-config --cflags`&lt;/code&gt;&lt;/pre&gt; &lt;/div&gt; &lt;p&gt;which works in all versions of &lt;code class=&quot;calibre2&quot;&gt;make&lt;/code&gt; known&lt;a href=&quot;concept-index.html#FOOT68&quot; id=&quot;DOCF68&quot;&gt;&lt;sup&gt;68&lt;/sup&gt;&lt;/a&gt; to be used with R.&lt;/p&gt; &lt;p&gt;If you really must require GNU make, declare it in the DESCRIPTION file by&lt;/p&gt; &lt;div class=&quot;example&quot;&gt; &lt;pre class=&quot;example1&quot;&gt;&lt;code&gt;SystemRequirements: GNU make&lt;/code&gt;&lt;/pre&gt; &lt;/div&gt; &lt;p&gt;and ensure that you use the value of environment variable &lt;code class=&quot;calibre2&quot;&gt;MAKE&lt;/code&gt; (and not just &lt;code class=&quot;calibre2&quot;&gt;make&lt;/code&gt;) in your scripts. (On some platforms GNU make is available under a name such as &lt;code class=&quot;calibre2&quot;&gt;gmake&lt;/code&gt;, and there &lt;code class=&quot;calibre2&quot;&gt;SystemRequirements&lt;/code&gt; is used to set &lt;code class=&quot;calibre2&quot;&gt;MAKE&lt;/code&gt;.)&lt;/p&gt; &lt;p&gt;If you only need GNU make for parts of the package which are rarely needed (for example to create bibliography files under vignettes), use a file called GNUmakefile rather than Makefile as GNU make (only) will use the former.&lt;/p&gt; &lt;p&gt;Since the only viable make for Windows is GNU make, it is permissible to use GNU extensions in files Makevars.win or Makefile.win.&lt;/p&gt;&lt;/li&gt; &lt;li&gt;&lt;p&gt;Bash extensions also need to be avoided in shell scripts, including expressions in Makefiles (which are passed to the shell for processing). Some R platforms use strict&lt;a href=&quot;concept-index.html#FOOT69&quot; id=&quot;DOCF69&quot;&gt;&lt;sup&gt;69&lt;/sup&gt;&lt;/a&gt; Bourne shells: the R toolset on Windows and some Unix-alike OSes use &lt;code class=&quot;calibre2&quot;&gt;ash&lt;/code&gt; (&lt;a href=&quot;https://en.wikipedia.org/wiki/Almquist_shell&quot; class=&quot;uri&quot;&gt;https://en.wikipedia.org/wiki/Almquist_shell&lt;/a&gt;), a rather minimal shell with few builtins. Beware of assuming that all the POSIX command-line utilities are available, especially on Windows where only a minimal set is provided for use with R. One particular issue is the use of &lt;code class=&quot;calibre2&quot;&gt;echo&lt;/code&gt;, for which two behaviours are allowed (&lt;a href=&quot;http://pubs.opengroup.org/onlinepubs/9699919799/utilities/echo.html&quot; class=&quot;uri&quot;&gt;http://pubs.opengroup.org/onlinepubs/9699919799/utilities/echo.html&lt;/a&gt;) and both occur as defaults on R platforms: portable applications should not use -n (as the first argument) nor escape sequences. Another common issue is the construction&lt;/p&gt; &lt;div class=&quot;example&quot;&gt; &lt;pre class=&quot;example1&quot;&gt;&lt;code&gt;export FOO=value&lt;/code&gt;&lt;/pre&gt; &lt;/div&gt; &lt;p&gt;which is bash-specific (first set the variable then export it by name).&lt;/p&gt;&lt;/li&gt; &lt;li&gt;&lt;p&gt;Make use of the abilities of your compilers to check the standards-conformance of your code. For example, &lt;code class=&quot;calibre2&quot;&gt;gcc&lt;/code&gt; and &lt;code class=&quot;calibre2&quot;&gt;gfortran&lt;/code&gt;&lt;a href=&quot;concept-index.html#FOOT70&quot; id=&quot;DOCF70&quot;&gt;&lt;sup&gt;70&lt;/sup&gt;&lt;/a&gt; can be used with options -Wall -pedantic to alert you to potential problems. This is particularly important for C++, where &lt;code class=&quot;calibre2&quot;&gt;g++ -Wall -pedantic&lt;/code&gt; will alert you to the use of some of the GNU extensions which fail to compile on most other C++ compilers. If R was not configured accordingly, one can achieve this &lt;em&gt;via&lt;/em&gt; personal Makevars files.&lt;/p&gt; &lt;p&gt;Portable C++ code needs to follow the 1998 standard (and not use features from C99), or to specify a C++11 compiler (see &lt;a href=&quot;creating-r-packages.html#Using-C_002b_002b11-code&quot;&gt;Using C++11 code&lt;/a&gt;) where available (which is not the case on all R platforms).&lt;/p&gt; &lt;p&gt;If you use FORTRAN 77, &lt;code class=&quot;calibre2&quot;&gt;ftnchek&lt;/code&gt; (&lt;a href=&quot;http://www.dsm.fordham.edu/~ftnchek/&quot; class=&quot;uri&quot;&gt;http://www.dsm.fordham.edu/~ftnchek/&lt;/a&gt;) provides thorough testing of conformance to the standard.&lt;/p&gt; &lt;p&gt;If using Fortran 9x with the GNU compiler, use the flags -std=f95 -Wall -pedantic which reject most GNU extensions and features from later standards.&lt;/p&gt; &lt;p&gt;R has tested that &lt;code class=&quot;calibre2&quot;&gt;DOUBLE COMPLEX&lt;/code&gt; works (although an extension to the Fortran standards) and so is preferred to &lt;code class=&quot;calibre2&quot;&gt;COMPLEX*16&lt;/code&gt;. (Fortran 9x code can use something like &lt;code class=&quot;calibre2&quot;&gt;COMPLEX(KIND=KIND(0.0D0))&lt;/code&gt;&lt;a href=&quot;concept-index.html#FOOT71&quot; id=&quot;DOCF71&quot;&gt;&lt;sup&gt;71&lt;/sup&gt;&lt;/a&gt;.)&lt;/p&gt; &lt;p&gt;Not all common R platforms conform to the expected standards, e.g. C99 for C code. One common area of problems is the &lt;code class=&quot;calibre2&quot;&gt;*printf&lt;/code&gt; functions where Windows does not support &lt;code class=&quot;calibre2&quot;&gt;%lld&lt;/code&gt;, &lt;code class=&quot;calibre2&quot;&gt;%Lf&lt;/code&gt; and similar formats (and has its own formats such as &lt;code class=&quot;calibre2&quot;&gt;%I64d&lt;/code&gt; for 64-bit integers). It is very rare to need to output such types, and 64-bit integers can usually be converted to doubles for output.&lt;/p&gt;&lt;/li&gt; &lt;li&gt;&lt;p&gt;&lt;code class=&quot;calibre2&quot;&gt;R CMD check&lt;/code&gt; performs some checks for non-portable compiler/linker flags in src/Makevars. However, it cannot check the meaning of such flags, and some are commonly accepted but with compiler-specific meanings. There are other non-portable flags which are not checked, nor are src/Makefile files and makefiles in sub-directories. As a comment in the code says&lt;/p&gt; &lt;blockquote&gt; &lt;p&gt;It is hard to think of anything apart from -I* and -D* that is safe for general use …&lt;/p&gt; &lt;/blockquote&gt; &lt;p&gt;although -pthread is pretty close to portable. (Option -U is portable but little use on the command line as it will only cancel built-in defines (not portable) and those defined earlier on the command line (R does not use any).)&lt;/p&gt;&lt;/li&gt; &lt;li&gt;&lt;p&gt;Do be very careful with passing arguments between R, C and FORTRAN code. In particular, &lt;code class=&quot;calibre2&quot;&gt;long&lt;/code&gt; in C will be 32-bit on some R platforms (including 64-bit Windows), but 64-bit on most modern Unix and Linux platforms. It is rather unlikely that the use of &lt;code class=&quot;calibre2&quot;&gt;long&lt;/code&gt; in C code has been thought through: if you need a longer type than &lt;code class=&quot;calibre2&quot;&gt;int&lt;/code&gt; you should use a configure test for a C99/C++11 type such as &lt;code class=&quot;calibre2&quot;&gt;int_fast64_t&lt;/code&gt; (and failing that, &lt;code class=&quot;calibre2&quot;&gt;long long&lt;/code&gt; &lt;a href=&quot;concept-index.html#FOOT72&quot; id=&quot;DOCF72&quot;&gt;&lt;sup&gt;72&lt;/sup&gt;&lt;/a&gt;) and typedef your own type to be &lt;code class=&quot;calibre2&quot;&gt;long&lt;/code&gt; or &lt;code class=&quot;calibre2&quot;&gt;long long&lt;/code&gt;, or use another suitable type (such as &lt;code class=&quot;calibre2&quot;&gt;size_t&lt;/code&gt;).&lt;/p&gt; &lt;p&gt;It is not safe to assume that &lt;code class=&quot;calibre2&quot;&gt;long&lt;/code&gt; and pointer types are the same size, and they are not on 64-bit Windows. If you need to convert pointers to and from integers use the C99/C++11 integer types &lt;code class=&quot;calibre2&quot;&gt;intptr_t&lt;/code&gt; and &lt;code class=&quot;calibre2&quot;&gt;uintptr_t&lt;/code&gt; (which are defined in the header &lt;code class=&quot;calibre2&quot;&gt;&amp;lt;stdint.h&amp;gt;&lt;/code&gt; and are not required to be implemented by the C99 standard but are used in C code by R itself).&lt;/p&gt; &lt;p&gt;Note that &lt;code class=&quot;calibre2&quot;&gt;integer&lt;/code&gt; in FORTRAN corresponds to &lt;code class=&quot;calibre2&quot;&gt;int&lt;/code&gt; in C on all R platforms.&lt;/p&gt;&lt;/li&gt; &lt;li&gt;&lt;p&gt;Under no circumstances should your compiled code ever call &lt;code class=&quot;calibre2&quot;&gt;abort&lt;/code&gt; or &lt;code class=&quot;calibre2&quot;&gt;exit&lt;/code&gt;&lt;a href=&quot;concept-index.html#FOOT73&quot; id=&quot;DOCF73&quot;&gt;&lt;sup&gt;73&lt;/sup&gt;&lt;/a&gt;: these terminate the user’s R process, quite possibly including all his unsaved work. One usage that could call &lt;code class=&quot;calibre2&quot;&gt;abort&lt;/code&gt; is the &lt;code class=&quot;calibre2&quot;&gt;assert&lt;/code&gt; macro in C or C++ functions, which should never be active in production code. The normal way to ensure that is to define the macro &lt;code class=&quot;calibre2&quot;&gt;NDEBUG&lt;/code&gt;, and &lt;code class=&quot;calibre2&quot;&gt;R CMD INSTALL&lt;/code&gt; does so as part of the compilation flags. If you wish to use &lt;code class=&quot;calibre2&quot;&gt;assert&lt;/code&gt; during development. you can include &lt;code class=&quot;calibre2&quot;&gt;-UNDEBUG&lt;/code&gt; in &lt;code class=&quot;calibre2&quot;&gt;PKG_CPPFLAGS&lt;/code&gt;. Note that your own src/Makefile or makefiles in sub-directories may also need to define &lt;code class=&quot;calibre2&quot;&gt;NDEBUG&lt;/code&gt;.&lt;/p&gt; &lt;p&gt;This applies not only to your own code but to any external software you compile in or link to.&lt;/p&gt;&lt;/li&gt; &lt;li&gt;Compiled code should not write to stdout or stderr and C++ and Fortran I/O should not be used. As with the previous item such calls may come from external software and may never be called, but package authors are often mistaken about that.&lt;/li&gt; &lt;li&gt;&lt;p&gt;Compiled code should not call the system random number generators such as &lt;code class=&quot;calibre2&quot;&gt;rand&lt;/code&gt;, &lt;code class=&quot;calibre2&quot;&gt;drand48&lt;/code&gt; and &lt;code class=&quot;calibre2&quot;&gt;random&lt;/code&gt;&lt;a href=&quot;concept-index.html#FOOT74&quot; id=&quot;DOCF74&quot;&gt;&lt;sup&gt;74&lt;/sup&gt;&lt;/a&gt;, but rather use the interfaces to R’s RNGs described in &lt;a href=&quot;the-r-api:-entry-points-for-c-code.html#Random-numbers&quot;&gt;Random numbers&lt;/a&gt;. In particular, if more than one package initializes the system RNG (e.g. &lt;em&gt;via&lt;/em&gt; &lt;code class=&quot;calibre2&quot;&gt;srand&lt;/code&gt;), they will interfere with each other.&lt;/p&gt; &lt;p&gt;Nor should the C++11 random number library be used.&lt;/p&gt;&lt;/li&gt; &lt;li&gt;Errors in memory allocation and reading/writing outside arrays are very common causes of crashes (e.g., segfaults) on some machines. See &lt;a href=&quot;debugging.html#Checking-memory-access&quot;&gt;Checking memory access&lt;/a&gt; for tools which can be used to look for this.&lt;/li&gt; &lt;li&gt;&lt;p&gt;Many platforms will allow unsatisfied entry points in compiled code, but will crash the application (here R) if they are ever used. Some (notably Windows) will not. Looking at the output of&lt;/p&gt; &lt;div class=&quot;example&quot;&gt; &lt;pre class=&quot;example1&quot;&gt;&lt;code&gt;nm -pg mypkg.so&lt;/code&gt;&lt;/pre&gt; &lt;/div&gt; &lt;p&gt;and checking if any of the symbols marked &lt;code class=&quot;calibre2&quot;&gt;U&lt;/code&gt; is unexpected is a good way to avoid this.&lt;/p&gt;&lt;/li&gt; &lt;li&gt;Linkers have a lot of freedom in how to resolve entry points in dynamically-loaded code, so the results may differ by platform. One area that has caused grief is packages including copies of standard system software such as &lt;code class=&quot;calibre2&quot;&gt;libz&lt;/code&gt; (especially those already linked into R). In the case in point, entry point &lt;code class=&quot;calibre2&quot;&gt;gzgets&lt;/code&gt; was sometimes resolved against the old version compiled into the package, sometimes against the copy compiled into R and sometimes against the system dynamic library. The only safe solution is to rename the entry points in the copy in the package. We have even seen problems with entry point name &lt;code class=&quot;calibre2&quot;&gt;myprintf&lt;/code&gt;, which is a system entry point&lt;a href=&quot;concept-index.html#FOOT75&quot; id=&quot;DOCF75&quot;&gt;&lt;sup&gt;75&lt;/sup&gt;&lt;/a&gt; on some Linux systems.&lt;/li&gt; &lt;li&gt;Conflicts between symbols in DLLs are handled in very platform-specific ways. Good ways to avoid trouble are to make as many symbols as possible static (check with &lt;code class=&quot;calibre2&quot;&gt;nm -pg&lt;/code&gt;), and to use names which are clearly tied to your package (which also helps users if anything does go wrong). Note that symbol names starting with &lt;code class=&quot;calibre2&quot;&gt;R_&lt;/code&gt; are regarded as part of R’s namespace and should not be used in packages.&lt;/li&gt; &lt;li&gt;It is good practice for DLLs to register their symbols (see &lt;a href=&quot;system-and-foreign-language-interfaces.html#Registering-native-routines&quot;&gt;Registering native routines&lt;/a&gt;), restrict visibility (see &lt;a href=&quot;the-r-api:-entry-points-for-c-code.html#Controlling-visibility&quot;&gt;Controlling visibility&lt;/a&gt;) and not allow symbol search (see &lt;a href=&quot;system-and-foreign-language-interfaces.html#Registering-native-routines&quot;&gt;Registering native routines&lt;/a&gt;). It should be possible for a DLL to have only one visible symbol, &lt;code class=&quot;calibre2&quot;&gt;R_init_pkgname&lt;/code&gt;, on suitable platforms&lt;a href=&quot;concept-index.html#FOOT76&quot; id=&quot;DOCF76&quot;&gt;&lt;sup&gt;76&lt;/sup&gt;&lt;/a&gt;, which would completely avoid symbol conflicts.&lt;/li&gt; &lt;li&gt;It is not portable to call compiled code in R or other packages &lt;em&gt;via&lt;/em&gt; &lt;code class=&quot;calibre2&quot;&gt;.Internal&lt;/code&gt;, &lt;code class=&quot;calibre2&quot;&gt;.C&lt;/code&gt;, &lt;code class=&quot;calibre2&quot;&gt;.Fortran&lt;/code&gt;, &lt;code class=&quot;calibre2&quot;&gt;.Call&lt;/code&gt; or &lt;code class=&quot;calibre2&quot;&gt;.External&lt;/code&gt;, since such interfaces are subject to change without notice and will probably result in your code terminating the R process.&lt;/li&gt; &lt;li&gt;Do not use (hard or symbolic) file links in your package sources. Where possible &lt;code class=&quot;calibre2&quot;&gt;R CMD build&lt;/code&gt; will replace them by copies.&lt;/li&gt; &lt;li&gt;If you do not yourself have a Windows system, consider submitting your source package to WinBuilder (&lt;a href=&quot;https://win-builder.r-project.org/&quot; class=&quot;uri&quot;&gt;https://win-builder.r-project.org/&lt;/a&gt;) before distribution.&lt;/li&gt; &lt;li&gt;It is bad practice for package code to alter the search path using &lt;code class=&quot;calibre2&quot;&gt;library&lt;/code&gt;, &lt;code class=&quot;calibre2&quot;&gt;require&lt;/code&gt; or &lt;code class=&quot;calibre2&quot;&gt;attach&lt;/code&gt; and this often does not work as intended. For alternatives, see &lt;a href=&quot;creating-r-packages.html#Suggested-packages&quot;&gt;Suggested packages&lt;/a&gt; and &lt;code class=&quot;calibre2&quot;&gt;with&lt;/code&gt;.&lt;/li&gt; &lt;li&gt;Examples can be run interactively &lt;em&gt;via&lt;/em&gt; &lt;code class=&quot;calibre2&quot;&gt;example&lt;/code&gt; as well as in batch mode when checking. So they should behave appropriately in both scenarios, conditioning by &lt;code class=&quot;calibre2&quot;&gt;interactive()&lt;/code&gt; the parts which need an operator or observer. For instance, progress bars&lt;a href=&quot;concept-index.html#FOOT77&quot; id=&quot;DOCF77&quot;&gt;&lt;sup&gt;77&lt;/sup&gt;&lt;/a&gt; are only appropriate in interactive use, as is displaying help pages or calling &lt;code class=&quot;calibre2&quot;&gt;View()&lt;/code&gt; (see below).&lt;/li&gt; &lt;li&gt;Be careful with the order of entries in macros such as &lt;code class=&quot;calibre2&quot;&gt;PKG_LIBS&lt;/code&gt;. Some linkers will re-order the entries, and behaviour can differ between dynamic and static libraries. Generally -L options should precede&lt;a href=&quot;concept-index.html#FOOT78&quot; id=&quot;DOCF78&quot;&gt;&lt;sup&gt;78&lt;/sup&gt;&lt;/a&gt; the libraries (typically specified by -l options) to be found from those directories, and libraries are searched once in the order they are specified. Not all linkers allow a space after -L .&lt;/li&gt; &lt;li&gt;&lt;p&gt;Care is needed with the use of &lt;code class=&quot;calibre2&quot;&gt;LinkingTo&lt;/code&gt;. This puts one or more directories on the include search path ahead of system headers but (prior to R 3.4.0) after those specified in the &lt;code class=&quot;calibre2&quot;&gt;CPPFLAGS&lt;/code&gt; macro of the R build (which normally includes &lt;code class=&quot;calibre2&quot;&gt;-I/usr/local/include&lt;/code&gt;, but most platforms ignore that and include it with the system headers).&lt;/p&gt; &lt;p&gt;Any confusion would be avoided by having &lt;code class=&quot;calibre2&quot;&gt;LinkingTo&lt;/code&gt; headers in a directory named after the package. In any case, name conflicts of headers and directories under package include directories should be avoided, both between packages and between a package and system and third-party software.&lt;/p&gt;&lt;/li&gt; &lt;li&gt;The &lt;code class=&quot;calibre2&quot;&gt;ar&lt;/code&gt; utility is often used in makefiles to make static libraries. Its modifier &lt;code class=&quot;calibre2&quot;&gt;u&lt;/code&gt; is defined by POSIX but is disabled in GNU &lt;code class=&quot;calibre2&quot;&gt;ar&lt;/code&gt; on some recent Linux distributions which use ‘deterministic mode’. The safest way to make a static library is to first remove any existing file of that name then use &lt;code class=&quot;calibre2&quot;&gt;ar -cr&lt;/code&gt; and then &lt;code class=&quot;calibre2&quot;&gt;ranlib&lt;/code&gt; if needed (which is system-dependent: on most systems&lt;a href=&quot;concept-index.html#FOOT79&quot; id=&quot;DOCF79&quot;&gt;&lt;sup&gt;79&lt;/sup&gt;&lt;/a&gt; &lt;code class=&quot;calibre2&quot;&gt;ar&lt;/code&gt; always maintains a symbol table). The POSIX standard says options should be preceded by a hyphen (as in -cr), although most OSes accept them without. Note that on some systems &lt;code class=&quot;calibre2&quot;&gt;ar -cr&lt;/code&gt; must have at least one file specified.&lt;/li&gt; &lt;li&gt;Some people have a need to set a locale. Locale names are not portable, and e.g. ‘fr_FR.utf8’ is commonly used on Linux but not accepted on either Solaris or macOS. ‘fr_FR.UTF-8’ is more portable, being accepted on recent Linux, AIX, FreeBSD, macOS and Solaris (at least). However, some Linux distributions micro-package, so locales defined by &lt;strong&gt;glibc&lt;/strong&gt; (including these examples) may not be installed.&lt;/li&gt; &lt;li&gt;&lt;p&gt;Avoid spaces in file names, not least as they can cause difficulties for external tools. A recent example was a package with a &lt;a href=&quot;https://CRAN.R-project.org/package=knitr&quot;&gt;&lt;strong&gt;knitr&lt;/strong&gt;&lt;/a&gt; vignette that used spaces in plot names: this caused some versions of &lt;code class=&quot;calibre2&quot;&gt;pandoc&lt;/code&gt; to fail with a baffling error message.&lt;/p&gt; &lt;p&gt;Non-ASCII filenames can also cause problems (particularly in non-UTF-8 locales).&lt;/p&gt;&lt;/li&gt; &lt;li&gt;&lt;p&gt;Make sure that any version requirement for Java code is both declared in the ‘SystemRequirements’ field and tested at runtime (not least as the Java installation when the package is installed might not be the same as when the package is run and will not be for binary packages). Java 8 (aka 1.8) is available for fewer platforms than Java 7. A suitable test for packages using &lt;a href=&quot;https://CRAN.R-project.org/package=rJava&quot;&gt;&lt;strong&gt;rJava&lt;/strong&gt;&lt;/a&gt; would be&lt;/p&gt; &lt;div class=&quot;example&quot;&gt; &lt;pre class=&quot;example1&quot;&gt;&lt;code&gt;.jinit() jv &amp;lt;- .jcall(&amp;quot;java/lang/System&amp;quot;, &amp;quot;S&amp;quot;, &amp;quot;getProperty&amp;quot;, &amp;quot;java.runtime.version&amp;quot;) jvn &amp;lt;- as.numeric(paste0(strsplit(jv, &amp;quot;[.]&amp;quot;)[[1L]][1:2], collapse = &amp;quot;.&amp;quot;)) if(jvn &amp;lt; 1.8) stop(&amp;quot;Java 8 is needed for this package but not available&amp;quot;)&lt;/code&gt;&lt;/pre&gt; &lt;/div&gt; &lt;p&gt;Some packages have stated a requirement on a particular JDK, but a package should only be requiring a JRE unless providing its own Java interface.&lt;/p&gt;&lt;/li&gt; &lt;li&gt;&lt;p&gt;A package with a hard-to-satisfy system requirement is by definition not portable, annoyingly so if this is not declared in the ‘SystemRequirements’ field. The most common example is the use of &lt;code class=&quot;calibre2&quot;&gt;pandoc&lt;/code&gt;, which is only available for a very limited range of platforms (and has onerous requirements to install from source) and has capabilities&lt;a href=&quot;concept-index.html#FOOT80&quot; id=&quot;DOCF80&quot;&gt;&lt;sup&gt;80&lt;/sup&gt;&lt;/a&gt; that vary by build but are not documented.&lt;/p&gt; &lt;p&gt;An external command can be an optional requirement for an imported package but needed for examples or tests in the package itself. Such usage should always be conditional on a test for existence (perhaps using &lt;code class=&quot;calibre2&quot;&gt;Sys.which&lt;/code&gt;), as well as declared in the ‘SystemRequirements’ field.&lt;/p&gt;&lt;/li&gt; &lt;li&gt;Be sure to use portable encoding names: none of &lt;code class=&quot;calibre2&quot;&gt;utf8&lt;/code&gt;, &lt;code class=&quot;calibre2&quot;&gt;mac&lt;/code&gt; and &lt;code class=&quot;calibre2&quot;&gt;macroman&lt;/code&gt; are. See the help for &lt;code class=&quot;calibre2&quot;&gt;file&lt;/code&gt; for more details.&lt;/li&gt; &lt;li&gt;&lt;p&gt;Do not invoke R by plain &lt;code class=&quot;calibre2&quot;&gt;R&lt;/code&gt;, &lt;code class=&quot;calibre2&quot;&gt;Rscript&lt;/code&gt; or (on Windows) &lt;code class=&quot;calibre2&quot;&gt;Rterm&lt;/code&gt; in your examples, tests, vignettes, makefiles or other scripts. As pointed out in several places earlier in this manual, use something like&lt;/p&gt; &lt;div class=&quot;example&quot;&gt; &lt;pre class=&quot;example1&quot;&gt;&lt;code&gt;&amp;quot;\)</span>(R_HOME)/bin/Rscript&quot; “<span class="math inline">\((R_HOME)/bin\)</span>(R_ARCH_BIN)/Rterm”</code>
-</pre>
+The use of <code class="calibre2">${shell …}</code> can be avoided by using backticks, e.g.
+</p>
+<div class="example">
+<pre class="example1"><code>PKG_CPPFLAGS = `gsl-config --cflags`</code></pre>
+</div>
+<p>
+which works in all versions of <code class="calibre2">make</code> known<a href="concept-index.html#FOOT68" id="DOCF68"><sup>68</sup></a> to be used with R.
+</p>
+<p>
+If you really must require GNU make, declare it in the DESCRIPTION file by
+</p>
+<div class="example">
+<pre class="example1"><code>SystemRequirements: GNU make</code></pre>
+</div>
+<p>
+and ensure that you use the value of environment variable <code class="calibre2">MAKE</code> (and not just <code class="calibre2">make</code>) in your scripts. (On some platforms GNU make is available under a name such as <code class="calibre2">gmake</code>, and there <code class="calibre2">SystemRequirements</code> is used to set <code class="calibre2">MAKE</code>.)
+</p>
+<p>
+If you only need GNU make for parts of the package which are rarely needed (for example to create bibliography files under vignettes), use a file called GNUmakefile rather than Makefile as GNU make (only) will use the former.
+</p>
+<p>
+Since the only viable make for Windows is GNU make, it is permissible to use GNU extensions in files Makevars.win or Makefile.win.
+</p>
+</li>
+<li>
+<p>
+Bash extensions also need to be avoided in shell scripts, including expressions in Makefiles (which are passed to the shell for processing). Some R platforms use strict<a href="concept-index.html#FOOT69" id="DOCF69"><sup>69</sup></a> Bourne shells: the R toolset on Windows and some Unix-alike OSes use <code class="calibre2">ash</code> (<a href="https://en.wikipedia.org/wiki/Almquist_shell" class="uri">https://en.wikipedia.org/wiki/Almquist_shell</a>), a rather minimal shell with few builtins. Beware of assuming that all the POSIX command-line utilities are available, especially on Windows where only a minimal set is provided for use with R. One particular issue is the use of <code class="calibre2">echo</code>, for which two behaviours are allowed (<a href="http://pubs.opengroup.org/onlinepubs/9699919799/utilities/echo.html" class="uri">http://pubs.opengroup.org/onlinepubs/9699919799/utilities/echo.html</a>) and both occur as defaults on R platforms: portable applications should not use -n (as the first argument) nor escape sequences. Another common issue is the construction
+</p>
+<div class="example">
+<pre class="example1"><code>export FOO=value</code></pre>
+</div>
+<p>
+which is bash-specific (first set the variable then export it by name).
+</p>
+</li>
+<li>
+<p>
+Make use of the abilities of your compilers to check the standards-conformance of your code. For example, <code class="calibre2">gcc</code> and <code class="calibre2">gfortran</code><a href="concept-index.html#FOOT70" id="DOCF70"><sup>70</sup></a> can be used with options -Wall -pedantic to alert you to potential problems. This is particularly important for C++, where <code class="calibre2">g++ -Wall -pedantic</code> will alert you to the use of some of the GNU extensions which fail to compile on most other C++ compilers. If R was not configured accordingly, one can achieve this <em>via</em> personal Makevars files.
+</p>
+<p>
+Portable C++ code needs to follow the 1998 standard (and not use features from C99), or to specify a C++11 compiler (see <a href="creating-r-packages.html#Using-C_002b_002b11-code">Using C++11 code</a>) where available (which is not the case on all R platforms).
+</p>
+<p>
+If you use FORTRAN 77, <code class="calibre2">ftnchek</code> (<a href="http://www.dsm.fordham.edu/~ftnchek/" class="uri">http://www.dsm.fordham.edu/~ftnchek/</a>) provides thorough testing of conformance to the standard.
+</p>
+<p>
+If using Fortran 9x with the GNU compiler, use the flags -std=f95 -Wall -pedantic which reject most GNU extensions and features from later standards.
+</p>
+<p>
+R has tested that <code class="calibre2">DOUBLE COMPLEX</code> works (although an extension to the Fortran standards) and so is preferred to <code class="calibre2">COMPLEX*16</code>. (Fortran 9x code can use something like <code class="calibre2">COMPLEX(KIND=KIND(0.0D0))</code><a href="concept-index.html#FOOT71" id="DOCF71"><sup>71</sup></a>.)
+</p>
+<p>
+Not all common R platforms conform to the expected standards, e.g. C99 for C code. One common area of problems is the <code class="calibre2">*printf</code> functions where Windows does not support <code class="calibre2">%lld</code>, <code class="calibre2">%Lf</code> and similar formats (and has its own formats such as <code class="calibre2">%I64d</code> for 64-bit integers). It is very rare to need to output such types, and 64-bit integers can usually be converted to doubles for output.
+</p>
+</li>
+<li>
+<p>
+<code class="calibre2">R CMD check</code> performs some checks for non-portable compiler/linker flags in src/Makevars. However, it cannot check the meaning of such flags, and some are commonly accepted but with compiler-specific meanings. There are other non-portable flags which are not checked, nor are src/Makefile files and makefiles in sub-directories. As a comment in the code says
+</p>
+<blockquote>
+<p>
+It is hard to think of anything apart from -I* and -D* that is safe for general use …
+</p>
+</blockquote>
+<p>
+although -pthread is pretty close to portable. (Option -U is portable but little use on the command line as it will only cancel built-in defines (not portable) and those defined earlier on the command line (R does not use any).)
+</p>
+</li>
+<li>
+<p>
+Do be very careful with passing arguments between R, C and FORTRAN code. In particular, <code class="calibre2">long</code> in C will be 32-bit on some R platforms (including 64-bit Windows), but 64-bit on most modern Unix and Linux platforms. It is rather unlikely that the use of <code class="calibre2">long</code> in C code has been thought through: if you need a longer type than <code class="calibre2">int</code> you should use a configure test for a C99/C++11 type such as <code class="calibre2">int_fast64_t</code> (and failing that, <code class="calibre2">long long</code> <a href="concept-index.html#FOOT72" id="DOCF72"><sup>72</sup></a>) and typedef your own type to be <code class="calibre2">long</code> or <code class="calibre2">long long</code>, or use another suitable type (such as <code class="calibre2">size_t</code>).
+</p>
+<p>
+It is not safe to assume that <code class="calibre2">long</code> and pointer types are the same size, and they are not on 64-bit Windows. If you need to convert pointers to and from integers use the C99/C++11 integer types <code class="calibre2">intptr_t</code> and <code class="calibre2">uintptr_t</code> (which are defined in the header <code class="calibre2">&lt;stdint.h&gt;</code> and are not required to be implemented by the C99 standard but are used in C code by R itself).
+</p>
+<p>
+Note that <code class="calibre2">integer</code> in FORTRAN corresponds to <code class="calibre2">int</code> in C on all R platforms.
+</p>
+</li>
+<li>
+<p>
+Under no circumstances should your compiled code ever call <code class="calibre2">abort</code> or <code class="calibre2">exit</code><a href="concept-index.html#FOOT73" id="DOCF73"><sup>73</sup></a>: these terminate the user’s R process, quite possibly including all his unsaved work. One usage that could call <code class="calibre2">abort</code> is the <code class="calibre2">assert</code> macro in C or C++ functions, which should never be active in production code. The normal way to ensure that is to define the macro <code class="calibre2">NDEBUG</code>, and <code class="calibre2">R CMD INSTALL</code> does so as part of the compilation flags. If you wish to use <code class="calibre2">assert</code> during development. you can include <code class="calibre2">-UNDEBUG</code> in <code class="calibre2">PKG_CPPFLAGS</code>. Note that your own src/Makefile or makefiles in sub-directories may also need to define <code class="calibre2">NDEBUG</code>.
+</p>
+<p>
+This applies not only to your own code but to any external software you compile in or link to.
+</p>
+</li>
+<li>
+Compiled code should not write to stdout or stderr and C++ and Fortran I/O should not be used. As with the previous item such calls may come from external software and may never be called, but package authors are often mistaken about that.
+</li>
+<li>
+<p>
+Compiled code should not call the system random number generators such as <code class="calibre2">rand</code>, <code class="calibre2">drand48</code> and <code class="calibre2">random</code><a href="concept-index.html#FOOT74" id="DOCF74"><sup>74</sup></a>, but rather use the interfaces to R’s RNGs described in <a href="the-r-api:-entry-points-for-c-code.html#Random-numbers">Random numbers</a>. In particular, if more than one package initializes the system RNG (e.g. <em>via</em> <code class="calibre2">srand</code>), they will interfere with each other.
+</p>
+<p>
+Nor should the C++11 random number library be used.
+</p>
+</li>
+<li>
+Errors in memory allocation and reading/writing outside arrays are very common causes of crashes (e.g., segfaults) on some machines. See <a href="debugging.html#Checking-memory-access">Checking memory access</a> for tools which can be used to look for this.
+</li>
+<li>
+<p>
+Many platforms will allow unsatisfied entry points in compiled code, but will crash the application (here R) if they are ever used. Some (notably Windows) will not. Looking at the output of
+</p>
+<div class="example">
+<pre class="example1"><code>nm -pg mypkg.so</code></pre>
+</div>
+<p>
+and checking if any of the symbols marked <code class="calibre2">U</code> is unexpected is a good way to avoid this.
+</p>
+</li>
+<li>
+Linkers have a lot of freedom in how to resolve entry points in dynamically-loaded code, so the results may differ by platform. One area that has caused grief is packages including copies of standard system software such as <code class="calibre2">libz</code> (especially those already linked into R). In the case in point, entry point <code class="calibre2">gzgets</code> was sometimes resolved against the old version compiled into the package, sometimes against the copy compiled into R and sometimes against the system dynamic library. The only safe solution is to rename the entry points in the copy in the package. We have even seen problems with entry point name <code class="calibre2">myprintf</code>, which is a system entry point<a href="concept-index.html#FOOT75" id="DOCF75"><sup>75</sup></a> on some Linux systems.
+</li>
+<li>
+Conflicts between symbols in DLLs are handled in very platform-specific ways. Good ways to avoid trouble are to make as many symbols as possible static (check with <code class="calibre2">nm -pg</code>), and to use names which are clearly tied to your package (which also helps users if anything does go wrong). Note that symbol names starting with <code class="calibre2">R_</code> are regarded as part of R’s namespace and should not be used in packages.
+</li>
+<li>
+It is good practice for DLLs to register their symbols (see <a href="system-and-foreign-language-interfaces.html#Registering-native-routines">Registering native routines</a>), restrict visibility (see <a href="the-r-api:-entry-points-for-c-code.html#Controlling-visibility">Controlling visibility</a>) and not allow symbol search (see <a href="system-and-foreign-language-interfaces.html#Registering-native-routines">Registering native routines</a>). It should be possible for a DLL to have only one visible symbol, <code class="calibre2">R_init_pkgname</code>, on suitable platforms<a href="concept-index.html#FOOT76" id="DOCF76"><sup>76</sup></a>, which would completely avoid symbol conflicts.
+</li>
+<li>
+It is not portable to call compiled code in R or other packages <em>via</em> <code class="calibre2">.Internal</code>, <code class="calibre2">.C</code>, <code class="calibre2">.Fortran</code>, <code class="calibre2">.Call</code> or <code class="calibre2">.External</code>, since such interfaces are subject to change without notice and will probably result in your code terminating the R process.
+</li>
+<li>
+Do not use (hard or symbolic) file links in your package sources. Where possible <code class="calibre2">R CMD build</code> will replace them by copies.
+</li>
+<li>
+If you do not yourself have a Windows system, consider submitting your source package to WinBuilder (<a href="https://win-builder.r-project.org/" class="uri">https://win-builder.r-project.org/</a>) before distribution.
+</li>
+<li>
+It is bad practice for package code to alter the search path using <code class="calibre2">library</code>, <code class="calibre2">require</code> or <code class="calibre2">attach</code> and this often does not work as intended. For alternatives, see <a href="creating-r-packages.html#Suggested-packages">Suggested packages</a> and <code class="calibre2">with</code>.
+</li>
+<li>
+Examples can be run interactively <em>via</em> <code class="calibre2">example</code> as well as in batch mode when checking. So they should behave appropriately in both scenarios, conditioning by <code class="calibre2">interactive()</code> the parts which need an operator or observer. For instance, progress bars<a href="concept-index.html#FOOT77" id="DOCF77"><sup>77</sup></a> are only appropriate in interactive use, as is displaying help pages or calling <code class="calibre2">View()</code> (see below).
+</li>
+<li>
+Be careful with the order of entries in macros such as <code class="calibre2">PKG_LIBS</code>. Some linkers will re-order the entries, and behaviour can differ between dynamic and static libraries. Generally -L options should precede<a href="concept-index.html#FOOT78" id="DOCF78"><sup>78</sup></a> the libraries (typically specified by -l options) to be found from those directories, and libraries are searched once in the order they are specified. Not all linkers allow a space after -L .
+</li>
+<li>
+<p>
+Care is needed with the use of <code class="calibre2">LinkingTo</code>. This puts one or more directories on the include search path ahead of system headers but (prior to R 3.4.0) after those specified in the <code class="calibre2">CPPFLAGS</code> macro of the R build (which normally includes <code class="calibre2">-I/usr/local/include</code>, but most platforms ignore that and include it with the system headers).
+</p>
+<p>
+Any confusion would be avoided by having <code class="calibre2">LinkingTo</code> headers in a directory named after the package. In any case, name conflicts of headers and directories under package include directories should be avoided, both between packages and between a package and system and third-party software.
+</p>
+</li>
+<li>
+The <code class="calibre2">ar</code> utility is often used in makefiles to make static libraries. Its modifier <code class="calibre2">u</code> is defined by POSIX but is disabled in GNU <code class="calibre2">ar</code> on some recent Linux distributions which use ‘deterministic mode’. The safest way to make a static library is to first remove any existing file of that name then use <code class="calibre2">ar -cr</code> and then <code class="calibre2">ranlib</code> if needed (which is system-dependent: on most systems<a href="concept-index.html#FOOT79" id="DOCF79"><sup>79</sup></a> <code class="calibre2">ar</code> always maintains a symbol table). The POSIX standard says options should be preceded by a hyphen (as in -cr), although most OSes accept them without. Note that on some systems <code class="calibre2">ar -cr</code> must have at least one file specified.
+</li>
+<li>
+Some people have a need to set a locale. Locale names are not portable, and e.g. ‘fr_FR.utf8’ is commonly used on Linux but not accepted on either Solaris or macOS. ‘fr_FR.UTF-8’ is more portable, being accepted on recent Linux, AIX, FreeBSD, macOS and Solaris (at least). However, some Linux distributions micro-package, so locales defined by <strong>glibc</strong> (including these examples) may not be installed.
+</li>
+<li>
+<p>
+Avoid spaces in file names, not least as they can cause difficulties for external tools. A recent example was a package with a <a href="https://CRAN.R-project.org/package=knitr"><strong>knitr</strong></a> vignette that used spaces in plot names: this caused some versions of <code class="calibre2">pandoc</code> to fail with a baffling error message.
+</p>
+<p>
+Non-ASCII filenames can also cause problems (particularly in non-UTF-8 locales).
+</p>
+</li>
+<li>
+<p>
+Make sure that any version requirement for Java code is both declared in the ‘SystemRequirements’ field and tested at runtime (not least as the Java installation when the package is installed might not be the same as when the package is run and will not be for binary packages). Java 8 (aka 1.8) is available for fewer platforms than Java 7. A suitable test for packages using <a href="https://CRAN.R-project.org/package=rJava"><strong>rJava</strong></a> would be
+</p>
+<div class="example">
+<pre class="example1"><code>.jinit()
+jv &lt;- .jcall(&quot;java/lang/System&quot;, &quot;S&quot;, &quot;getProperty&quot;, &quot;java.runtime.version&quot;)
+jvn &lt;- as.numeric(paste0(strsplit(jv, &quot;[.]&quot;)[[1L]][1:2], collapse = &quot;.&quot;))
+if(jvn &lt; 1.8) stop(&quot;Java 8 is needed for this package but not available&quot;)</code></pre>
+</div>
+<p>
+Some packages have stated a requirement on a particular JDK, but a package should only be requiring a JRE unless providing its own Java interface.
+</p>
+</li>
+<li>
+<p>
+A package with a hard-to-satisfy system requirement is by definition not portable, annoyingly so if this is not declared in the ‘SystemRequirements’ field. The most common example is the use of <code class="calibre2">pandoc</code>, which is only available for a very limited range of platforms (and has onerous requirements to install from source) and has capabilities<a href="concept-index.html#FOOT80" id="DOCF80"><sup>80</sup></a> that vary by build but are not documented.
+</p>
+<p>
+An external command can be an optional requirement for an imported package but needed for examples or tests in the package itself. Such usage should always be conditional on a test for existence (perhaps using <code class="calibre2">Sys.which</code>), as well as declared in the ‘SystemRequirements’ field.
+</p>
+</li>
+<li>
+Be sure to use portable encoding names: none of <code class="calibre2">utf8</code>, <code class="calibre2">mac</code> and <code class="calibre2">macroman</code> are. See the help for <code class="calibre2">file</code> for more details.
+</li>
+<li>
+<p>
+Do not invoke R by plain <code class="calibre2">R</code>, <code class="calibre2">Rscript</code> or (on Windows) <code class="calibre2">Rterm</code> in your examples, tests, vignettes, makefiles or other scripts. As pointed out in several places earlier in this manual, use something like
+</p>
+<div class="example">
+<pre class="example1"><code>&quot;&#36;(R_HOME)/bin/Rscript&quot;
+&quot;&#36;(R_HOME)/bin&#36;(R_ARCH_BIN)/Rterm&quot;</code></pre>
 </div>
 <p>
 with appropriate quotes (as, although not recommended, <code class="calibre2">R_HOME</code> can contain spaces).
@@ -3013,8 +3369,8 @@ A CITATION file will contain calls to function <code class="calibre2">bibentry</
 Here is that for <a href="https://CRAN.R-project.org/package=nlme"><strong>nlme</strong></a>:
 </p>
 <div class="example">
-<pre class="example1"><code>year &lt;- sub(&quot;-.*&quot;, &quot;&quot;, meta$Date)
-note &lt;- sprintf(&quot;R package version %s&quot;, meta$Version)
+<pre class="example1"><code>year &lt;- sub(&quot;-.*&quot;, &quot;&quot;, meta&#36;Date)
+note &lt;- sprintf(&quot;R package version %s&quot;, meta&#36;Version)
 
 bibentry(bibtype = &quot;Manual&quot;,
          title = &quot;{nlme}: Linear and Nonlinear Mixed Effects Models&quot;,
@@ -3144,17 +3500,6 @@ gitbook.start({
 });
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(script.src))
-      script.src  = script.src.replace(/^https?:/, '');
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 </body>
 
 </html>

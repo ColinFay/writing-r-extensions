@@ -86,7 +86,7 @@
        as.integer(length(a)),
        as.double(b),
        as.integer(length(b)),
-       ab = double(length(a) + length(b) - 1))$ab</code></pre>
+       ab = double(length(a) + length(b) - 1))&#36;ab</code></pre>
 </div>
 <p>Note that we take care to coerce all the arguments to the correct R storage mode before calling <code class="calibre2">.C</code>; mistakes in matching the types can lead to wrong results or hard-to-catch errors.</p>
 <p>Special care is needed in handling <code class="calibre2">character</code> vector arguments in C (or C++). On entry the contents of the elements are duplicated and assigned to the elements of a <code class="calibre2">char **</code> array, and on exit the elements of the C array are copied to create new elements of a character vector. This means that the contents of the character strings of the <code class="calibre2">char **</code> array can be changed, including to <code class="calibre2">&#92;0</code> to shorten the string, but the strings cannot be lengthened. It is possible<a href="concept-index.html#FOOT118" id="DOCF118"><sup>118</sup></a> to allocate a new string <em>via</em> <code class="calibre2">R_alloc</code> and replace an entry in the <code class="calibre2">char **</code> array by the new string. However, when character vectors are used other than in a read-only way, the <code class="calibre2">.Call</code> interface is much to be preferred.</p>
@@ -100,7 +100,7 @@
 <p>The shared object/DLL is loaded by <code class="calibre2">dyn.load</code> and unloaded by <code class="calibre2">dyn.unload</code>. Unloading is not normally necessary, but it is needed to allow the DLL to be re-built on some platforms, including Windows.</p>
 <p>The first argument to both functions is a character string giving the path to the object. Programmers should not assume a specific file extension for the object/DLL (such as .so) but use a construction like</p>
 <div class="example">
-<pre class="example1"><code>file.path(path1, path2, paste0(&quot;mylib&quot;, .Platform$dynlib.ext))</code></pre>
+<pre class="example1"><code>file.path(path1, path2, paste0(&quot;mylib&quot;, .Platform&#36;dynlib.ext))</code></pre>
 </div>
 <p>for platform independence. On Unix-alike systems the path supplied to <code class="calibre2">dyn.load</code> can be an absolute path, one relative to the current directory or, if it starts with ‘~’, relative to the user’s home directory.</p>
 <p>Loading is most often done automatically based on the <code class="calibre2">useDynLib()</code> declaration in the NAMESPACE file, but may be done explicitly <em>via</em> a call to <code class="calibre2">library.dynam</code>. <a href="" id="index-library_002edynam-1"></a> This has the form</p>
@@ -256,7 +256,7 @@ useDynLib(stats, .registration = TRUE, .fixes = &quot;C_&quot;)</code></pre>
 <div class="example">
 <pre class="example1"><code>        pansari &lt;- function(q, m, n)
             .C(C_pansari, as.integer(length(q)), p = as.double(q),
-                as.integer(m), as.integer(n))$p</code></pre>
+                as.integer(m), as.integer(n))&#36;p</code></pre>
 </div>
 <p>This avoids the overhead of looking up an entry point each time it is used, and ensures that the entry point in the package is the one used (without a <code class="calibre2">PACKAGE = &quot;pkg&quot;</code> argument).</p>
 <p><code class="calibre2">R_init_</code> routines are often of the form</p>
@@ -422,7 +422,7 @@ spline_value(SEXP knots, SEXP coeff, SEXP order, SEXP x, SEXP deriv)
 </div>
 <p>Alternatively, we can change the default visibility for all C symbols by including</p>
 <div class="example">
-<pre class="example1"><code>PKG_CFLAGS = $(C_VISIBILITY)</code></pre>
+<pre class="example1"><code>PKG_CFLAGS = &#36;(C_VISIBILITY)</code></pre>
 </div>
 <p>in src/Makevars, and then we need to allow registration by declaring <code class="calibre2">R_init_splines</code> to be visible:</p>
 <div class="example">
@@ -608,7 +608,7 @@ Copyright (C) 2012 The R Foundation for Statistical Computing
 ...
 Type    &quot;q()&quot; to quit R.</code></pre>
 <pre class="example1"><code></code></pre>
-<pre class="example1"><code>R&gt; dyn.load(paste(&quot;X&quot;, .Platform$dynlib.ext, sep = &quot;&quot;))
+<pre class="example1"><code>R&gt; dyn.load(paste(&quot;X&quot;, .Platform&#36;dynlib.ext, sep = &quot;&quot;))
 constructor Y
 R&gt; .C(&quot;X_main&quot;)
 constructor X
@@ -647,22 +647,22 @@ destructor Y</code></pre>
 <div class="example">
 <pre class="example1"><code>PKGB_PATH=‘echo ’library(packB);
   cat(system.file(&quot;lib&quot;,  package=&quot;packB&quot;, mustWork=TRUE))&#39; &#92;
- | &quot;${R_HOME}/bin/R&quot; --vanilla --slave`
-PKG_LIBS=&quot;$(PKGB_PATH)$(R_ARCH)/libpackB.a&quot;</code></pre>
+ | &quot;&#36;{R_HOME}/bin/R&quot; --vanilla --slave`
+PKG_LIBS=&quot;&#36;(PKGB_PATH)&#36;(R_ARCH)/libpackB.a&quot;</code></pre>
 </div>
 <p>For a dynamic library packB/lib/libpackB.so (packB/lib/libpackB.dylib on macOS: note that you cannot link to a shared object, .so, on that platform) we could use</p>
 <div class="example">
 <pre class="example1"><code>PKGB_PATH=‘echo ’library(packB);
   cat(system.file(&quot;lib&quot;, package=&quot;packB&quot;, mustWork=TRUE))&#39; &#92;
- | &quot;${R_HOME}/bin/R&quot; --vanilla --slave`
-PKG_LIBS=-L&quot;$(PKGB_PATH)$(R_ARCH)&quot; -lpackB</code></pre>
+ | &quot;&#36;{R_HOME}/bin/R&quot; --vanilla --slave`
+PKG_LIBS=-L&quot;&#36;(PKGB_PATH)&#36;(R_ARCH)&quot; -lpackB</code></pre>
 </div>
 <p>This will work for installation, but very likely not when package <code class="calibre2">packB</code> is loaded, as the path to package <strong>packB</strong>’s lib directory is not in the <code class="calibre2">ld.so</code><a href="concept-index.html#FOOT129" id="DOCF129"><sup>129</sup></a> search path. You can arrange to put it there <strong>before</strong> R is launched by setting (on some platforms) <code class="calibre2">LD_RUN_PATH</code> or <code class="calibre2">LD_LIBRARY_PATH</code> or adding to the <code class="calibre2">ld.so</code> cache (see <code class="calibre2">man ldconfig</code>). On platforms that support it, the path to the directory containing the dynamic library can be hardcoded at install time (which assumes that the location of package <strong>packB</strong> will not be changed nor the package updated to a changed API). On systems with the <code class="calibre2">gcc</code> or <code class="calibre2">clang</code> and the GNU linker (e.g. Linux) and some others this can be done by e.g.</p>
 <div class="example">
 <pre class="example1"><code>PKGB_PATH=‘echo ’library(packB);
   cat(system.file(&quot;lib&quot;, package=&quot;packB&quot;, mustWork=TRUE)))&#39; &#92;
- | &quot;${R_HOME}/bin/R&quot; --vanilla --slave`
-PKG_LIBS=-L&quot;$(PKGB_PATH)$(R_ARCH)&quot; -Wl,-rpath,&quot;$(PKGB_PATH)$(R_ARCH)&quot; -lpackB</code></pre>
+ | &quot;&#36;{R_HOME}/bin/R&quot; --vanilla --slave`
+PKG_LIBS=-L&quot;&#36;(PKGB_PATH)&#36;(R_ARCH)&quot; -Wl,-rpath,&quot;&#36;(PKGB_PATH)&#36;(R_ARCH)&quot; -lpackB</code></pre>
 </div>
 <p>Some other systems (e.g. Solaris with its native linker) use -Rdir rather than -rpath,dir (and this is accepted by the compiler as well as the linker).</p>
 <p>It may be possible to figure out what is required semi-automatically from the result of <code class="calibre2">R CMD libtool --config</code> (look for ‘hardcode’).</p>
@@ -684,13 +684,13 @@ PKG_LIBS=-L&quot;$(PKGB_PATH)$(R_ARCH)&quot; -Wl,-rpath,&quot;$(PKGB_PATH)$(R_AR
 <pre class="example1"><code>PKGB_PATH=‘echo ’library(packB);
   cat(system.file(&quot;libs&quot;, package=&quot;packB&quot;, mustWork=TRUE))&#39; &#92;
  | rterm --vanilla --slave`
-PKG_LIBS= -L&quot;$(PKGB_PATH)$(R_ARCH)&quot; -lexB</code></pre>
+PKG_LIBS= -L&quot;&#36;(PKGB_PATH)&#36;(R_ARCH)&quot; -lexB</code></pre>
 </div>
 <p>Another possibility is to use an import library, shipping with package <strong>packA</strong> an exports file exB.def. Then Makevars.win could contain</p>
 <div class="example">
 <pre class="example1"><code>PKG_LIBS= -L. -lexB
 
-all: $(SHLIB) before
+all: &#36;(SHLIB) before
 
 before: libexB.dll.a
 libexB.dll.a: exB.def</code></pre>
@@ -970,7 +970,7 @@ SEXP out(SEXP x, SEXP y)
 <div class="example">
 <pre class="example1"><code>a &lt;- list(f = 1, g = 2, h = 3)</code></pre>
 </div>
-<p>Then we can access <code class="calibre2">a$g</code> as <code class="calibre2">a[[2]]</code> by</p>
+<p>Then we can access <code class="calibre2">a&#36;g</code> as <code class="calibre2">a[[2]]</code> by</p>
 <div class="example">
 <pre class="example1"><code>    double g;
       ....
@@ -1388,7 +1388,7 @@ zero(cube1, c(0, 5))</code></pre>
 <div class="example">
 <pre class="example1"><code>numeric.deriv &lt;- function(expr, theta, rho=sys.frame(sys.parent()))
 {
-    eps &lt;- sqrt(.Machine$double.eps)
+    eps &lt;- sqrt(.Machine&#36;double.eps)
     ans &lt;- eval(substitute(expr), rho)
     grad &lt;- matrix(, length(ans), length(theta),
                    dimnames=list(NULL, theta))
@@ -1681,6 +1681,8 @@ SEXP mkCharCE(const char *, cetype_t);</code></pre>
 <div id="calibre_pb_14" class="calibre6">
 
 </div>
+
+
 
 
 

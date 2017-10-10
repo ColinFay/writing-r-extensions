@@ -251,16 +251,16 @@ pkg-config --libs --static libR</code></pre>
 However, a more comprehensive way is to set up a Makefile to compile the front-end. Suppose file myfe.c is to be compiled to myfe. A suitable Makefile might be
 </p>
 <div class="example">
-<pre class="example1"><code>include ${R_HOME}/etc${R_ARCH}/Makeconf
+<pre class="example1"><code>include &#36;{R_HOME}/etc&#36;{R_ARCH}/Makeconf
 all: myfe
 
 ## The following is not needed, but avoids PIC flags.
 myfe.o: myfe.c
-        $(CC) $(ALL_CPPFLAGS) $(CFLAGS) -c myfe.c -o $@
+        &#36;(CC) &#36;(ALL_CPPFLAGS) &#36;(CFLAGS) -c myfe.c -o &#36;@
 
-## replace $(LIBR) $(LIBS) by $(STATIC_LIBR) if R was build with a static libR
+## replace &#36;(LIBR) &#36;(LIBS) by &#36;(STATIC_LIBR) if R was build with a static libR
 myfe: myfe.o
-        $(MAIN_LINK) -o $@ myfe.o $(LIBR) $(LIBS)</code></pre>
+        &#36;(MAIN_LINK) -o &#36;@ myfe.o &#36;(LIBR) &#36;(LIBS)</code></pre>
 </div>
 <p>
 invoked as
@@ -270,7 +270,7 @@ invoked as
 R CMD myfe</code></pre>
 </div>
 <p>
-Additional flags which <code class="calibre2"><span class="math inline">\((MAIN_LINK)&lt;/code&gt; includes are, amongst others, those to select OpenMP and --export-dynamic for the GNU linker on some platforms. In principle &lt;code class=&quot;calibre2&quot;&gt;\)</span>(LIBS)</code> is not needed when using a shared R library as libR is linked against those libraries, but some platforms need the executable also linked against them.
+Additional flags which <code class="calibre2">$(MAIN_LINK)</code> includes are, amongst others, those to select OpenMP and –export-dynamic for the GNU linker on some platforms. In principle <code class="calibre2">$(LIBS)</code> is not needed when using a shared R library as libR is linked against those libraries, but some platforms need the executable also linked against them.
 </p>
 <hr />
 <p>
@@ -893,17 +893,6 @@ gitbook.start({
 });
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(script.src))
-      script.src  = script.src.replace(/^https?:/, '');
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 </body>
 
 </html>

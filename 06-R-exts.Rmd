@@ -452,7 +452,7 @@ generic,signature_list-method</code></pre>
 <p><a href="" id="Mathematics"></a> <a href="" id="Mathematics-1"></a></p>
 <h3 id="mathematics" class="section">2.6 Mathematics</h3>
 <p><a href="" id="index-Mathematics-in-documentation"></a> <a href="" id="index-_005ceqn"></a> <a href="" id="index-_005cdeqn"></a></p>
-<p>Mathematical formulae should be set beautifully for printed documentation yet we still want something useful for text and HTML online help. To this end, the two commands <code class="calibre2">&#92;eqn{latex}{ascii}</code> and <code class="calibre2">&#92;deqn{latex}{ascii}</code> are used. Whereas <code class="calibre2">&#92;eqn</code> is used for “inline” formulae (corresponding to TeX’s <code class="calibre2">$…$</code>), <code class="calibre2">&#92;deqn</code> gives “displayed equations” (as in LaTeX’s <code class="calibre2">displaymath</code> environment, or TeX’s <code class="calibre2">$$…$$</code>). Both arguments are treated as ‘verbatim’ text.</p>
+<p>Mathematical formulae should be set beautifully for printed documentation yet we still want something useful for text and HTML online help. To this end, the two commands <code class="calibre2">&#92;eqn{latex}{ascii}</code> and <code class="calibre2">&#92;deqn{latex}{ascii}</code> are used. Whereas <code class="calibre2">&#92;eqn</code> is used for “inline” formulae (corresponding to TeX’s <code class="calibre2">&#36;…&#36;</code>), <code class="calibre2">&#92;deqn</code> gives “displayed equations” (as in LaTeX’s <code class="calibre2">displaymath</code> environment, or TeX’s <code class="calibre2">&#36;&#36;…&#36;&#36;</code>). Both arguments are treated as ‘verbatim’ text.</p>
 <p>Both commands can also be used as <code class="calibre2">&#92;eqn{latexascii}</code> (only <em>one</em> argument) which then is used for both latex and ascii. No whitespace is allowed between command and the first argument, nor between the first and second arguments.</p>
 <p>The following example is from Poisson.Rd:</p>
 <div class="example">
@@ -543,7 +543,7 @@ for x = 0, 1, 2, ....</code></pre>
 <p>Currently the following formats are recognized: <code class="calibre2">example</code>, <code class="calibre2">html</code>, <code class="calibre2">latex</code> and <code class="calibre2">text</code>. These select output for the corresponding targets. (Note that <code class="calibre2">example</code> refers to extracted example code rather than the displayed example in some other format.) Also accepted are <code class="calibre2">TRUE</code> (matching all formats) and <code class="calibre2">FALSE</code> (matching no formats). These could be the output of the <code class="calibre2">&#92;Sexpr</code> macro (see <a href="#Dynamic-pages">Dynamic pages</a>).</p>
 <p>The <code class="calibre2">&#92;out{literal}</code> macro would usually be used within the text part of <code class="calibre2">&#92;if{format}{text}</code>. It causes the renderer to output the literal text exactly, with no attempt to escape special characters. For example, use the following to output the markup necessary to display the Greek letter in LaTeX or HTML, and the text string <code class="calibre2">alpha</code> in other formats:</p>
 <div class="example">
-<pre class="example1"><code>&#92;ifelse{latex}{&#92;out{$&#92;alpha$}}{&#92;ifelse{html}{&#92;out{&amp;alpha;}}{alpha}}</code></pre>
+<pre class="example1"><code>&#92;ifelse{latex}{&#92;out{&#36;&#92;alpha&#36;}}{&#92;ifelse{html}{&#92;out{&amp;alpha;}}{alpha}}</code></pre>
 </div>
 <hr />
 <p><a href="" id="Dynamic-pages"></a> <a href="" id="Dynamic-pages-1"></a></p>
@@ -618,7 +618,7 @@ for x = 0, 1, 2, ....</code></pre>
 <h3 id="encoding" class="section">2.14 Encoding</h3>
 <p><a href="" id="index-encoding"></a></p>
 <p>Rd files are text files and so it is impossible to deduce the encoding they are written in unless ASCII: files with 8-bit characters could be UTF-8, Latin-1, Latin-9, KOI8-R, EUC-JP, <em>etc</em>. So an <code class="calibre2">&#92;encoding{}</code> section must be used to specify the encoding if it is not ASCII. (The <code class="calibre2">&#92;encoding{}</code> section must be on a line by itself, and in particular one containing no non-ASCII characters. The encoding declared in the DESCRIPTION file will be used if none is declared in the file.) The Rd files are converted to UTF-8 before parsing and so the preferred encoding for the files themselves is now UTF-8.</p>
-<p>Wherever possible, avoid non-ASCII chars in Rd files, and even symbols such as ‘&lt;’, ‘&gt;’, ‘$’, ‘^’, ‘&amp;’, ‘|’, ‘@’, ‘~’, and ‘*’ outside ‘verbatim’ environments (since they may disappear in fonts designed to render text). (Function <code class="calibre2">showNonASCIIfile</code> in package <strong>tools</strong> can help in finding non-ASCII bytes in the files.)</p>
+<p>Wherever possible, avoid non-ASCII chars in Rd files, and even symbols such as ‘&lt;’, ‘&gt;’, ‘&#36;’, ‘^’, ‘&amp;’, ‘|’, ‘@’, ‘~’, and ‘*’ outside ‘verbatim’ environments (since they may disappear in fonts designed to render text). (Function <code class="calibre2">showNonASCIIfile</code> in package <strong>tools</strong> can help in finding non-ASCII bytes in the files.)</p>
 <p>For convenience, encoding names ‘latin1’ and ‘latin2’ are always recognized: these and ‘UTF-8’ are likely to work fairly widely. However, this does not mean that all characters in UTF-8 will be recognized, and the coverage of non-Latin characters<a href="concept-index.html#FOOT100" id="DOCF100"><sup>100</sup></a> is fairly low. Using LaTeX <code class="calibre2">inputenx</code> (see <code class="calibre2">?Rd2pdf</code> in R) will give greater coverage of UTF-8.</p>
 <p>The <code class="calibre2">&#92;enc</code> command (see <a href="#Insertions">Insertions</a>) can be used to provide transliterations which will be used in conversions that do not support the declared encoding.</p>
 <p>The LaTeX conversion converts the file to UTF-8 from the declared encoding, and includes a</p>
@@ -658,5 +658,7 @@ for x = 0, 1, 2, ....</code></pre>
 <div id="calibre_pb_8" class="calibre6">
 
 </div>
+
+
 
 

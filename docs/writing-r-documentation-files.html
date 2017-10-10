@@ -1044,7 +1044,7 @@ There are two other forms of optional argument specified as <code class="calibre
 <a href="" id="index-Mathematics-in-documentation"></a> <a href="" id="index-_005ceqn"></a> <a href="" id="index-_005cdeqn"></a>
 </p>
 <p>
-Mathematical formulae should be set beautifully for printed documentation yet we still want something useful for text and HTML online help. To this end, the two commands <code class="calibre2">\eqn{latex}{ascii}</code> and <code class="calibre2">\deqn{latex}{ascii}</code> are used. Whereas <code class="calibre2">\eqn</code> is used for “inline” formulae (corresponding to TeX’s <code class="calibre2"><span class="math inline">\(…\)</span></code>), <code class="calibre2">\deqn</code> gives “displayed equations” (as in LaTeX’s <code class="calibre2">displaymath</code> environment, or TeX’s <code class="calibre2"><span class="math display">\[…\]</span></code>). Both arguments are treated as ‘verbatim’ text.
+Mathematical formulae should be set beautifully for printed documentation yet we still want something useful for text and HTML online help. To this end, the two commands <code class="calibre2">\eqn{latex}{ascii}</code> and <code class="calibre2">\deqn{latex}{ascii}</code> are used. Whereas <code class="calibre2">\eqn</code> is used for “inline” formulae (corresponding to TeX’s <code class="calibre2">$…$</code>), <code class="calibre2">\deqn</code> gives “displayed equations” (as in LaTeX’s <code class="calibre2">displaymath</code> environment, or TeX’s <code class="calibre2">$$…$$</code>). Both arguments are treated as ‘verbatim’ text.
 </p>
 <p>
 Both commands can also be used as <code class="calibre2">\eqn{latexascii}</code> (only <em>one</em> argument) which then is used for both latex and ascii. No whitespace is allowed between command and the first argument, nor between the first and second arguments.
@@ -1226,7 +1226,7 @@ Currently the following formats are recognized: <code class="calibre2">example</
 The <code class="calibre2">\out{literal}</code> macro would usually be used within the text part of <code class="calibre2">\if{format}{text}</code>. It causes the renderer to output the literal text exactly, with no attempt to escape special characters. For example, use the following to output the markup necessary to display the Greek letter in LaTeX or HTML, and the text string <code class="calibre2">alpha</code> in other formats:
 </p>
 <div class="example">
-<pre class="example1"><code>&#92;ifelse{latex}{&#92;out{$&#92;alpha$}}{&#92;ifelse{html}{&#92;out{&amp;alpha;}}{alpha}}</code></pre>
+<pre class="example1"><code>&#92;ifelse{latex}{&#92;out{&#36;&#92;alpha&#36;}}{&#92;ifelse{html}{&#92;out{&amp;alpha;}}{alpha}}</code></pre>
 </div>
 <hr />
 <p>
@@ -1558,17 +1558,6 @@ gitbook.start({
 });
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(script.src))
-      script.src  = script.src.replace(/^https?:/, '');
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 </body>
 
 </html>

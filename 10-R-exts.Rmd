@@ -751,7 +751,7 @@ double dpois_raw (double x, double lambda, int give_log)</code></pre>
 <dd><p>corresponds to (-Inf, +Inf),</p>
 </dd>
 </dl>
-<p><code class="calibre2">f</code> and <code class="calibre2">ex</code> define the integrand function, see above; <code class="calibre2">epsabs</code> and <code class="calibre2">epsrel</code> specify the absolute and relative accuracy requested, <code class="calibre2">result</code>, <code class="calibre2">abserr</code> and <code class="calibre2">last</code> are the output components <code class="calibre2">value</code>, <code class="calibre2">abs.err</code> and <code class="calibre2">subdivisions</code> of the R function integrate, where <code class="calibre2">neval</code> gives the number of integrand function evaluations, and the error code <code class="calibre2">ier</code> is translated to R’s <code class="calibre2">integrate() $ message</code>, look at that function definition. <code class="calibre2">limit</code> corresponds to <code class="calibre2">integrate(..., subdivisions = *)</code>. It seems you should always define the two work arrays and the length of the second one as</p>
+<p><code class="calibre2">f</code> and <code class="calibre2">ex</code> define the integrand function, see above; <code class="calibre2">epsabs</code> and <code class="calibre2">epsrel</code> specify the absolute and relative accuracy requested, <code class="calibre2">result</code>, <code class="calibre2">abserr</code> and <code class="calibre2">last</code> are the output components <code class="calibre2">value</code>, <code class="calibre2">abs.err</code> and <code class="calibre2">subdivisions</code> of the R function integrate, where <code class="calibre2">neval</code> gives the number of integrand function evaluations, and the error code <code class="calibre2">ier</code> is translated to R’s <code class="calibre2">integrate() &#36; message</code>, look at that function definition. <code class="calibre2">limit</code> corresponds to <code class="calibre2">integrate(..., subdivisions = *)</code>. It seems you should always define the two work arrays and the length of the second one as</p>
 <div class="example">
 <pre class="example1"><code>    lenw = 4 * limit;
     iwork =   (int *) R_alloc(limit, sizeof(int));
@@ -910,8 +910,8 @@ static R_INLINE int ind_2(int l, int j)
 <p>Header R_ext/Visibility.h has some definitions for controlling the visibility of entry points. These are only effective when ‘HAVE_VISIBILITY_ATTRIBUTE’ is defined – this is checked when R is configured and recorded in header Rconfig.h (included by R_ext/Visibility.h). It is often defined on modern Unix-alikes with a recent compiler<a href="concept-index.html#FOOT142" id="DOCF142"><sup>142</sup></a>, but not supported on macOS nor Windows. Minimizing the visibility of symbols in a shared library will both speed up its loading (unlikely to be significant) and reduce the possibility of linking to other entry points of the same name.</p>
 <p>C/C++ entry points prefixed by <code class="calibre2">attribute_hidden</code> will not be visible in the shared object. There is no comparable mechanism for FORTRAN entry points, but there is a more comprehensive scheme used by, for example package <strong>stats</strong>. Most compilers which allow control of visibility will allow control of visibility for all symbols <em>via</em> a flag, and where known the flag is encapsulated in the macros ‘C_VISIBILITY’ and <code class="calibre2">F77_VISIBILITY</code> for C and FORTRAN compilers. These are defined in etc/Makeconf and so available for normal compilation of package code. For example, src/Makevars could include</p>
 <div class="example">
-<pre class="example1"><code>PKG_CFLAGS=$(C_VISIBILITY)
-PKG_FFLAGS=$(F77_VISIBILITY)</code></pre>
+<pre class="example1"><code>PKG_CFLAGS=&#36;(C_VISIBILITY)
+PKG_FFLAGS=&#36;(F77_VISIBILITY)</code></pre>
 </div>
 <p>This would end up with <strong>no</strong> visible entry points, which would be pointless. However, the effect of the flags can be overridden by using the <code class="calibre2">attribute_visible</code> prefix. A shared object which registers its entry points needs only for have one visible entry point, its initializer, so for example package <strong>stats</strong> has</p>
 <div class="example">
@@ -1107,5 +1107,7 @@ EXPORTS
 <div id="calibre_pb_16" class="calibre6">
 
 </div>
+
+
 
 

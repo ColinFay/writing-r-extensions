@@ -91,23 +91,23 @@ pkg-config --libs --static libR</code></pre>
 <p>(This may work for an installed OS framework if <code class="calibre2">pkg-config</code> is taught where to look for libR.pc: it is installed inside the framework.)</p>
 <p>However, a more comprehensive way is to set up a Makefile to compile the front-end. Suppose file myfe.c is to be compiled to myfe. A suitable Makefile might be</p>
 <div class="example">
-<pre class="example1"><code>include ${R_HOME}/etc${R_ARCH}/Makeconf
+<pre class="example1"><code>include &#36;{R_HOME}/etc&#36;{R_ARCH}/Makeconf
 all: myfe
 
 ## The following is not needed, but avoids PIC flags.
 myfe.o: myfe.c
-        $(CC) $(ALL_CPPFLAGS) $(CFLAGS) -c myfe.c -o $@
+        &#36;(CC) &#36;(ALL_CPPFLAGS) &#36;(CFLAGS) -c myfe.c -o &#36;@
 
-## replace $(LIBR) $(LIBS) by $(STATIC_LIBR) if R was build with a static libR
+## replace &#36;(LIBR) &#36;(LIBS) by &#36;(STATIC_LIBR) if R was build with a static libR
 myfe: myfe.o
-        $(MAIN_LINK) -o $@ myfe.o $(LIBR) $(LIBS)</code></pre>
+        &#36;(MAIN_LINK) -o &#36;@ myfe.o &#36;(LIBR) &#36;(LIBS)</code></pre>
 </div>
 <p>invoked as</p>
 <div class="example">
 <pre class="example1"><code>R CMD make
 R CMD myfe</code></pre>
 </div>
-<p>Additional flags which <code class="calibre2">$(MAIN_LINK)</code> includes are, amongst others, those to select OpenMP and --export-dynamic for the GNU linker on some platforms. In principle <code class="calibre2">$(LIBS)</code> is not needed when using a shared R library as libR is linked against those libraries, but some platforms need the executable also linked against them.</p>
+<p>Additional flags which <code class="calibre2">&#36;(MAIN_LINK)</code> includes are, amongst others, those to select OpenMP and --export-dynamic for the GNU linker on some platforms. In principle <code class="calibre2">&#36;(LIBS)</code> is not needed when using a shared R library as libR is linked against those libraries, but some platforms need the executable also linked against them.</p>
 <hr />
 <p><a href="" id="Setting-R-callbacks"></a> <a href="" id="Setting-R-callbacks-1"></a></p>
 <h4 id="setting-r-callbacks" class="subsection">8.1.2 Setting R callbacks</h4>
@@ -479,5 +479,7 @@ int main (int argc, char **argv)
 </ul>
 <hr />
 <p><a href="" id="Function-and-variable-index"></a> <a href="" id="Function-and-variable-index-1"></a></p>
+
+
 
 
