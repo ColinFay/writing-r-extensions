@@ -21,4 +21,4 @@ To https://github.com/ColinFay/writing-r-extensions.git
  * [new branch]      master -> master
 La branche master est paramétrée pour suivre la branche distante master depuis origin.
 ]0;/home/colin/R/writing-r-extensions]0;colin@colin-MacBookPro: ~/R/writing-r-extensions[01;32mcolin@colin-MacBookPro[00m:[01;34m~/R/writing-r-extensions[00m$ git add -a[KA
-]0;/home/colin/R/writing-r-extensions]0;colin@colin-MacBookPro: ~/R/writing-r-extensions[01;32mcolin@colin-MacBookPro[00m:[01;34m~/R/writing-r-extensions[00m$ git add -A
+]0;/home/colin/R/writing-r-extensions]0;colin@colin-MacBookPro: ~/R/writing-r-extensions[01;32mcolin@colin-MacBookPro[00m:[01;34m~/R/writing-r-extensions[00m$ [K]0;colin@colin-MacBookPro: ~/R/writing-r-extensions[01;32mcolin@colin-MacBookPro[00m:[01;34m~/R/writing-r-extensions[00m$ git p[Kadd -A

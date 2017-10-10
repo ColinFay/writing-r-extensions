@@ -6,7 +6,7 @@ site: bookdown::bookdown_site
 documentclass: book
 link-citations: yes
 github-repo: ColinFay/writing-r-extensions
-description: "Writing R Extensions covers how to create your own packages, write R help files, and the foreign language interfaces."
+description: "Writing R Extensions covers how to create your own packages, write R help files, and the foreign language (C, C++, Fortran, ...) interfaces."
 ---
 # Writing R Extensions {-}
 
@@ -19,6 +19,25 @@ description: "Writing R Extensions covers how to create your own packages, write
 <p>Permission is granted to copy and distribute translations of this manual into another language, under the above conditions for modified versions, except that this permission notice may be stated in a translation approved by the R Core Team.</p>
 </blockquote>
 <hr />
+
+<h2>All the R manuals as bookdown : </h2>
+
++ [List of all the bookdowns](http://colinfay.me/r-manuals/)
+
++ [Intro to R](http://colinfay.me/intro-to-r/)
+
++ [R Data Import/Export](http://colinfay.me/r-data-import-export/)
+
++ [R Installation and Administration](http://colinfay.me/r-installation-administration/)
+
++ [Writing R extensions](http://colinfay.me/writing-r-extensions/)
+
++ [The R language definition](http://colinfay.me/r-language-definition/)
+
++ [R Internals](http://colinfay.me/r-internals/)
+
+<hr>
+
 <p><a href="" id="Acknowledgements"></a> <a href="" id="Acknowledgements-1"></a></p>
 # Acknowledgements {-}
 
@@ -28,6 +47,4 @@ description: "Writing R Extensions covers how to create your own packages, write
 <div id="calibre_pb_4" class="calibre6">
 
 </div>
-
-
 
