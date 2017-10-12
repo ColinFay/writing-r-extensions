@@ -114,6 +114,16 @@ clean_url <- function(file, pattern, replacement){
 
 purrr::walk(list.files(pattern = "Rmd"), clean_url, pattern = file_names_change$orig, replacement = file_names_change$url)
 
+
+# Remove \ because it's an html troublemaker
+
+purrr::map(list.files(pattern = "Rmd"), replace_in_file,  pattern = "\\\\", replacement = "&#92;")
+
+# So is $
+
+purrr::map(list.files(pattern = "Rmd"), replace_in_file,  pattern = "\\$", replacement = "&#36;")
+
+
 # Some manual tweaking because this function is not perfect 
 
 replace_in_file("04-R-exts.Rmd", "writing-package-vignettes.html#Package-types", "creating-r-packages.html#Package-types")
