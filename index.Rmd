@@ -1,6 +1,6 @@
 --- 
 title: "Writing R extensions"
-author: "R Development Core Team"
+author: "R Core Team"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: book
